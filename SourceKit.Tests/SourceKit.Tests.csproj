@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" Version="1.1.1" />
         <PackageReference Include="Sigil" Version="5.0.0" />
         <PackageReference Include="FluentAssertions" Version="6.10.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.2.0" />
@@ -33,6 +34,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SourceKit.Sample\SourceKit.Sample.csproj" />
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" />
         <ProjectReference Include="..\src\SourceKit.Reflect\SourceKit.Reflect.csproj" />
     </ItemGroup>
 

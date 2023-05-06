@@ -1,0 +1,3 @@
+[*.cs]
+
+dotnet_diagnostic.SK1000.severity = warning

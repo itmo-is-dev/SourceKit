@@ -1,8 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="SourceKit.Analyzers.MustBePartial" Version="1.0.0" />
+    </ItemGroup>
 
 </Project>

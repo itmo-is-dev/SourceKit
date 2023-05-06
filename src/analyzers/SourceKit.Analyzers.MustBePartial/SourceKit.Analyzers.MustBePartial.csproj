@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>11</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>SourceKit.Analyzers.MustBePartial</PackageId>
+        <Title>SourceKit.Analyzers.MustBePartial</Title>
+        <Authors>ronimizy</Authors>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SourceKit.Analyzers.MustBePartial.Annotations\SourceKit.Analyzers.MustBePartial.Annotations.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.2.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\$(AssemblyName).Annotations.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\SourceKit.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+    
+</Project>
