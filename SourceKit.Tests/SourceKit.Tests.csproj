@@ -1,31 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>11</LangVersion>
 
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" Version="1.1.1" />
-        <PackageReference Include="Sigil" Version="5.0.0" />
-        <PackageReference Include="FluentAssertions" Version="6.10.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.2.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.2.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.2.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
-        <PackageReference Include="xunit" Version="2.4.2" />
-        <PackageReference Include="Xunit.DependencyInjection.Demystifier" Version="8.0.1" />
+        <PackageReference Include="Ben.Demystifier" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" />
+        <PackageReference Include="Sigil" />
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="4.5.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="SourceKit.Analyzers.MustBePartial" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="Xunit.DependencyInjection.Demystifier" />
 
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+        <PackageReference Include="xunit.runner.visualstudio">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
 
-        <PackageReference Include="coverlet.collector" Version="3.1.2">
+        <PackageReference Include="coverlet.collector">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -34,7 +37,6 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SourceKit.Sample\SourceKit.Sample.csproj" />
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" />
         <ProjectReference Include="..\src\SourceKit.Reflect\SourceKit.Reflect.csproj" />
     </ItemGroup>
 
@@ -42,10 +44,12 @@
         <Content Include="..\SourceKit.Sample\**\*.cs" Exclude="..\SourceKit.Sample\obj\**\*.*" LinkBase="SourceKit.Sample\" CopyToOutputDirectory="Always" />
     </ItemGroup>
 
+    <!--
     <ItemGroup>
       <Reference Include="assembly_1">
         <HintPath>a.dll</HintPath>
       </Reference>
     </ItemGroup>
+    -->
 
 </Project>

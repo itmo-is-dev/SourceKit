@@ -55,10 +55,10 @@ internal class MethodReflector
         methodBodyOperation.Accept(compiler);
         emit.CreateMethod();
 
-        var type = typeBuilder.CreateType();
-        
+        var type = typeBuilder.CreateTypeInfo();
+
         var method = type.GetMethod(symbol.Name, BindingFlags.Public | BindingFlags.Static)!;
-        
+
         context.Save("/Users/george/Documents/C#/SourceKit/SourceKit.Tests/a.dll");
 
         return (T)method.CreateDelegate(delegateType);

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.1</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>11</LangVersion>
@@ -17,19 +17,19 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Lokad.ILPack" Version="0.2.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.2.0" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.2.0" PrivateAssets="all" />
-        <PackageReference Include="PolySharp" Version="1.12.1">
+        <PackageReference Include="Lokad.ILPack" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+        <PackageReference Include="PolySharp">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <PackageReference Include="Sigil" Version="5.0.0" GeneratePathProperty="true" PrivateAssets="all" />
-        <PackageReference Include="System.Reflection.Emit" Version="4.7.0" GeneratePathProperty="true" PrivateAssets="all" />
-        <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" GeneratePathProperty="true" PrivateAssets="all" />
-        <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" GeneratePathProperty="true" PrivateAssets="all" />
+        <PackageReference Include="Sigil" GeneratePathProperty="true" PrivateAssets="all" />
+        <PackageReference Include="System.Reflection.Emit" GeneratePathProperty="true" PrivateAssets="all" />
+        <PackageReference Include="System.Reflection.Emit.ILGeneration" GeneratePathProperty="true" PrivateAssets="all" />
+        <PackageReference Include="System.Reflection.Emit.Lightweight" GeneratePathProperty="true" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
@@ -41,13 +41,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SourceKit\SourceKit.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageVersion Update="PolySharp" Version="1.13.1">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageVersion>
     </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@ public class MustBePartialTests
     [Fact]
     public async Task A()
     {
-        var subject = await File.ReadAllTextAsync("MustBePartial/NotPartialDerivative.cs");
+        var subject = File.ReadAllText("MustBePartial/NotPartialDerivative.cs");
 
         var test = new CSharpAnalyzerTest<DerivativesMustBePartialAnalyzer, XUnitVerifier>
         {
@@ -27,11 +27,11 @@ public class MustBePartialTests
         await test.RunAsync();
     }
 
-    private static async Task<(string name, string content)> LoadFileAsync(string path)
+    private static Task<(string name, string content)> LoadFileAsync(string path)
     {
         var name = Path.ChangeExtension(Path.GetFileName(path), null);
-        var content = await File.ReadAllTextAsync(path);
+        var content = File.ReadAllText(path);
 
-        return (name, content);
+        return Task.FromResult((name, content));
     }
 }
