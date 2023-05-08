@@ -16,27 +16,39 @@
         <PackageId>SourceKit.Analyzers.MustBePartial</PackageId>
         <Title>SourceKit.Analyzers.MustBePartial</Title>
         <Authors>ronimizy</Authors>
+        <Description>Analyzers for checking whether type is partial</Description>
+        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
     </PropertyGroup>
 
     <PropertyGroup>
-        <Description>Analyzers for checking whether type is partial</Description>
+        <Version>1.0.0</Version>
+        <PackageReleaseNotes>Added DerivativesMustBePartial analyzer</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj" PrivateAssets="all"/>
-        <ProjectReference Include="..\SourceKit.Analyzers.MustBePartial.Annotations\SourceKit.Analyzers.MustBePartial.Annotations.csproj"/>
+        <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all"/>
+        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SourceKit.Analyzers.MustBePartial.Annotations\SourceKit.Analyzers.MustBePartial.Annotations.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-        <None Include="$(OutputPath)\$(AssemblyName).Annotations.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-        <None Include="$(OutputPath)\SourceKit.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\$(AssemblyName).Annotations.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\SourceKit.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
 </Project>

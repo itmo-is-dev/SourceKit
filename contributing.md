@@ -34,7 +34,7 @@ And separate group for more volatile properties
 ```xml
 
 <PropertyGroup>
-    <Description>Analyzers for checking whether type is partial</Description>
+    <PackageReleaseNotes>Analyzers for checking whether type is partial</PackageReleaseNotes>
 </PropertyGroup>
 ```
 

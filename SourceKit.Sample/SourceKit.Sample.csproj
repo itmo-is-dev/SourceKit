@@ -4,19 +4,24 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
+        <Configurations>Debug;Release;Package</Configurations>
+        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj"
-                          OutputItemType="Analyzer"/>
+                          OutputItemType="Analyzer"
+                          Condition="'$(Configuration)' != 'Package'"/>
 
         <ProjectReference Include="..\src\SourceKit\SourceKit.csproj"
-                          OutputItemType="Analyzer"/>
+                          OutputItemType="Analyzer"
+                          Condition="'$(Configuration)' != 'Package'"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Analyzers\"/>
+        <PackageReference Include="SourceKit.Analyzers.MustBePartial"
+                          Version="1.0.0"
+                          Condition="'$(Configuration)' == 'Package'"/>
     </ItemGroup>
-
 
 </Project>
