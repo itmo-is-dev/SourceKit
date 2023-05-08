@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Reflection.Emit;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Operations;
 using Sigil.NonGeneric;
@@ -94,7 +93,7 @@ internal class LambdaBuilder
 
         staticConstructorBuilder.CreateTypeInitializer();
 
-        var type = typeBuilder.CreateType();
+        var type = typeBuilder.CreateTypeInfo();
         var delegateField = type.GetField(functionField.Name, BindingFlags.Public | BindingFlags.Static)!;
         var instanceField = type.GetField(instanceFieldBuilder.Name, BindingFlags.Public | BindingFlags.Static)!;
         var method = type.GetMethod(functionMethod.Name, BindingFlags.Public | BindingFlags.Instance)!;
