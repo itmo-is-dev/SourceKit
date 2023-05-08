@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Reflection.Emit;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Operations;
 using Sigil.NonGeneric;

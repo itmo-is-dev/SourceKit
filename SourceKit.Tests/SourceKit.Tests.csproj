@@ -1,17 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <LangVersion>11</LangVersion>
-
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
         <PackageReference Include="Ben.Demystifier" />
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit" />
         <PackageReference Include="Sigil" />
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.CodeAnalysis.Common" />
@@ -19,7 +18,6 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="4.5.0" />
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="SourceKit.Analyzers.MustBePartial" />
         <PackageReference Include="xunit" />
         <PackageReference Include="Xunit.DependencyInjection.Demystifier" />
 
@@ -37,19 +35,12 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SourceKit.Sample\SourceKit.Sample.csproj" />
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" />
         <ProjectReference Include="..\src\SourceKit.Reflect\SourceKit.Reflect.csproj" />
     </ItemGroup>
 
     <ItemGroup>
         <Content Include="..\SourceKit.Sample\**\*.cs" Exclude="..\SourceKit.Sample\obj\**\*.*" LinkBase="SourceKit.Sample\" CopyToOutputDirectory="Always" />
     </ItemGroup>
-
-    <!--
-    <ItemGroup>
-      <Reference Include="assembly_1">
-        <HintPath>a.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-    -->
 
 </Project>

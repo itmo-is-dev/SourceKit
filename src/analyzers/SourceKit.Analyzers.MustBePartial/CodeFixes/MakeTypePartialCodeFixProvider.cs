@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Composition;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -9,6 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Analyzers.MustBePartial.CodeFixes;
 
+[Shared]
 [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MakeTypePartialCodeFixProvider))]
 public class MakeTypePartialCodeFixProvider : CodeFixProvider
 {
@@ -16,6 +18,9 @@ public class MakeTypePartialCodeFixProvider : CodeFixProvider
 
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
         ImmutableArray.Create(DerivativesMustBePartialAnalyzer.DiagnosticId);
+
+    public override FixAllProvider GetFixAllProvider()
+        => WellKnownFixAllProviders.BatchFixer;
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
@@ -38,12 +43,14 @@ public class MakeTypePartialCodeFixProvider : CodeFixProvider
         var action = CodeAction.Create(
             Title,
             equivalenceKey: nameof(Title),
-            createChangedDocument: async _ =>
+            createChangedDocument: _ =>
             {
-                var newSyntax = syntax.AddModifiers(Token(SyntaxKind.PartialKeyword)).NormalizeWhitespace();
+                var newSyntax = syntax.AddModifiers(Token(SyntaxKind.PartialKeyword));
                 var newRoot = root.ReplaceNode(syntax, newSyntax);
 
-                return context.Document.WithSyntaxRoot(newRoot);
+                var document = context.Document.WithSyntaxRoot(newRoot);
+
+                return Task.FromResult(document);
             });
 
         context.RegisterCodeFix(action, diagnostic);

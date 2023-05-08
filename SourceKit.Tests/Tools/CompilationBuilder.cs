@@ -38,7 +38,7 @@ public static class CompilationBuilder
             typeof(IEnumerable<>),
             typeof(Enumerable),
         };
-        
+
         var project = solution.GetProject(projectId)!;
         project = project.WithCompilationOptions(new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary));
         project = project.AddMetadataReferences(GetAllReferencesNeededForTypes(referencedTypes));

@@ -5,9 +5,18 @@
         <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="SourceKit.Analyzers.MustBePartial" />
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj"
+                          OutputItemType="Analyzer"/>
+
+        <ProjectReference Include="..\src\SourceKit\SourceKit.csproj"
+                          OutputItemType="Analyzer"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Analyzers\"/>
+    </ItemGroup>
+
 
 </Project>

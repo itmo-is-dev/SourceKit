@@ -11,32 +11,32 @@
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <PackageId>SourceKit.Analyzers.MustBePartial</PackageId>
         <Title>SourceKit.Analyzers.MustBePartial</Title>
         <Authors>ronimizy</Authors>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <Description>Analyzers for checking whether type is partial</Description>
+    </PropertyGroup>
+
     <ItemGroup>
-        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj" PrivateAssets="all"/>
+        <ProjectReference Include="..\SourceKit.Analyzers.MustBePartial.Annotations\SourceKit.Analyzers.MustBePartial.Annotations.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SourceKit.Analyzers.MustBePartial" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="4.5.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\$(AssemblyName).Annotations.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\SourceKit.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(OutputPath)\$(AssemblyName).Annotations.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(OutputPath)\SourceKit.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
 
 </Project>
