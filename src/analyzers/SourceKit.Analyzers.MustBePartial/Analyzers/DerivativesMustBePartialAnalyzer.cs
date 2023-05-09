@@ -18,7 +18,7 @@ public class DerivativesMustBePartialAnalyzer : DiagnosticAnalyzer
         DiagnosticId,
         Title,
         Format,
-        "Class definition",
+        "Usage",
         DiagnosticSeverity.Error,
         true);
 

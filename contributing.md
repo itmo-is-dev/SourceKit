@@ -63,6 +63,11 @@ You have to manually add assemblies to your analyzers NuGet package path
 
 [Docs](https://github.com/dotnet/roslyn/blob/main/docs/features/source-generators.cookbook.md#use-functionality-from-nuget-packages)
 
+## Implementation
+
+Choose diagnostic category, based on MS Docs listing \
+https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/categories
+
 ## Writing sample code
 
 After implementing your analyzer code, include sample code, describing all use cases of your feature
