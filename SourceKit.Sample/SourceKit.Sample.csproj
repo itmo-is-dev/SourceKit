@@ -1,27 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>11</LangVersion>
+        <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <Configurations>Debug;Release;Package</Configurations>
+        <Configurations>Package;Debug;Release;</Configurations>
         <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj"
-                          OutputItemType="Analyzer"
-                          Condition="'$(Configuration)' != 'Package'"/>
-
-        <ProjectReference Include="..\src\SourceKit\SourceKit.csproj"
-                          OutputItemType="Analyzer"
-                          Condition="'$(Configuration)' != 'Package'"/>
+        <ProjectReference Include="..\src\SourceKit\SourceKit.csproj" OutputItemType="Analyzer" Condition="'$(Configuration)' != 'Package'" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="SourceKit.Analyzers.MustBePartial"
-                          Version="1.0.0"
-                          Condition="'$(Configuration)' == 'Package'"/>
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" OutputItemType="Analyzer" Condition="'$(Configuration)' != 'Package'" />
+
+        <PackageReference Include="SourceKit.Analyzers.MustBePartial" Version="1.0.0" Condition="'$(Configuration)' == 'Package'" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 
 </Project>

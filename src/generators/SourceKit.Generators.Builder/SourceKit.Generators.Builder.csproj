@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>11</LangVersion>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <PackageId>SourceKit.Generators.Builder</PackageId>
+        <Title>SourceKit.Generators.Builder</Title>
+        <Authors>ronimizy</Authors>
+        <Description>Type builder source generator</Description>
+        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Version>1.0.0</Version>
+        <PackageReleaseNotes>Added builder source generator</PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="FluentChaining" PrivateAssets="all" GeneratePathProperty="true" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\SourceKit.Generators.Builder.Annotations\SourceKit.Generators.Builder.Annotations.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="$(PkgFluentChaining)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+    </ItemGroup>
+
+</Project>

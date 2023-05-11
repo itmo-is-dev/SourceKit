@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Extensions;
 
@@ -47,5 +48,28 @@ public static class NamedTypeSymbolExtensions
     public static IEnumerable<Location> GetSignatureLocations(this INamedTypeSymbol symbol)
     {
         return symbol.GetDeclarations().Select(x => x.Identifier.GetLocation());
+    }
+
+    public static TypeDeclarationSyntax ToSyntax(this INamedTypeSymbol symbol)
+    {
+        return symbol.TypeKind switch
+        {
+            TypeKind.Class when symbol.IsRecord => RecordDeclaration(Token(SyntaxKind.RecordKeyword), symbol.Name)
+                .WithOpenBraceToken(Token(SyntaxKind.OpenBraceToken))
+                .WithCloseBraceToken(Token(SyntaxKind.CloseBraceToken)),
+
+            TypeKind.Class => ClassDeclaration(symbol.Name),
+
+            TypeKind.Struct when symbol.IsRecord => RecordDeclaration(Token(SyntaxKind.RecordKeyword), symbol.Name)
+                .WithClassOrStructKeyword(Token(SyntaxKind.StructKeyword))
+                .WithOpenBraceToken(Token(SyntaxKind.OpenBraceToken))
+                .WithCloseBraceToken(Token(SyntaxKind.CloseBraceToken)),
+
+            TypeKind.Struct => StructDeclaration(symbol.Name),
+
+            TypeKind.Interface => InterfaceDeclaration(symbol.Name),
+
+            _ => throw new ArgumentOutOfRangeException()
+        };
     }
 }
