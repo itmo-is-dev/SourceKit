@@ -15,7 +15,7 @@ public class MakeTypePartialCodeFixProvider : CodeFixProvider
     public const string Title = "Make type partial";
 
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(DerivativesMustBePartialAnalyzer.DiagnosticId);
+        ImmutableArray.Create(TypeMustBePartialAnalyzer.DiagnosticId);
 
     public override FixAllProvider GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;
@@ -25,7 +25,7 @@ public class MakeTypePartialCodeFixProvider : CodeFixProvider
         context.CancellationToken.ThrowIfCancellationRequested();
 
         IEnumerable<Task> derivativesMustBePartialDiagnostics = context.Diagnostics
-            .Where(x => x.Id.Equals(DerivativesMustBePartialAnalyzer.DiagnosticId))
+            .Where(x => x.Id.Equals(TypeMustBePartialAnalyzer.DiagnosticId))
             .Select(x => ProvideDerivativesMustBePartial(context, x));
 
         await Task.WhenAll(derivativesMustBePartialDiagnostics);

@@ -5,13 +5,13 @@ using SourceKit.Analyzers.Nullable.Analyzers;
 
 namespace SourceKit.Analyzers.Nullable.CodeFixes;
 
-[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(PropagateNullableCorrectlyCodeFix))]
-public class PropagateNullableCorrectlyCodeFix : CodeFixProvider
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(PropagateNullableCorrectlyCodeFixProvider))]
+public class PropagateNullableCorrectlyCodeFixProvider : CodeFixProvider
 {
     public const string Title = "Propagate nullable types correctly";
     
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(NullForgivingOperatorNotAllowed.DiagnosticId);
+        ImmutableArray.Create(NullForgivingOperatorNotAllowedAnalyzer.DiagnosticId);
     
     public override FixAllProvider GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;

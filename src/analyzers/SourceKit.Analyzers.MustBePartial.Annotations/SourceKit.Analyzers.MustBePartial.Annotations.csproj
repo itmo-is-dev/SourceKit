@@ -24,13 +24,13 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.0.0</Version>
-        <PackageReleaseNotes>Added DerivativesMustBePartial analyzer</PackageReleaseNotes>
+        <Version>1.1.0</Version>
+        <PackageReleaseNotes>Added AnnotatedMustBePartialAttribute</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\README.md" Pack="true" PackagePath="\"/>
-        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\"/>
+        <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\" />
     </ItemGroup>
     
 </Project>

@@ -10,4 +10,9 @@ public static class Constants
 
     public const string DerivativesMustBePartialAttributeFullyQualifiedName =
         $"{AnnotationsNamespace}.{DerivativesMustBePartialAttributeName}";
+
+    public const string AnnotatedMustBePartialAttributeName = nameof(AnnotatedMustBePartialAttribute);
+
+    public const string AnnotatedMustBePartialAttributeFullyQualifiedName =
+        $"{AnnotationsNamespace}.{AnnotatedMustBePartialAttributeName}";
 }

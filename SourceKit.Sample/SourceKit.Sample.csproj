@@ -3,22 +3,24 @@
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
-        <Configurations>Package;Debug;Release;</Configurations>
-        <Platforms>AnyCPU</Platforms>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\src\SourceKit\SourceKit.csproj" OutputItemType="Analyzer" Condition="'$(Configuration)' != 'Package'" />
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" OutputItemType="Analyzer" Condition="'$(Configuration)' != 'Package'" />
-
-        <PackageReference Include="SourceKit.Analyzers.MustBePartial" Version="1.0.0" Condition="'$(Configuration)' == 'Package'" />
-    </ItemGroup>
-    
-    <ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' != 'Release'">
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" OutputItemType="Analyzer" />
         <ProjectReference Include="..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj" OutputItemType="Analyzer" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
+        <PackageReference Include="SourceKit.Analyzers.MustBePartial" />
+        <PackageReference Include="SourceKit.Generators.Builder" />
+    </ItemGroup>
+
+    <ItemGroup>
+
     </ItemGroup>
 
 </Project>

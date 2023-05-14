@@ -33,7 +33,7 @@ public class TypeBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
         var declaration = request.Symbol.ToSyntax().WithModifiers(modifiers);
 
         var command = new TypeBuildingCommand(
-            request.Context.Compilation,
+            request.Context,
             declaration,
             request.Symbol);
 

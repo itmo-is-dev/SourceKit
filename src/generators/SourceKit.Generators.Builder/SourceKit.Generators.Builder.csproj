@@ -6,12 +6,12 @@
         <Nullable>enable</Nullable>
         <LangVersion>11</LangVersion>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <PackageId>SourceKit.Generators.Builder</PackageId>
         <Title>SourceKit.Generators.Builder</Title>
@@ -30,7 +30,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
+        <None Include="README.md" Pack="true" PackagePath="\" />
         <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
@@ -39,18 +39,46 @@
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
         <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
     </ItemGroup>
-    
+
     <ItemGroup>
-        <PackageReference Include="FluentChaining" PrivateAssets="all" GeneratePathProperty="true" />
+        <PackageReference Include="FluentChaining" GeneratePathProperty="true">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </PackageReference>
+
+        <PackageReference Include="Humanizer.Core" GeneratePathProperty="true">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </PackageReference>
+        
+        <PackageReference Include="Humanizer.Core.uk" GeneratePathProperty="true">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </PackageReference>
+
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" GeneratePathProperty="true">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </PackageReference>
+
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" GeneratePathProperty="true">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj" PrivateAssets="all" />
+        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj" PrivateAssets="all">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </ProjectReference>
+
         <ProjectReference Include="..\SourceKit.Generators.Builder.Annotations\SourceKit.Generators.Builder.Annotations.csproj" />
     </ItemGroup>
-    
+
     <ItemGroup>
+        <None Include="$(OutputPath)\SourceKit*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
         <None Include="$(PkgFluentChaining)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgHumanizer_Core)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgHumanizer_Core_uk)\lib\netstandard2.0\uk\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+
+        <None Include="$(PkgMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
 
 </Project>

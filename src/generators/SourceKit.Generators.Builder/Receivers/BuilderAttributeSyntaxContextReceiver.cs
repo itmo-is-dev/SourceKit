@@ -25,12 +25,15 @@ public class BuilderAttributeSyntaxContextReceiver : ISyntaxContextReceiver
         if (attributeType is null)
             return;
 
-        var symbolInfo = context.SemanticModel.GetSymbolInfo(context.Node);
+        var symbolInfo = context.SemanticModel.GetDeclaredSymbol(context.Node);
         
-        if (symbolInfo.Symbol is not INamedTypeSymbol namedTypeSymbol)
+        if (symbolInfo is not INamedTypeSymbol namedTypeSymbol)
             return;
 
         if (namedTypeSymbol.HasAttribute(attributeType) is false)
+            return;
+        
+        if (namedTypeSymbol.IsPartial() is false)
             return;
 
         _typeSymbols.Add(namedTypeSymbol);

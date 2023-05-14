@@ -1,12 +1,18 @@
 using FluentChaining;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Generators.Builder.Commands;
+using SourceKit.Tools;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Builder.Builders.FileBuilders;
 
 public class UsingBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
 {
+    private static readonly IEqualityComparer<UsingDirectiveSyntax> Comparer =
+        EqualityComparerFactory.Create<UsingDirectiveSyntax>(
+            (a, b) => a.Name.ToString().Equals(b.Name.ToString()),
+            x => x.Name.ToString().GetHashCode());
+
     private readonly IChain<UsingBuildingCommand, UsingDirectiveSyntax> _commentChain;
 
     public UsingBuilder(IChain<UsingBuildingCommand, UsingDirectiveSyntax> commentChain)
@@ -19,18 +25,21 @@ public class UsingBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
         SynchronousContext context,
         LinkDelegate<FileBuildingCommand, SynchronousContext, CompilationUnitSyntax> next)
     {
-        var directive = UsingDirective(IdentifierName("System"));
-        var commentBuildingCommand = new UsingBuildingCommand(directive, request.Symbol);
+        var unit = next(request, context);
 
-        directive = _commentChain.Process(commentBuildingCommand);
+        UsingDirectiveSyntax[] usingDirectives = unit.Usings
+            .Append(UsingDirective(IdentifierName("System")))
+            .Append(UsingDirective(IdentifierName("System.Linq")))
+            .Append(UsingDirective(IdentifierName("System.Collections.Generic")))
+            .Distinct(Comparer)
+            .OrderBy(x => x.Name.ToString())
+            .ToArray();
 
-        var syntax = request.CompilationUnit.AddUsings(directive);
+        var firstDirective = usingDirectives[0];
 
-        request = request with
-        {
-            CompilationUnit = syntax,
-        };
+        var commentBuildingCommand = new UsingBuildingCommand(firstDirective, request.Symbol);
+        usingDirectives[0] = _commentChain.Process(commentBuildingCommand);
 
-        return next(request, context);
+        return unit.WithUsings(List(usingDirectives));
     }
 }

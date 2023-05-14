@@ -7,6 +7,21 @@ namespace SourceKit.Extensions;
 
 public static class NamedTypeSymbolExtensions
 {
+    public static SimpleNameSyntax ToNameSyntax(this INamespaceOrTypeSymbol symbol, bool fullyQualified = false)
+    {
+        IReadOnlyCollection<IdentifierNameSyntax> typeParameters = symbol switch
+        {
+            INamedTypeSymbol namedTypeSymbol => namedTypeSymbol.TypeArguments.ToTypeArgumentSyntax().ToArray(),
+            _ => Array.Empty<IdentifierNameSyntax>(),
+        };
+
+        var name = fullyQualified ? symbol.GetFullyQualifiedName() : symbol.Name;
+
+        return typeParameters.Count is 0
+            ? IdentifierName(name)
+            : GenericName(Identifier(name), TypeArgumentList(SeparatedList<TypeSyntax>(typeParameters)));
+    }
+
     public static IEnumerable<INamedTypeSymbol> GetBaseTypes(this INamedTypeSymbol symbol)
     {
         return symbol.BaseType is null

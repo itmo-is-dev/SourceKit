@@ -4,6 +4,6 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 namespace SourceKit.Generators.Builder.Commands;
 
 public record struct TypeBuildingCommand(
-    Compilation Compilation,
+    GeneratorExecutionContext Context,
     TypeDeclarationSyntax Syntax,
     INamedTypeSymbol Symbol);
