@@ -25,8 +25,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.0.0</Version>
-        <PackageReleaseNotes>Added builder source generator</PackageReleaseNotes>
+        <Version>1.0.1</Version>
+        <PackageReleaseNotes>Fixed nullable value type generation</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

@@ -33,14 +33,9 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
 
     private IEnumerable<StatementSyntax> ResolveStatements(BuilderTypeBuildingCommand request)
     {
-        var properties = request.TypeSymbol
-            .GetMembers()
-            .OfType<IPropertySymbol>()
-            .Where(x => x.IsImplicitlyDeclared is false);
-
         var enumerableType = request.Context.Compilation.GetTypeSymbol<IEnumerable>();
 
-        foreach (var property in properties)
+        foreach (IPropertySymbol property in request.Properties)
         {
             if (property.Type is not INamedTypeSymbol type)
                 continue;

@@ -17,9 +17,7 @@ public class FieldBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, TypeDec
         SynchronousContext context,
         LinkDelegate<BuilderTypeBuildingCommand, SynchronousContext, TypeDeclarationSyntax> next)
     {
-        MemberDeclarationSyntax[] fields = request.TypeSymbol.GetMembers()
-            .OfType<IPropertySymbol>()
-            .Where(x => x.IsImplicitlyDeclared is false)
+        MemberDeclarationSyntax[] fields = request.Properties
             .Select(x => ResolveDeclaration(x, request.Context.Compilation))
             .WhereNotNull()
             .ToArray();
@@ -52,7 +50,7 @@ public class FieldBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, TypeDec
         var name = symbol.Name.ToUnderscoreCamelCase();
 
         var variableDeclaration = VariableDeclaration(
-            IdentifierName(symbol.Type.Name),
+            symbol.Type.ToNameSyntax(),
             SingletonSeparatedList(VariableDeclarator(name)));
 
         return FieldDeclaration(variableDeclaration).AddModifiers(Token(SyntaxKind.PrivateKeyword));

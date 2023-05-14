@@ -37,9 +37,7 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
 
     private ExpressionSyntax GenerateRecordInvocation(BuilderTypeBuildingCommand request)
     {
-        ArgumentSyntax[] arguments = request.TypeSymbol.GetMembers()
-            .OfType<IPropertySymbol>()
-            .Where(x => x.IsImplicitlyDeclared is false)
+        ArgumentSyntax[] arguments = request.Properties
             .Select(x => ResolveArgument(x, request.Context.Compilation))
             .Select(Argument)
             .ToArray();
