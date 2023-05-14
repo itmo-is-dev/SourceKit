@@ -5,10 +5,10 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace SourceKit.Analyzers.Nullable.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-public class NullForgivingOperatorNotAllowed : DiagnosticAnalyzer
+public class NullForgivingOperatorNotAllowedAnalyzer : DiagnosticAnalyzer
 {
     public const string DiagnosticId = "SK1200";
-    public const string Title = nameof(NullForgivingOperatorNotAllowed);
+    public const string Title = nameof(NullForgivingOperatorNotAllowedAnalyzer);
 
     public const string Format = """Null forgiving operator is not allowed""";
 

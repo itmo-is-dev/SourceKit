@@ -6,9 +6,9 @@ using SourceKit.Sample.Analyzers.MustBePartial;
 using SourceKit.Tests.Tools;
 using Xunit;
 using AnalyzerVerifier = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<
-    SourceKit.Analyzers.MustBePartial.Analyzers.DerivativesMustBePartialAnalyzer>;
+    SourceKit.Analyzers.MustBePartial.Analyzers.TypeMustBePartialAnalyzer>;
 using CodeFixTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixTest<
-    SourceKit.Analyzers.MustBePartial.Analyzers.DerivativesMustBePartialAnalyzer,
+    SourceKit.Analyzers.MustBePartial.Analyzers.TypeMustBePartialAnalyzer,
     SourceKit.Analyzers.MustBePartial.CodeFixes.MakeTypePartialCodeFixProvider,
     Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 
@@ -21,11 +21,11 @@ public class MustBePartialTests
     {
         var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/MustBePartial/NonPartialDerivative.cs");
 
-        var diagnostic = AnalyzerVerifier.Diagnostic(DerivativesMustBePartialAnalyzer.Descriptor)
+        var diagnostic = AnalyzerVerifier.Diagnostic(TypeMustBePartialAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 3, 14)
             .WithArguments(nameof(NonPartialDerivative));
 
-        var test = new CSharpAnalyzerTest<DerivativesMustBePartialAnalyzer, XUnitVerifier>
+        var test = new CSharpAnalyzerTest<TypeMustBePartialAnalyzer, XUnitVerifier>
         {
             TestState =
             {
@@ -45,7 +45,7 @@ public class MustBePartialTests
     [Fact]
     public async Task DerivativesMustBePartial_ShouldReportNoDiagnostic_WhenTypeIsPartial()
     {
-        var test = new CSharpAnalyzerTest<DerivativesMustBePartialAnalyzer, XUnitVerifier>
+        var test = new CSharpAnalyzerTest<TypeMustBePartialAnalyzer, XUnitVerifier>
         {
             TestState =
             {
@@ -70,7 +70,7 @@ public class MustBePartialTests
 
         var fixedSource = sourceFile with { Content = fixedContent };
 
-        var diagnostic = AnalyzerVerifier.Diagnostic(DerivativesMustBePartialAnalyzer.Descriptor)
+        var diagnostic = AnalyzerVerifier.Diagnostic(TypeMustBePartialAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 3, 14)
             .WithArguments(nameof(NonPartialDerivative));
 

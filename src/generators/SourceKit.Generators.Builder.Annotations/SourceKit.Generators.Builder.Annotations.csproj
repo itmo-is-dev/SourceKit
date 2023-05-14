@@ -12,10 +12,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>SourceKit.Analyzers.MustBePartial.Annotations</PackageId>
-        <Title>SourceKit.Analyzers.MustBePartial.Annotations</Title>
+        <PackageId>SourceKit.Generators.Builder.Annotations</PackageId>
+        <Title>SourceKit.Generators.Builder.Annotations</Title>
         <Authors>ronimizy</Authors>
-        <Description>Annotations for SourceKit.Analyzers.MustBePartial</Description>
+        <Description>Annotations for SourceKit.Generators.Builder</Description>
         <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
         <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -24,13 +24,17 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.1.0</Version>
-        <PackageReleaseNotes>Added AnnotatedMustBePartialAttribute</PackageReleaseNotes>
+        <Version>1.0.0</Version>
+        <PackageReleaseNotes>Added GenerateBuilder attribute</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
         <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
         <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\" />
     </ItemGroup>
-    
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" PrivateAssets="contentfiles;build"/>
+    </ItemGroup>
+
 </Project>

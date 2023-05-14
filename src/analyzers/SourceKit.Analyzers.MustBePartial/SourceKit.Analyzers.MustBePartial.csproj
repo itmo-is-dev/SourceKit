@@ -25,8 +25,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.0.0</Version>
-        <PackageReleaseNotes>Added DerivativesMustBePartial analyzer</PackageReleaseNotes>
+        <Version>1.1.0</Version>
+        <PackageReleaseNotes>Added AnnotatedMustBePartialAttribute</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
