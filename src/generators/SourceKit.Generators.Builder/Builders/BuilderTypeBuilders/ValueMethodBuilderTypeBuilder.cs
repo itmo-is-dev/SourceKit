@@ -29,17 +29,12 @@ public class ValueMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
 
     private IEnumerable<MemberDeclarationSyntax> GenerateMethods(BuilderTypeBuildingCommand request)
     {
-        var properties = request.TypeSymbol
-            .GetMembers()
-            .OfType<IPropertySymbol>()
-            .Where(x => x.IsImplicitlyDeclared is false);
-
         var enumerableType = request.Context.Compilation.GetTypeByMetadataName(Constants.EnumerableFullyQualifiedName);
 
         if (enumerableType is null)
             yield break;
 
-        foreach (var property in properties)
+        foreach (IPropertySymbol property in request.Properties)
         {
             if (property.Type is not INamedTypeSymbol type)
                 continue;
@@ -53,7 +48,7 @@ public class ValueMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
             var returnType = request.BuilderSyntax.Identifier;
             var fieldName = property.Name.ToUnderscoreCamelCase();
 
-            var parameter = Parameter(Identifier(parameterName)).WithType(IdentifierName(property.Type.Name));
+            var parameter = Parameter(Identifier(parameterName)).WithType(property.Type.ToNameSyntax());
             var returnStatement = ReturnStatement(ThisExpression());
 
             var assignment = AssignmentExpression(

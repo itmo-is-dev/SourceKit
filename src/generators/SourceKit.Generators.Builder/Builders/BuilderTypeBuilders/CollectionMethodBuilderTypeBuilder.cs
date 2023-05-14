@@ -29,12 +29,7 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
     }
 
     private IEnumerable<MemberDeclarationSyntax> GenerateMethods(BuilderTypeBuildingCommand request)
-    {
-        var properties = request.TypeSymbol
-            .GetMembers()
-            .OfType<IPropertySymbol>()
-            .Where(x => x.IsImplicitlyDeclared is false);
-
+    { 
         var enumerableType = request.Context.Compilation.GetTypeByMetadataName(Constants.EnumerableFullyQualifiedName);
 
         var genericEnumerableType = request.Context.Compilation
@@ -43,7 +38,7 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         if (enumerableType is null || genericEnumerableType is null)
             yield break;
 
-        foreach (var property in properties)
+        foreach (IPropertySymbol property in request.Properties)
         {
             if (property.Type is not INamedTypeSymbol type)
                 continue;
@@ -66,7 +61,7 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
     private MemberDeclarationSyntax GenerateAddSingleMethod(
         TypeDeclarationSyntax builder,
         IPropertySymbol property,
-        ISymbol elementType)
+        ITypeSymbol elementType)
     {
         const string parameterName = "element";
 
@@ -74,7 +69,7 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         var returnType = builder.Identifier;
         var fieldName = property.Name.ToUnderscoreCamelCase();
 
-        var parameter = Parameter(Identifier(parameterName)).WithType(IdentifierName(elementType.Name));
+        var parameter = Parameter(Identifier(parameterName)).WithType(elementType.ToNameSyntax());
 
         var addMethod = MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
