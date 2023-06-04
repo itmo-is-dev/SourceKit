@@ -5,12 +5,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace SourceKit.Analyzers.Nullable.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class NullableDisablePragmaNotAllowedAnalyzer : DiagnosticAnalyzer
+public class NullableDisableNotAllowedAnalyzer : DiagnosticAnalyzer
 {
     public const string DiagnosticId = "SK1201";
-    public const string Title = nameof(NullableDisablePragmaNotAllowedAnalyzer);
+    public const string Title = nameof(NullableDisableNotAllowedAnalyzer);
 
-    public const string Format = """#pragma nullable disable is not allowed""";
+    public const string Format = """#nullable disable is not allowed""";
 
     public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
         DiagnosticId,
