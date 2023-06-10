@@ -1,4 +1,3 @@
-using System.Collections;
 using FluentChaining;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -6,6 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
 using SourceKit.Generators.Builder.Extensions;
+using SourceKit.Generators.Builder.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Builder.Builders.BuilderTypeBuilders;
@@ -50,24 +50,25 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
         throw new NotSupportedException("Non record types are not supported");
     }
 
-    private ExpressionSyntax ResolveArgument(IPropertySymbol property, Compilation compilation)
+    private ExpressionSyntax ResolveArgument(BuilderProperty property, Compilation compilation)
     {
-        var enumerableType = compilation.GetTypeSymbol<IEnumerable>();
+        return property switch
+        {
+            BuilderProperty.Collection collection => ResolveCollectionArgument(collection, compilation),
+            BuilderProperty.Value value => ResolveValueArgument(value),
+            _ => throw new ArgumentOutOfRangeException(nameof(property)),
+        };
+    }
 
-        ExpressionSyntax expression = IdentifierName(property.Name.ToUnderscoreCamelCase());
-
-        if (property.Type.IsAssignableTo(enumerableType) is false)
-            return expression;
-
-        var genericEnumerableType = compilation.GetTypeSymbol(typeof(IEnumerable<>));
-        var constructedFrom = property.Type.GetAssignableTypeConstructedFrom(genericEnumerableType);
-
-        var elementType = constructedFrom.TypeArguments.Single();
-
+    private ExpressionSyntax ResolveCollectionArgument(BuilderProperty.Collection property, Compilation compilation)
+    {
         var comparableType = compilation.GetTypeSymbol<IComparable>();
-        var genericComparableType = compilation.GetTypeSymbol(typeof(IComparable<>)).Construct(elementType);
+        var genericComparableType = compilation.GetTypeSymbol(typeof(IComparable<>)).Construct(property.ElementType);
 
-        if (elementType.IsAssignableTo(comparableType) || elementType.IsAssignableTo(genericComparableType))
+        ExpressionSyntax expression = IdentifierName(property.Symbol.Name.ToUnderscoreCamelCase());
+
+        if (property.ElementType.IsAssignableTo(comparableType)
+            || property.ElementType.IsAssignableTo(genericComparableType))
         {
             expression = InvocationExpression(MemberAccessExpression(
                 SyntaxKind.SimpleMemberAccessExpression,
@@ -75,24 +76,18 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
                 IdentifierName("Distinct")));
         }
 
-        var listType = compilation.GetTypeSymbol(typeof(List<>)).Construct(elementType);
-
-        if (property.Type.Equals(listType, SymbolEqualityComparer.Default))
+        return property.Kind switch
         {
-            return InvokeMethod(expression, IdentifierName("ToList"));
-        }
+            CollectionKind.Array => InvokeMethod(expression, IdentifierName("ToArray")),
+            CollectionKind.List => InvokeMethod(expression, IdentifierName("ToList")),
+            CollectionKind.HashSet => InvokeMethod(expression, IdentifierName("ToHashSet")),
+            _ => throw new ArgumentOutOfRangeException(),
+        };
+    }
 
-        var setType = compilation.GetTypeSymbol(typeof(HashSet<>)).Construct(elementType);
-
-        if (property.Type.Equals(setType, SymbolEqualityComparer.Default))
-        {
-            return InvokeMethod(expression, IdentifierName("ToHashSet"));
-        }
-
-        return InvocationExpression(MemberAccessExpression(
-            SyntaxKind.SimpleMemberAccessExpression,
-            expression,
-            IdentifierName("ToArray")));
+    private ExpressionSyntax ResolveValueArgument(BuilderProperty.Value value)
+    {
+        return IdentifierName(value.Symbol.Name.ToUnderscoreCamelCase());
     }
 
     private InvocationExpressionSyntax InvokeMethod(ExpressionSyntax expression, SimpleNameSyntax name)

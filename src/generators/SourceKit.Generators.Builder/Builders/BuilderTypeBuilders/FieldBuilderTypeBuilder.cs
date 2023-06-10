@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
 using SourceKit.Generators.Builder.Extensions;
-using SourceKit.Generators.Builder.Tools;
+using SourceKit.Generators.Builder.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Builder.Builders.BuilderTypeBuilders;
@@ -30,57 +30,42 @@ public class FieldBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, TypeDec
         return next(request, context);
     }
 
-    private MemberDeclarationSyntax? ResolveDeclaration(
-        IPropertySymbol symbol,
+    private MemberDeclarationSyntax ResolveDeclaration(
+        BuilderProperty property,
         Compilation compilation)
     {
-        if (symbol.Type is not INamedTypeSymbol type)
-            return null;
-
-        var enumerableType = compilation.GetTypeByMetadataName(Constants.EnumerableFullyQualifiedName);
-
-        if (enumerableType is null)
-            return null;
-
-        if (type.IsAssignableTo(enumerableType))
+        return property switch
         {
-            return ResolveEnumerable(symbol, type, compilation);
-        }
-
-        var name = symbol.Name.ToUnderscoreCamelCase();
-
-        var variableDeclaration = VariableDeclaration(
-            symbol.Type.ToNameSyntax(),
-            SingletonSeparatedList(VariableDeclarator(name)));
-
-        return FieldDeclaration(variableDeclaration).AddModifiers(Token(SyntaxKind.PrivateKeyword));
+            BuilderProperty.Collection collection => ResolveEnumerable(collection, compilation),
+            BuilderProperty.Value value => ResolveValue(value),
+            _ => throw new ArgumentOutOfRangeException(nameof(property)),
+        };
     }
 
-    private MemberDeclarationSyntax? ResolveEnumerable(
-        IPropertySymbol symbol,
-        INamedTypeSymbol type,
+    private MemberDeclarationSyntax ResolveEnumerable(
+        BuilderProperty.Collection property,
         Compilation compilation)
     {
-        var listType = compilation.GetTypeByMetadataName(Constants.ListFullyQualifiedName);
-        var genericEnumerableType = compilation.GetTypeByMetadataName(Constants.GenericEnumerableFullyQualifiedName);
+        var listType = compilation.GetTypeSymbol(typeof(List<>));
 
-        if (listType is null || genericEnumerableType is null)
-            return null;
-
-        var constructedFrom = type.FindAssignableTypeConstructedFrom(genericEnumerableType);
-
-        if (constructedFrom is null)
-            return null;
-
-        var typeArgument = constructedFrom.TypeArguments.Single();
-
-        var constructedListType = listType.Construct(typeArgument);
+        var constructedListType = listType.Construct(property.ElementType);
         var typeSyntax = constructedListType.ToNameSyntax();
 
-        var name = symbol.Name.ToUnderscoreCamelCase();
+        var name = property.Symbol.Name.ToUnderscoreCamelCase();
         var variableDeclaration = VariableDeclaration(typeSyntax, SingletonSeparatedList(VariableDeclarator(name)));
 
         return FieldDeclaration(variableDeclaration)
             .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword));
+    }
+
+    private MemberDeclarationSyntax ResolveValue(BuilderProperty.Value property)
+    {
+        var name = property.Symbol.Name.ToUnderscoreCamelCase();
+
+        var variableDeclaration = VariableDeclaration(
+            property.Type.ToNameSyntax(),
+            SingletonSeparatedList(VariableDeclarator(name)));
+
+        return FieldDeclaration(variableDeclaration).AddModifiers(Token(SyntaxKind.PrivateKeyword));
     }
 }

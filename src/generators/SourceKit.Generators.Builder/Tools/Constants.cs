@@ -17,5 +17,5 @@ public static class Constants
 
     public const string ListFullyQualifiedName = "System.Collections.Generic.List`1";
 
-    public const string FilenameSuffix = "SourceKit.Generation.Builder.cs";
+    public const string FilenameSuffix = "SourceKit.Generation.Builder.g.cs";
 }

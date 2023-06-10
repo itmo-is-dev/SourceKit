@@ -61,6 +61,14 @@ public class BuilderSourceGenerator : ISourceGenerator
         _chain = provider.GetRequiredService<IChain<FileBuildingCommand, CompilationUnitSyntax>>();
     }
 
+    public DiagnosticDescriptor FailureDescriptor { get; } = new DiagnosticDescriptor(
+        "SK2000",
+        "Failed to generate builder",
+        "Failed to generate builder. Error: {0}",
+        "Usage",
+        DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
     public static string GetFileName(string typeName)
     {
         return $"{typeName}.{Constants.FilenameSuffix}";
@@ -78,18 +86,10 @@ public class BuilderSourceGenerator : ISourceGenerator
         if (context.SyntaxContextReceiver is not BuilderAttributeSyntaxContextReceiver receiver)
             return;
 
-        Exception?[] exceptions = receiver.TypeSymbols
-            .AsParallel()
-            .Select(x => GenerateForType(context, x))
-            .ToArray();
-
-        Exception[] notNullExceptions = exceptions.WhereNotNull().ToArray();
-
-        if (notNullExceptions.Length is not 0)
-            throw new AggregateException(notNullExceptions);
+        Parallel.ForEach(receiver.TypeSymbols, x => GenerateForType(context, x));
     }
 
-    private Exception? GenerateForType(GeneratorExecutionContext context, INamedTypeSymbol symbol)
+    private void GenerateForType(GeneratorExecutionContext context, INamedTypeSymbol symbol)
     {
         try
         {
@@ -102,12 +102,15 @@ public class BuilderSourceGenerator : ISourceGenerator
             var fileName = GetFileName(symbol.Name);
 
             context.AddSource(fileName, compilationUnit.NormalizeWhitespace().ToFullString().Replace("\r\n", "\n"));
-
-            return null;
         }
         catch (Exception e)
         {
-            return e;
+            var diagnostic = Diagnostic.Create(
+                FailureDescriptor,
+                symbol.GetSignatureLocations().First(),
+                e.Message);
+
+            context.ReportDiagnostic(diagnostic);
         }
     }
 }
