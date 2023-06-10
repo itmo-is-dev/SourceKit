@@ -1,5 +1,4 @@
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Operations;
 using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Tools;
 

@@ -6,7 +6,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
 using SourceKit.Generators.Builder.Extensions;
-using SourceKit.Generators.Builder.Tools;
+using SourceKit.Generators.Builder.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Builder.Builders.BuilderTypeBuilders;
@@ -29,47 +29,32 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
     }
 
     private IEnumerable<MemberDeclarationSyntax> GenerateMethods(BuilderTypeBuildingCommand request)
-    { 
-        var enumerableType = request.Context.Compilation.GetTypeByMetadataName(Constants.EnumerableFullyQualifiedName);
+    {
+        IEnumerable<BuilderProperty.Collection> collectionProperties = request.Properties
+            .OfType<BuilderProperty.Collection>();
 
-        var genericEnumerableType = request.Context.Compilation
-            .GetTypeByMetadataName(Constants.GenericEnumerableFullyQualifiedName);
+        var genericEnumerableType = request.Context.Compilation.GetTypeSymbol(typeof(IEnumerable<>));
 
-        if (enumerableType is null || genericEnumerableType is null)
-            yield break;
-
-        foreach (IPropertySymbol property in request.Properties)
+        foreach (var property in collectionProperties)
         {
-            if (property.Type is not INamedTypeSymbol type)
-                continue;
+            var constructedFrom = genericEnumerableType.Construct(property.ElementType);
 
-            if (type.IsAssignableTo(enumerableType) is false)
-                continue;
-
-            var constructedFrom = type.FindAssignableTypeConstructedFrom(genericEnumerableType);
-
-            if (constructedFrom is null)
-                continue;
-
-            var elementType = constructedFrom.TypeArguments.Single();
-
-            yield return GenerateAddSingleMethod(request.BuilderSyntax, property, elementType);
-            yield return GenerateAddRangeMethod(request.BuilderSyntax, property, constructedFrom);
+            yield return GenerateAddSingleMethod(request.BuilderSyntax, property);
+            yield return GenerateAddRangeMethod(request.BuilderSyntax, property.Symbol, constructedFrom);
         }
     }
 
     private MemberDeclarationSyntax GenerateAddSingleMethod(
         TypeDeclarationSyntax builder,
-        IPropertySymbol property,
-        ITypeSymbol elementType)
+        BuilderProperty.Collection property)
     {
         const string parameterName = "element";
 
-        var name = $"With{property.Name.Singularize()}";
+        var name = $"With{property.Symbol.Name.Singularize()}";
         var returnType = builder.Identifier;
-        var fieldName = property.Name.ToUnderscoreCamelCase();
+        var fieldName = property.Symbol.Name.ToUnderscoreCamelCase();
 
-        var parameter = Parameter(Identifier(parameterName)).WithType(elementType.ToNameSyntax());
+        var parameter = Parameter(Identifier(parameterName)).WithType(property.ElementType.ToNameSyntax());
 
         var addMethod = MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,

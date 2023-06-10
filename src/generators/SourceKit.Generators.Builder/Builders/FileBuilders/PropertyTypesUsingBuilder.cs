@@ -23,6 +23,7 @@ public class PropertyTypesUsingBuilder : ILink<FileBuildingCommand, CompilationU
 
         var namespaces = propertyTypes
             .Select(x => x.ContainingNamespace)
+            .WhereNotNull()
             .Select(x => x.GetFullyQualifiedName())
             .Distinct();
 

@@ -29,7 +29,7 @@ public static class TypeSymbolExtensions
     {
         if (type is not INamedTypeSymbol namedTypeSymbol)
             return null;
-        
+
         IEnumerable<INamedTypeSymbol> baseTypes = namedTypeSymbol.GetBaseTypesAndInterfaces();
 
         return baseTypes
@@ -48,5 +48,24 @@ public static class TypeSymbolExtensions
         }
 
         return assignableType;
+    }
+
+    public static ITypeSymbol GetEnumerableTypeArgument(this ITypeSymbol enumerableType, Compilation compilation)
+    {
+        if (enumerableType is IArrayTypeSymbol arrayTypeSymbol)
+        {
+            return arrayTypeSymbol.ElementType;
+        }
+
+        var genericEnumerableType = compilation.GetTypeSymbol(typeof(IEnumerable<>));
+
+        var constructedFrom = enumerableType.FindAssignableTypeConstructedFrom(genericEnumerableType);
+
+        if (constructedFrom is null)
+        {
+            throw new ArgumentException($"Type {enumerableType} is not generic enumerable");
+        }
+
+        return constructedFrom.TypeArguments.Single();
     }
 }

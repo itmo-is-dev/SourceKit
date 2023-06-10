@@ -1,11 +1,10 @@
 using FluentChaining;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
 using SourceKit.Generators.Builder.Extensions;
-using SourceKit.Generators.Builder.Tools;
+using SourceKit.Generators.Builder.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Builder.Builders.BuilderTypeBuilders;
@@ -29,24 +28,15 @@ public class ValueMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
 
     private IEnumerable<MemberDeclarationSyntax> GenerateMethods(BuilderTypeBuildingCommand request)
     {
-        var enumerableType = request.Context.Compilation.GetTypeByMetadataName(Constants.EnumerableFullyQualifiedName);
+        IEnumerable<BuilderProperty.Value> valueProperties = request.Properties.OfType<BuilderProperty.Value>();
 
-        if (enumerableType is null)
-            yield break;
-
-        foreach (IPropertySymbol property in request.Properties)
+        foreach (var property in valueProperties)
         {
-            if (property.Type is not INamedTypeSymbol type)
-                continue;
-
-            if (type.IsAssignableTo(enumerableType))
-                continue;
-
             const string parameterName = "value";
 
-            var name = $"With{property.Name}";
+            var name = $"With{property.Symbol.Name}";
             var returnType = request.BuilderSyntax.Identifier;
-            var fieldName = property.Name.ToUnderscoreCamelCase();
+            var fieldName = property.Symbol.Name.ToUnderscoreCamelCase();
 
             var parameter = Parameter(Identifier(parameterName)).WithType(property.Type.ToNameSyntax());
             var returnStatement = ReturnStatement(ThisExpression());
