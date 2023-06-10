@@ -59,6 +59,11 @@ public class BuilderTypeBuilder : ILink<TypeBuildingCommand, TypeDeclarationSynt
         if (type is not IArrayTypeSymbol && type.IsAssignableTo(enumerableType) is false)
             return new BuilderProperty.Value(propertySymbol, type);
 
+        var stringType = compilation.GetTypeSymbol<string>();
+
+        if (type.Equals(stringType, SymbolEqualityComparer.Default))
+            return new BuilderProperty.Value(propertySymbol, type);
+
         var elementType = type.GetEnumerableTypeArgument(compilation);
 
         if (type is IArrayTypeSymbol)

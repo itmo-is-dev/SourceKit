@@ -25,8 +25,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.0.2</Version>
-        <PackageReleaseNotes>Fixed array property generation</PackageReleaseNotes>
+        <Version>1.0.3</Version>
+        <PackageReleaseNotes>Fixed string property generation</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
