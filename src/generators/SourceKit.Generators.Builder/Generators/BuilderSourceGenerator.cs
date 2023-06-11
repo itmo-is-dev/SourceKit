@@ -1,3 +1,4 @@
+using System.Collections;
 using FluentChaining;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -8,6 +9,7 @@ using SourceKit.Generators.Builder.Builders.FileBuilders;
 using SourceKit.Generators.Builder.Builders.TypeBuilders;
 using SourceKit.Generators.Builder.Builders.UsingBuilders;
 using SourceKit.Generators.Builder.Commands;
+using SourceKit.Generators.Builder.Models;
 using SourceKit.Generators.Builder.Receivers;
 using SourceKit.Generators.Builder.Tools;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
@@ -93,10 +95,19 @@ public class BuilderSourceGenerator : ISourceGenerator
     {
         try
         {
+            BuilderProperty[] properties = symbol
+                .GetMembers()
+                .OfType<IPropertySymbol>()
+                .Where(x => x.IsImplicitlyDeclared is false)
+                .Where(x => x.IsAutoProperty())
+                .Select(x => MapToBuilderProperty(x, context.Compilation))
+                .ToArray();
+
             var fileCommand = new FileBuildingCommand(
                 context,
                 CompilationUnit(),
-                symbol);
+                symbol,
+                properties);
 
             var compilationUnit = _chain.Process(fileCommand);
             var fileName = GetFileName(symbol.Name);
@@ -112,5 +123,36 @@ public class BuilderSourceGenerator : ISourceGenerator
 
             context.ReportDiagnostic(diagnostic);
         }
+    }
+
+    private BuilderProperty MapToBuilderProperty(IPropertySymbol propertySymbol, Compilation compilation)
+    {
+        var type = propertySymbol.Type;
+        var enumerableType = compilation.GetTypeSymbol<IEnumerable>();
+
+        if (type is not IArrayTypeSymbol && type.IsAssignableTo(enumerableType) is false)
+            return new BuilderProperty.Value(propertySymbol, type);
+
+        var stringType = compilation.GetTypeSymbol<string>();
+
+        if (type.Equals(stringType, SymbolEqualityComparer.Default))
+            return new BuilderProperty.Value(propertySymbol, type);
+
+        var elementType = type.GetEnumerableTypeArgument(compilation);
+
+        if (type is IArrayTypeSymbol)
+            return new BuilderProperty.Collection(propertySymbol, type, CollectionKind.Array, elementType);
+
+        var listType = compilation.GetTypeSymbol(typeof(List<>)).Construct(elementType);
+
+        if (type.Equals(listType, SymbolEqualityComparer.Default))
+            return new BuilderProperty.Collection(propertySymbol, type, CollectionKind.List, elementType);
+
+        var setType = compilation.GetTypeSymbol(typeof(HashSet<>)).Construct(elementType);
+
+        if (type.Equals(setType, SymbolEqualityComparer.Default))
+            return new BuilderProperty.Collection(propertySymbol, type, CollectionKind.HashSet, elementType);
+
+        return new BuilderProperty.Collection(propertySymbol, type, CollectionKind.Array, elementType);
     }
 }

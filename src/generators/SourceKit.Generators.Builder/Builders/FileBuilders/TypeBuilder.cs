@@ -35,7 +35,8 @@ public class TypeBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
         var command = new TypeBuildingCommand(
             request.Context,
             declaration,
-            request.Symbol);
+            request.Symbol,
+            request.Properties);
 
         declaration = _chain.Process(command);
         namespaceDeclaration = namespaceDeclaration.AddMembers(declaration);

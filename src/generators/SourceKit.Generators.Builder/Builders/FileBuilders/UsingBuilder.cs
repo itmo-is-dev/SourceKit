@@ -1,6 +1,9 @@
 using FluentChaining;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
+using SourceKit.Generators.Builder.Models;
 using SourceKit.Tools;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -27,10 +30,16 @@ public class UsingBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
     {
         var unit = next(request, context);
 
+        IEnumerable<UsingDirectiveSyntax> propertyUsingDirectives = request.Properties
+            .Select(SelectType)
+            .Select(x => x.ContainingNamespace.GetFullyQualifiedName())
+            .Select(x => UsingDirective(IdentifierName(x)));
+
         UsingDirectiveSyntax[] usingDirectives = unit.Usings
             .Append(UsingDirective(IdentifierName("System")))
             .Append(UsingDirective(IdentifierName("System.Linq")))
             .Append(UsingDirective(IdentifierName("System.Collections.Generic")))
+            .Concat(propertyUsingDirectives)
             .Distinct(Comparer)
             .OrderBy(x => x.Name.ToString())
             .ToArray();
@@ -41,5 +50,15 @@ public class UsingBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
         usingDirectives[0] = _commentChain.Process(commentBuildingCommand);
 
         return unit.WithUsings(List(usingDirectives));
+    }
+
+    private ITypeSymbol SelectType(BuilderProperty property)
+    {
+        return property switch
+        {
+            BuilderProperty.Collection collection => collection.ElementType,
+            BuilderProperty.Value value => value.Type,
+            _ => throw new ArgumentOutOfRangeException(nameof(property)),
+        };
     }
 }
