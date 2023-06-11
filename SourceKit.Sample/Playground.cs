@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SourceKit.Sample.Generators;
+using SourceKit.Sample.Models;
 
 namespace SourceKit.Sample;
 
@@ -13,7 +14,7 @@ public class Playground
     public static void X()
     {
         SomeQuery.Build(x => x.WithOrderById(null));
-
-        ArrayQuery.Build(x => x);
+        ArrayQuery.Build(x => x.WithId(Guid.NewGuid()));
+        CustomModelQuery.Build(x => x.WithPoint(new Point()));
     }
 }

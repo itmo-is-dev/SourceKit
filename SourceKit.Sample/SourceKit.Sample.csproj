@@ -6,7 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\SourceKit\SourceKit.csproj" OutputItemType="Analyzer" Condition="'$(Configuration)' != 'Package'" />
+        <ProjectReference Include="..\src\SourceKit\SourceKit.csproj" OutputItemType="Analyzer" Condition="'$(Configuration)' != 'Release'" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' != 'Release'">
@@ -17,10 +17,6 @@
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
         <PackageReference Include="SourceKit.Analyzers.MustBePartial" />
         <PackageReference Include="SourceKit.Generators.Builder" />
-    </ItemGroup>
-
-    <ItemGroup>
-
     </ItemGroup>
 
 </Project>

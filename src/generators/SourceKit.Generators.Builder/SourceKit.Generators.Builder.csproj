@@ -25,19 +25,19 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.0.3</Version>
-        <PackageReleaseNotes>Fixed string property generation</PackageReleaseNotes>
+        <Version>1.0.4</Version>
+        <PackageReleaseNotes>Fixed property type usings generation</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="README.md" Pack="true" PackagePath="\"/>
-        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\"/>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
@@ -76,18 +76,17 @@
             <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
         </ProjectReference>
 
-        <ProjectReference Include="..\SourceKit.Generators.Builder.Annotations\SourceKit.Generators.Builder.Annotations.csproj"/>
+        <ProjectReference Include="..\SourceKit.Generators.Builder.Annotations\SourceKit.Generators.Builder.Annotations.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(OutputPath)\SourceKit*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(OutputPath)\SourceKit*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 
-        <None Include="$(PkgFluentChaining)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-        <None Include="$(PkgHumanizer_Core)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-        <None Include="$(PkgHumanizer_Core_uk)\lib\netstandard2.0\uk\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(PkgFluentChaining)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgHumanizer_Core)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgHumanizer_Core_uk)\lib\netstandard2.0\uk\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
 
-        <None Include="$(PkgMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-        <None Include="$(PkgMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(PkgMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     </ItemGroup>
-
 </Project>

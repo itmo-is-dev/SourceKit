@@ -59,6 +59,29 @@ public class BuilderTests
         await test.RunAsync();
     }
 
+    [Fact]
+    public async Task BuilderSourceGenerator_ShouldGenerateCorrectBuilderType_WhenPropertyHasCustomType()
+    {
+        var test = new CSharpSourceGeneratorTest<BuilderSourceGenerator, XUnitVerifier>
+        {
+            TestState =
+            {
+                Sources =
+                {
+                    await SourceFile.LoadAsync("SourceKit.Sample/Generators/ArrayQuery.cs"),
+                },
+                GeneratedSources =
+                {
+                    new SourceFile(GeneratedArrayBuilderName, GeneratedArrayBuilder),
+                },
+                AdditionalReferences = { typeof(GenerateBuilderAttribute).Assembly },
+                ReferenceAssemblies = ReferenceAssemblies.Net.Net60,
+            },
+        };
+
+        await test.RunAsync();
+    }
+
     private const string GeneratedBuilderName = """
 SourceKit.Generators.Builder/SourceKit.Generators.Builder.Generators.BuilderSourceGenerator/SomeQuery.SourceKit.Generation.Builder.g.cs
 """;
