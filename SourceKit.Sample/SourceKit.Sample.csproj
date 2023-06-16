@@ -19,4 +19,10 @@
         <PackageReference Include="SourceKit.Generators.Builder" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Update="Analyzers\DeclarationCouldBeConvertedToProperty\OnePublicField.cs">
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      </Compile>
+    </ItemGroup>
+
 </Project>

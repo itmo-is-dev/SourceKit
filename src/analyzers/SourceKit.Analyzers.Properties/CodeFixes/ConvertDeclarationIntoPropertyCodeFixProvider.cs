@@ -16,6 +16,8 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
     public override Task RegisterCodeFixesAsync(CodeFixContext context)
     {
+        
+        
         return Task.CompletedTask;
     }
 }
