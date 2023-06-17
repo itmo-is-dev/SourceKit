@@ -55,16 +55,14 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
     private static SyntaxNode ReplaceField(SyntaxNode root, Diagnostic diagnostic)
     {
         var variableNode = root.FindNode(diagnostic.Location.SourceSpan);
-        var variableDeclarationNode = (VariableDeclarationSyntax?) variableNode.Parent;
-        if (variableDeclarationNode is null)
+        if (variableNode.Parent is not VariableDeclarationSyntax variableDeclarationNode)
         {
             return root;
         }
 
         var variableTypeNode = variableDeclarationNode.Type;
 
-        var fieldDeclarationNode = (FieldDeclarationSyntax?) variableDeclarationNode.Parent;
-        if (fieldDeclarationNode is null)
+        if (variableDeclarationNode.Parent is not FieldDeclarationSyntax fieldDeclarationNode)
         {
             return root;
         }
@@ -76,8 +74,33 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         {
             if (variableDeclarationNode.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
             {
-                // TODO: Вставлять ПЕРЕД fieldDeclaration.
-                newRoot = root.RemoveNode(variableNode, SyntaxRemoveOptions.KeepNoTrivia);
+                var propertyDeclaration =
+                    SyntaxFactory.PropertyDeclaration(
+                            variableTypeNode,
+                            SyntaxFactory.Identifier(variableNode.ToString())
+                                .NormalizeWhitespace())
+                        .AddAccessorListAccessors(
+                            SyntaxFactory.AccessorDeclaration(
+                                    SyntaxKind.GetAccessorDeclaration)
+                                .WithSemicolonToken(
+                                    SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+                            SyntaxFactory.AccessorDeclaration(
+                                    SyntaxKind.SetAccessorDeclaration)
+                                .WithSemicolonToken(
+                                    SyntaxFactory.Token(SyntaxKind.SemicolonToken)))
+                        .NormalizeWhitespace()
+                        .AddModifiers(
+                            SyntaxFactory.Token(
+                                    SyntaxFactory.TriviaList(SyntaxFactory.Tab),
+                                    SyntaxKind.PublicKeyword,
+                                    SyntaxFactory.TriviaList())
+                                .WithTrailingTrivia(SyntaxFactory.Space))
+                        .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
+                
+                // TODO: После вставки новой ноды, старая нода не удаляется.
+                newRoot = root
+                    .InsertNodesAfter(fieldDeclarationNode, new[] { propertyDeclaration })
+                    .RemoveNode(variableNode, SyntaxRemoveOptions.KeepNoTrivia);
             }
             else
             {
