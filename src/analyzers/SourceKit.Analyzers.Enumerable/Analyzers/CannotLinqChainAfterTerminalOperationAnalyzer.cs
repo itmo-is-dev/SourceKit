@@ -33,16 +33,16 @@ public class CannotLinqChainAfterTerminalOperationAnalyzer : DiagnosticAnalyzer
         context.RegisterSyntaxNodeAction(c =>
         {
             var semanticModel = c.SemanticModel;
-            if (c.Node is not MemberAccessExpressionSyntax node || !IsTerminationMethod(node, semanticModel))
+            if (c.Node is not MemberAccessExpressionSyntax node || !IsLinqEnumerable(node, semanticModel))
                 return;
 
-            var linqNode = node.Ancestors().OfType<MemberAccessExpressionSyntax>()
-                .FirstOrDefault(expressionSyntax => IsLinqEnumerable(expressionSyntax, semanticModel));
+            var termNode = node.DescendantNodes(x =>  x is not ArgumentListSyntax).OfType<MemberAccessExpressionSyntax>()
+                .FirstOrDefault(expressionSyntax => IsTerminationMethod(expressionSyntax, semanticModel));
 
-            if (linqNode == null) return;
-            
-            var terminationNodeToken= node.GetLastToken();
-            c.ReportDiagnostic(Diagnostic.Create(Descriptor, terminationNodeToken.GetLocation()));
+            if (termNode == null) return;
+
+            var linqNode = node.GetLastToken();
+            c.ReportDiagnostic(Diagnostic.Create(Descriptor, linqNode.GetLocation()));
         }, SyntaxKind.SimpleMemberAccessExpression);
     }
 
@@ -70,7 +70,7 @@ public class CannotLinqChainAfterTerminalOperationAnalyzer : DiagnosticAnalyzer
         IMethodSymbol symbol = GetSymbol(syntax, model) ?? throw new InvalidOperationException();
         return IsLinqEnumerable(symbol, model) && !ReturnsIEnumerable(symbol, model);
     }
-    
+
     private IMethodSymbol? GetSymbol(MemberAccessExpressionSyntax syntax, SemanticModel model) 
         => model.GetSymbolInfo(syntax).Symbol as IMethodSymbol;
 }
