@@ -46,10 +46,10 @@ public class CannotLinqChainAfterTerminalOperationAnalyzer : DiagnosticAnalyzer
         }, SyntaxKind.SimpleMemberAccessExpression);
     }
 
-    private bool IsLinqEnumerable(IMethodSymbol symbol, SemanticModel model)
+    private bool IsLinqEnumerable(IMethodSymbol? symbol, SemanticModel model)
     {
         var comparer = SymbolEqualityComparer.Default;
-        return comparer.Equals(symbol.ContainingType, model.Compilation.GetTypeByMetadataName(typeof(System.Linq.Enumerable).FullName));
+        return comparer.Equals(symbol?.ContainingType, model.Compilation.GetTypeByMetadataName(typeof(System.Linq.Enumerable).FullName));
     }
     
     private bool IsLinqEnumerable(MemberAccessExpressionSyntax syntax, SemanticModel model)
@@ -58,16 +58,16 @@ public class CannotLinqChainAfterTerminalOperationAnalyzer : DiagnosticAnalyzer
         return IsLinqEnumerable(symbol, model);
     }
     
-    private bool ReturnsIEnumerable(IMethodSymbol symbol, SemanticModel model)
+    private bool ReturnsIEnumerable(IMethodSymbol? symbol, SemanticModel model)
     {
-        var ienumerableType = model.Compilation.GetTypeByMetadataName("System.Collections.Generic.IEnumerable`1");
+        INamedTypeSymbol? ienumerableType = model.Compilation.GetTypeByMetadataName("System.Collections.Generic.IEnumerable`1");
         var comparer = SymbolEqualityComparer.Default;
-        return comparer.Equals(symbol.ReturnType.OriginalDefinition,ienumerableType);
+        return comparer.Equals(symbol?.ReturnType.OriginalDefinition,ienumerableType);
     }
 
     private bool IsTerminationMethod(MemberAccessExpressionSyntax syntax, SemanticModel model)
     {
-        IMethodSymbol symbol = GetSymbol(syntax, model) ?? throw new InvalidOperationException();
+        IMethodSymbol? symbol = GetSymbol(syntax, model);
         return IsLinqEnumerable(symbol, model) && !ReturnsIEnumerable(symbol, model);
     }
 
