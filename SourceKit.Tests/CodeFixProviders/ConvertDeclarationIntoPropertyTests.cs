@@ -12,7 +12,7 @@ namespace SourceKit.Tests.CodeFixProviders;
 public class ConvertDeclarationIntoPropertyTests
 {
     [Fact]
-    public async Task ConvertDeclarationIntoProperty_ShouldGenerateCorrectProperty()
+    public async Task ConvertPublicDeclarationIntoProperty_ShouldGenerateCorrectProperty()
     {
         var sourceFile = await SourceFile.LoadAsync(
             "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OnePublicField.cs");
@@ -41,7 +41,7 @@ public class ConvertDeclarationIntoPropertyTests
     }
 
     [Fact]
-    public async Task ConvertDeclarationsIntoProperty_ShouldGenerateCorrectProperties()
+    public async Task ConvertPublicDeclarationsIntoProperty_ShouldGenerateCorrectProperties()
     {
         var sourceFile = await SourceFile.LoadAsync(
             "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/ManyPublicFields.cs");
@@ -74,6 +74,37 @@ public class ConvertDeclarationIntoPropertyTests
 
         await test.RunAsync();
     }
+    
+    [Fact]
+    public async Task ConvertDeclarationIntoProperty_ShouldGenerateCorrectProperty()
+    {
+        var sourceFile = await SourceFile.LoadAsync(
+            "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OneField.cs");
+        var fixedFile = new SourceFile(OneFieldName, OneFieldFile);
+
+        var diagnostic = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 5, 20)
+            .WithLocation(sourceFile.Name, 7, 19)
+            .WithLocation(sourceFile.Name, 12, 17)
+            .WithMessage("Variable field could be converted to property.");
+
+        var test = new CSharpCodeFixTest<DeclarationCouldBeConvertedToPropertyAnalyzer,
+            ConvertDeclarationIntoPropertyCodeFixProvider,
+            XUnitVerifier>
+        {
+            TestState =
+            {
+                Sources = { sourceFile },
+                ExpectedDiagnostics = { diagnostic },
+            },
+            FixedState =
+            {
+                Sources = { fixedFile }
+            }
+        };
+
+        await test.RunAsync();
+    }
 
     private const string OnePublicFieldName = "OnePublicField.cs";
 
@@ -96,6 +127,16 @@ public class ManyPublicFields
     public List<string> First { get; set; }
 
     public List<string> Second { get; set; }
+}
+""";
+    
+    private const string OneFieldName = "OneField.cs";
+    
+    private const string OneFieldFile = """
+namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+public class OneField
+{
+    public string Field { get; set; }
 }
 """;
 }

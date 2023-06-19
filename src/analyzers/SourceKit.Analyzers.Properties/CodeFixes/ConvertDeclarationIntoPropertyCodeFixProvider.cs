@@ -46,7 +46,9 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private static async Task<Document> ReplaceField(CodeFixContext context, Diagnostic diagnostic)
+    private static async Task<Document> ReplaceField(
+        CodeFixContext context,
+        Diagnostic diagnostic)
     {
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
         if (root is null)
@@ -56,7 +58,6 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         var document = context.Document.WithSyntaxRoot(root);
         var editor = await DocumentEditor.CreateAsync(document);
-
 
         var variableNode = root.FindNode(diagnostic.Location.SourceSpan);
         if (variableNode.Parent is not VariableDeclarationSyntax variableDeclarationNode)
@@ -70,34 +71,67 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         {
             return document;
         }
+        
+        // TODO: разделить это на методы для get и set, а то first и last вернут одно и тоже, если нет set
+        // TODO: протестировать с разными kind и прочее
+        var getMethod = root.FindNode(diagnostic.AdditionalLocations.First().SourceSpan);
+        var setMethod = root.FindNode(diagnostic.AdditionalLocations.Last().SourceSpan);
 
-        var isPublic = fieldDeclarationNode.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.PublicKeyword);
-        if (isPublic)
+        if (getMethod is not MethodDeclarationSyntax getMethodDeclaration ||
+            setMethod is not MethodDeclarationSyntax setMethodDeclaration)
         {
-            var propertyDeclaration =
-                SyntaxFactory.PropertyDeclaration(
-                        variableTypeNode,
-                        SyntaxFactory
-                            .Identifier(GetPropertyName(variableNode.ToString()))
-                            .NormalizeWhitespace())
-                    .AddAccessorListAccessors(
-                        SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                            .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
-                        SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                            .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)))
-                    .NormalizeWhitespace()
-                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                    .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
+            return document;
+        }
 
-            if (variableDeclarationNode.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
+        var propertyKind = getMethodDeclaration.Modifiers.First().Kind();
+        var setterKind = setMethodDeclaration.Modifiers.First().Kind();
+
+        var propertyDeclaration =
+            SyntaxFactory.PropertyDeclaration(
+                    variableTypeNode,
+                    SyntaxFactory
+                        .Identifier(GetPropertyName(variableNode.ToString()))
+                        .NormalizeWhitespace())
+                .AddAccessorListAccessors(
+                    SyntaxFactory
+                        .AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)))
+                .NormalizeWhitespace()
+                .AddModifiers(SyntaxFactory.Token(propertyKind))
+                .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
+
+        if (diagnostic.AdditionalLocations.Count == 2)
+        {
+            var setterDeclaration = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+
+            if (setterKind is not SyntaxKind.PublicKeyword)
             {
-                editor.InsertBefore(fieldDeclarationNode, new[] { propertyDeclaration });
-                editor.RemoveNode(variableNode, SyntaxRemoveOptions.KeepNoTrivia);
+                setterDeclaration = setterDeclaration.AddModifiers(SyntaxFactory.Token(setterKind));
             }
-            else
-            {
-                editor.ReplaceNode(fieldDeclarationNode, propertyDeclaration);
-            }
+
+            propertyDeclaration = propertyDeclaration.AddAccessorListAccessors(setterDeclaration);
+        }
+
+        if (variableDeclarationNode.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
+        {
+            editor.InsertBefore(fieldDeclarationNode, new[] { propertyDeclaration });
+            editor.RemoveNode(variableNode, SyntaxRemoveOptions.KeepNoTrivia);
+        }
+        else
+        {
+            editor.ReplaceNode(fieldDeclarationNode, propertyDeclaration);
+        }
+
+        switch (diagnostic.AdditionalLocations.Count)
+        {
+            case 1:
+                editor.RemoveNode(getMethodDeclaration);
+                break;
+            case 2:
+                editor.RemoveNode(getMethodDeclaration);
+                editor.RemoveNode(setMethodDeclaration);
+                break;
         }
 
         var normalizedRoot = editor.GetChangedRoot().NormalizeWhitespace();
