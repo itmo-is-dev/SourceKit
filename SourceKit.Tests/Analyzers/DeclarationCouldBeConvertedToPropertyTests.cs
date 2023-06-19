@@ -85,5 +85,31 @@ public class DeclarationCouldBeConvertedToPropertyTests
         await test.RunAsync();
     }
     
-    
+    [Fact]
+    public async Task DeclarationCouldBeConvertedToProperty_ShouldReportDiagnostic_WhenField()
+    {
+        var sourceFile =
+            await SourceFile.LoadAsync(
+                "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OneField.cs");
+
+        var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 5, 19)
+            .WithMessage("Variable first could be converted to property.");
+        var diagnostic2 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 5, 26);
+
+        var test = new CSharpAnalyzerTest<DeclarationCouldBeConvertedToPropertyAnalyzer, XUnitVerifier>
+        {
+            TestState =
+            {
+                Sources =
+                {
+                    sourceFile,
+                },
+            },
+            ExpectedDiagnostics = { diagnostic1, diagnostic2 },
+        };
+
+        await test.RunAsync();
+    }
 }
