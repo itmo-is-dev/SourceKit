@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Helper = SourceKit.Analyzers.Enumerable.Helpers.CannotLinqChainAfterTerminalOperationHelper;
 
 namespace SourceKit.Analyzers.Enumerable.Analyzers;
 
@@ -33,44 +34,16 @@ public class CannotLinqChainAfterTerminalOperationAnalyzer : DiagnosticAnalyzer
         context.RegisterSyntaxNodeAction(c =>
         {
             var semanticModel = c.SemanticModel;
-            if (c.Node is not MemberAccessExpressionSyntax node || !IsLinqEnumerable(node, semanticModel))
+            if (c.Node is not MemberAccessExpressionSyntax node || !Helper.IsLinqEnumerable(node, semanticModel))
                 return;
 
             var termNode = node.DescendantNodes(x =>  x is not ArgumentListSyntax).OfType<MemberAccessExpressionSyntax>()
-                .FirstOrDefault(expressionSyntax => IsTerminationMethod(expressionSyntax, semanticModel));
+                .FirstOrDefault(expressionSyntax => Helper.IsTerminationMethod(expressionSyntax, semanticModel));
 
             if (termNode == null) return;
 
-            var linqNode = node.GetLastToken();
-            c.ReportDiagnostic(Diagnostic.Create(Descriptor, linqNode.GetLocation()));
+            var linqToken = node.GetLastToken();
+            c.ReportDiagnostic(Diagnostic.Create(Descriptor, linqToken.GetLocation(), termNode.Name));
         }, SyntaxKind.SimpleMemberAccessExpression);
     }
-
-    private bool IsLinqEnumerable(IMethodSymbol? symbol, SemanticModel model)
-    {
-        var comparer = SymbolEqualityComparer.Default;
-        return comparer.Equals(symbol?.ContainingType, model.Compilation.GetTypeByMetadataName(typeof(System.Linq.Enumerable).FullName));
-    }
-    
-    private bool IsLinqEnumerable(MemberAccessExpressionSyntax syntax, SemanticModel model)
-    {
-        var symbol = GetSymbol(syntax, model) ?? throw new InvalidOperationException();
-        return IsLinqEnumerable(symbol, model);
-    }
-    
-    private bool ReturnsIEnumerable(IMethodSymbol? symbol, SemanticModel model)
-    {
-        INamedTypeSymbol? ienumerableType = model.Compilation.GetTypeByMetadataName("System.Collections.Generic.IEnumerable`1");
-        var comparer = SymbolEqualityComparer.Default;
-        return comparer.Equals(symbol?.ReturnType.OriginalDefinition,ienumerableType);
-    }
-
-    private bool IsTerminationMethod(MemberAccessExpressionSyntax syntax, SemanticModel model)
-    {
-        IMethodSymbol? symbol = GetSymbol(syntax, model);
-        return IsLinqEnumerable(symbol, model) && !ReturnsIEnumerable(symbol, model);
-    }
-
-    private IMethodSymbol? GetSymbol(MemberAccessExpressionSyntax syntax, SemanticModel model) 
-        => model.GetSymbolInfo(syntax).Symbol as IMethodSymbol;
 }
