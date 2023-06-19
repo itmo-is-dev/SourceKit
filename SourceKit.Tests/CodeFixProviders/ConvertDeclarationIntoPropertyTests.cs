@@ -48,10 +48,10 @@ public class ConvertDeclarationIntoPropertyTests
         var fixedFile = new SourceFile(ManyPublicFieldsName, ManyPublicFieldsFile);
 
         var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 19)
+            .WithLocation(sourceFile.Name, 7, 25)
             .WithMessage("Variable first could be converted to property.");
         var diagnostic2 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 26)
+            .WithLocation(sourceFile.Name, 7, 32)
             .WithMessage("Variable second could be converted to property.");
 
         var test = new CSharpCodeFixTest<DeclarationCouldBeConvertedToPropertyAnalyzer,
@@ -88,12 +88,14 @@ public class OnePublicField
     private const string ManyPublicFieldsName = "ManyPublicFields.cs";
 
     private const string ManyPublicFieldsFile = """
+using System.Collections.Generic;
+
 namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
 public class ManyPublicFields
 {
-    public string First { get; set; }
+    public List<string> First { get; set; }
 
-    public string Second { get; set; }
+    public List<string> Second { get; set; }
 }
 """;
 }

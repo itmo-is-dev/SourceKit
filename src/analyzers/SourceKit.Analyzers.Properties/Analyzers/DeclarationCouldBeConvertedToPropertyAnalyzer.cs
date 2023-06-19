@@ -70,7 +70,36 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
         VariableDeclarationSyntax variableDeclaration,
         ClassDeclarationSyntax classDeclaration)
     {
-        var getMethods = classDeclaration
+        var getMethods = FindGetMethods(classDeclaration);
+        var setMethods = FindSetMethods(classDeclaration);
+
+        foreach (var variable in variableDeclaration.Variables)
+        {
+            var isGetMethod = getMethods.TryGetValue(variable.Identifier.ToString(), out var getMethod);
+            if (!isGetMethod || getMethod is null)
+            {
+                return;
+            }
+
+            var location = variable.GetLocation();
+            var getMethodLocation = getMethod.Identifier.GetLocation();
+            var additionalLocations = new List<Location> { getMethodLocation };
+
+            var isSetMethod = setMethods.TryGetValue(variable.Identifier.ToString(), out var setMethod);
+            if (isSetMethod && setMethod is not null)
+            {
+                var setMethodLocation = setMethod.Identifier.GetLocation();
+                additionalLocations.Add(setMethodLocation);
+            }
+
+            var diagnostic = Diagnostic.Create(Descriptor, location, additionalLocations, variable.Identifier.Text);
+            context.ReportDiagnostic(diagnostic);
+        }
+    }
+
+    private Dictionary<string, MethodDeclarationSyntax> FindGetMethods(ClassDeclarationSyntax classDeclaration)
+    {
+        return classDeclaration
             .ChildNodes()
             .OfType<MethodDeclarationSyntax>()
             .Where(method =>
@@ -82,8 +111,11 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
                 var returnStatement = (ReturnStatementSyntax) method.Body?.ChildNodes().First()!;
                 return returnStatement.ChildNodes().First().ToString();
             });
+    }
 
-        var setMethods = classDeclaration
+    private Dictionary<string, MethodDeclarationSyntax> FindSetMethods(ClassDeclarationSyntax classDeclaration)
+    {
+        return classDeclaration
             .ChildNodes()
             .OfType<MethodDeclarationSyntax>()
             .Where(method =>
@@ -98,22 +130,5 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
                 var expressionStatement = (ExpressionStatementSyntax) method.Body?.ChildNodes().First()!;
                 return expressionStatement.Expression.ChildNodes().First().ToString();
             });
-
-        foreach (var variable in variableDeclaration.Variables)
-        {
-            MethodDeclarationSyntax getMethod;
-            var isGetMethod = getMethods.TryGetValue(variable.Identifier.ToString(), out getMethod);
-            if (!isGetMethod || getMethod is null)
-            {
-                return;
-            }
-
-            var location = variable.GetLocation();
-            var getMethodLocation = getMethod.GetLocation();
-
-
-            var diagnostic = Diagnostic.Create(Descriptor, location, variable.Identifier.Text);
-            context.ReportDiagnostic(diagnostic);
-        }
     }
 }

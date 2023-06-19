@@ -1,6 +1,8 @@
-﻿namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+﻿using System.Collections.Generic;
+
+namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
 
 public class ManyPublicFields
 {
-    public string first, second;
+    public List<string> first, second;
 }
