@@ -37,8 +37,10 @@ public class CannotLinqChainAfterTerminalOperationAnalyzer : DiagnosticAnalyzer
             if (c.Node is not MemberAccessExpressionSyntax node || !Helper.IsLinqEnumerable(node, semanticModel))
                 return;
 
-            var termNode = node.DescendantNodes(x =>  x is not ArgumentListSyntax).OfType<MemberAccessExpressionSyntax>()
-                .FirstOrDefault(expressionSyntax => Helper.IsTerminationMethod(expressionSyntax, semanticModel));
+            var termNode = node.DescendantNodes(x =>  x is not ArgumentListSyntax)
+                .OfType<MemberAccessExpressionSyntax>()
+                .Where(node => Helper.IsLinqEnumerable(node, semanticModel))
+                .FirstOrDefault(expressionSyntax => Helper.TerminationMethods.Contains(expressionSyntax.GetLastToken().ToString()));
 
             if (termNode == null) return;
 

@@ -5,12 +5,13 @@ namespace SourceKit.Analyzers.Enumerable.Helpers;
 
 internal static class CannotLinqChainAfterTerminalOperationHelper
 {
-    internal static bool IsTerminationMethod(MemberAccessExpressionSyntax syntax, SemanticModel? model)
+    internal static HashSet<string> TerminationMethods = new HashSet<string>()
     {
-        IMethodSymbol? symbol = GetSymbol(syntax, model);
-        return IsLinqEnumerable(symbol, model) && !ReturnsIEnumerable(symbol, model);
-    }
-    
+        nameof(System.Linq.Enumerable.ToArray),
+        nameof(System.Linq.Enumerable.ToList),
+        nameof(System.Linq.Enumerable.ToDictionary),
+        nameof(System.Linq.Enumerable.ToLookup),
+    };
     internal static bool IsLinqEnumerable(MemberAccessExpressionSyntax syntax, SemanticModel? model)
     {
         var symbol = GetSymbol(syntax, model) ?? throw new InvalidOperationException();
@@ -21,14 +22,6 @@ internal static class CannotLinqChainAfterTerminalOperationHelper
     {
         var comparer = SymbolEqualityComparer.Default;
         return comparer.Equals(symbol?.ContainingType, model?.Compilation.GetTypeByMetadataName(typeof(System.Linq.Enumerable).FullName));
-    }
-
-    private static bool ReturnsIEnumerable(IMethodSymbol? symbol, SemanticModel? model)
-    {
-        INamedTypeSymbol? ienumerableType =
-            model?.Compilation.GetTypeByMetadataName("System.Collections.Generic.IEnumerable`1");
-        var comparer = SymbolEqualityComparer.Default;
-        return comparer.Equals(symbol?.ReturnType.OriginalDefinition, ienumerableType);
     }
 
     private static IMethodSymbol? GetSymbol(MemberAccessExpressionSyntax syntax, SemanticModel? model) 

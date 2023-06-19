@@ -32,7 +32,7 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
             .FirstOrDefault()?
             .DescendantNodes()
             .OfType<MemberAccessExpressionSyntax>()
-            .FirstOrDefault(x => Helper.IsTerminationMethod(x, semantic));
+            .FirstOrDefault(x => Helper.TerminationMethods.Contains(x.GetLastToken().ToString()));
 
         var token = termNode?.GetLastToken();
         
