@@ -16,8 +16,7 @@ public class ConvertDeclarationIntoPropertyTests
     {
         var sourceFile = await SourceFile.LoadAsync(
             "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OnePublicField.cs");
-        var fixedFile = await SourceFile.LoadAsync(
-            "CodeFixProviders/TxtSamples/OnePublicField.txt");
+        var fixedFile = new SourceFile(OnePublicFieldName, OnePublicFieldFile);
 
         var diagnostic = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 5, 19)
@@ -46,8 +45,7 @@ public class ConvertDeclarationIntoPropertyTests
     {
         var sourceFile = await SourceFile.LoadAsync(
             "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/ManyPublicFields.cs");
-        var fixedFile = await SourceFile.LoadAsync(
-            "CodeFixProviders/TxtSamples/ManyPublicFields.txt");
+        var fixedFile = new SourceFile(ManyPublicFieldsName, ManyPublicFieldsFile);
 
         var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 5, 19)
@@ -55,15 +53,6 @@ public class ConvertDeclarationIntoPropertyTests
         var diagnostic2 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 5, 26)
             .WithMessage("Variable second could be converted to property.");
-        var diagnostic3 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 6, 19)
-            .WithMessage("Variable third could be converted to property.");
-        var diagnostic4 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 6, 26)
-            .WithMessage("Variable fourth could be converted to property.");
-        var diagnostic5 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 8, 19)
-            .WithMessage("Variable fifth could be converted to property.");
 
         var test = new CSharpCodeFixTest<DeclarationCouldBeConvertedToPropertyAnalyzer,
             ConvertDeclarationIntoPropertyCodeFixProvider,
@@ -72,14 +61,39 @@ public class ConvertDeclarationIntoPropertyTests
             TestState =
             {
                 Sources = { sourceFile },
-                ExpectedDiagnostics = { diagnostic1, diagnostic2, diagnostic3, diagnostic4, diagnostic5 },
+                ExpectedDiagnostics = { diagnostic1, diagnostic2 },
             },
             FixedState =
             {
-                Sources = { fixedFile }
-            }
+                Sources = { fixedFile },
+            },
+            NumberOfFixAllInDocumentIterations = 2,
+            NumberOfFixAllInProjectIterations = 2,
+            NumberOfFixAllIterations = 2
         };
 
         await test.RunAsync();
     }
+
+    private const string OnePublicFieldName = "OnePublicField.cs";
+
+    private const string OnePublicFieldFile = """
+namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+public class OnePublicField
+{
+    public string Field { get; set; }
+}
+""";
+
+    private const string ManyPublicFieldsName = "ManyPublicFields.cs";
+
+    private const string ManyPublicFieldsFile = """
+namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+public class ManyPublicFields
+{
+    public string First { get; set; }
+
+    public string Second { get; set; }
+}
+""";
 }

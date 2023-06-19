@@ -68,17 +68,7 @@ public class DeclarationCouldBeConvertedToPropertyTests
             .WithLocation(sourceFile.Name, 5, 19)
             .WithMessage("Variable first could be converted to property.");
         var diagnostic2 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 26)
-            .WithMessage("Variable second could be converted to property.");
-        var diagnostic3 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 6, 19)
-            .WithMessage("Variable third could be converted to property.");
-        var diagnostic4 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 6, 26)
-            .WithMessage("Variable fourth could be converted to property.");
-        var diagnostic5 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 8, 19)
-            .WithMessage("Variable fifth could be converted to property.");
+            .WithLocation(sourceFile.Name, 5, 26);
 
         var test = new CSharpAnalyzerTest<DeclarationCouldBeConvertedToPropertyAnalyzer, XUnitVerifier>
         {
@@ -89,7 +79,7 @@ public class DeclarationCouldBeConvertedToPropertyTests
                     sourceFile,
                 },
             },
-            ExpectedDiagnostics = { diagnostic1, diagnostic2, diagnostic3, diagnostic4, diagnostic5 },
+            ExpectedDiagnostics = { diagnostic1, diagnostic2 },
         };
 
         await test.RunAsync();

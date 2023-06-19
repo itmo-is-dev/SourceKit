@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Editing;
 using SourceKit.Analyzers.Properties.Analyzers;
 
 namespace SourceKit.Analyzers.Properties.CodeFixes;
@@ -29,87 +30,84 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         await Task.WhenAll(declarationCouldBeConvertedToPropertyDiagnostics);
     }
 
-    private static async Task ProvideConvertDeclarationIntoPropertyCodeFix(CodeFixContext context,
+    private static async Task ProvideConvertDeclarationIntoPropertyCodeFix(
+        CodeFixContext context,
         Diagnostic diagnostic)
     {
-        var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
-
-        if (root is null)
-        {
-            return;
-        }
-
         var action = CodeAction.Create(
             Title,
             equivalenceKey: nameof(Title),
-            createChangedDocument: _ =>
+            createChangedDocument: async _ =>
             {
-                var newRoot = ReplaceField(root, diagnostic);
-                var document = context.Document.WithSyntaxRoot(newRoot);
-                return Task.FromResult(document);
+                var newDocument = await ReplaceField(context, diagnostic);
+                return newDocument;
             });
 
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private static SyntaxNode ReplaceField(SyntaxNode root, Diagnostic diagnostic)
+    private static async Task<Document> ReplaceField(CodeFixContext context, Diagnostic diagnostic)
     {
+        var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
+        if (root is null)
+        {
+            return null;
+        }
+
+        var document = context.Document.WithSyntaxRoot(root);
+        var editor = await DocumentEditor.CreateAsync(document);
+
+
         var variableNode = root.FindNode(diagnostic.Location.SourceSpan);
         if (variableNode.Parent is not VariableDeclarationSyntax variableDeclarationNode)
         {
-            return root;
+            return document;
         }
 
         var variableTypeNode = variableDeclarationNode.Type;
 
         if (variableDeclarationNode.Parent is not FieldDeclarationSyntax fieldDeclarationNode)
         {
-            return root;
+            return document;
         }
 
         var isPublic = fieldDeclarationNode.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.PublicKeyword);
-
-        var newRoot = root;
         if (isPublic)
         {
+            var propertyDeclaration =
+                SyntaxFactory.PropertyDeclaration(
+                        variableTypeNode,
+                        SyntaxFactory
+                            .Identifier(GetPropertyName(variableNode.ToString()))
+                            .NormalizeWhitespace())
+                    .AddAccessorListAccessors(
+                        SyntaxFactory.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                            .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+                        SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                            .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)))
+                    .NormalizeWhitespace()
+                    .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                    .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
+
             if (variableDeclarationNode.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
             {
-                var propertyDeclaration =
-                    SyntaxFactory.PropertyDeclaration(
-                            variableTypeNode,
-                            SyntaxFactory.Identifier(variableNode.ToString())
-                                .NormalizeWhitespace())
-                        .AddAccessorListAccessors(
-                            SyntaxFactory.AccessorDeclaration(
-                                    SyntaxKind.GetAccessorDeclaration)
-                                .WithSemicolonToken(
-                                    SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
-                            SyntaxFactory.AccessorDeclaration(
-                                    SyntaxKind.SetAccessorDeclaration)
-                                .WithSemicolonToken(
-                                    SyntaxFactory.Token(SyntaxKind.SemicolonToken)))
-                        .NormalizeWhitespace()
-                        .AddModifiers(
-                            SyntaxFactory.Token(
-                                    SyntaxFactory.TriviaList(SyntaxFactory.Tab),
-                                    SyntaxKind.PublicKeyword,
-                                    SyntaxFactory.TriviaList())
-                                .WithTrailingTrivia(SyntaxFactory.Space))
-                        .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
-                
-                // TODO: ѕосле вставки новой ноды, стара€ нода не удал€етс€.
-                newRoot = root
-                    .InsertNodesAfter(fieldDeclarationNode, new[] { propertyDeclaration })
-                    .RemoveNode(variableNode, SyntaxRemoveOptions.KeepNoTrivia);
+                editor.InsertBefore(fieldDeclarationNode, new[] { propertyDeclaration });
+                editor.RemoveNode(variableNode, SyntaxRemoveOptions.KeepNoTrivia);
             }
             else
             {
-                // TODO: «аменить на Replace и замен€ть на свойство
-                newRoot = root.RemoveNode(fieldDeclarationNode, SyntaxRemoveOptions.KeepNoTrivia);
+                editor.ReplaceNode(fieldDeclarationNode, propertyDeclaration);
             }
         }
 
+        var normalizedRoot = editor.GetChangedRoot().NormalizeWhitespace();
 
-        return newRoot ?? root;
+        return context.Document.WithSyntaxRoot(normalizedRoot);
+    }
+
+    private static string GetPropertyName(string variableName)
+    {
+        variableName = variableName.Insert(0, char.ToUpper(variableName[0]).ToString());
+        return variableName.Remove(1, 1);
     }
 }

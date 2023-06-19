@@ -1,6 +1,0 @@
-namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
-
-public class OnePublicField
-{
-    public string Field { get; set; }
-}

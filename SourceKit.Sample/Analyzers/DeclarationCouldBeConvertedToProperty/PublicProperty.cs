@@ -2,5 +2,5 @@
 
 public class PublicProperty
 {
-    public string Property { get; set; }
+    public string Field { get; set; }
 }
