@@ -53,44 +53,112 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
         if (root is null)
         {
-            return null;
+            return context.Document;
         }
 
         var document = context.Document.WithSyntaxRoot(root);
-        var editor = await DocumentEditor.CreateAsync(document);
 
         var variableNode = root.FindNode(diagnostic.Location.SourceSpan);
-        if (variableNode.Parent is not VariableDeclarationSyntax variableDeclarationNode)
+        if (variableNode is not VariableDeclaratorSyntax variableDeclarator)
         {
             return document;
         }
 
-        var variableTypeNode = variableDeclarationNode.Type;
-
-        if (variableDeclarationNode.Parent is not FieldDeclarationSyntax fieldDeclarationNode)
-        {
-            return document;
-        }
-        
-        // TODO: разделить это на методы для get и set, а то first и last вернут одно и тоже, если нет set
-        // TODO: протестировать с разными kind и прочее
-        var getMethod = root.FindNode(diagnostic.AdditionalLocations.First().SourceSpan);
-        var setMethod = root.FindNode(diagnostic.AdditionalLocations.Last().SourceSpan);
-
-        if (getMethod is not MethodDeclarationSyntax getMethodDeclaration ||
-            setMethod is not MethodDeclarationSyntax setMethodDeclaration)
+        if (variableNode.Parent is not VariableDeclarationSyntax variableDeclaration)
         {
             return document;
         }
 
-        var propertyKind = getMethodDeclaration.Modifiers.First().Kind();
-        var setterKind = setMethodDeclaration.Modifiers.First().Kind();
+        if (variableDeclaration.Parent is not FieldDeclarationSyntax fieldDeclaration)
+        {
+            return document;
+        }
+
+        return fieldDeclaration.Modifiers.First().Kind() is SyntaxKind.PublicKeyword
+            ? await ProcessPublicField(context, document, variableDeclarator, variableDeclaration)
+            : await ProcessNotPublicField(context, root, diagnostic, document, variableDeclarator, variableDeclaration);
+    }
+
+    private static async Task<Document> ProcessPublicField(
+        CodeFixContext context,
+        Document document,
+        VariableDeclaratorSyntax variableDeclarator,
+        VariableDeclarationSyntax variableDeclaration)
+    {
+        var editor = await DocumentEditor.CreateAsync(document);
+
+        var variableTypeNode = variableDeclaration.Type;
+
+        if (variableDeclaration.Parent is not FieldDeclarationSyntax fieldDeclarationNode)
+        {
+            return editor.OriginalDocument;
+        }
 
         var propertyDeclaration =
             SyntaxFactory.PropertyDeclaration(
                     variableTypeNode,
                     SyntaxFactory
-                        .Identifier(GetPropertyName(variableNode.ToString()))
+                        .Identifier(GetPropertyName(variableDeclarator.Identifier.ToString()))
+                        .NormalizeWhitespace())
+                .AddAccessorListAccessors(
+                    SyntaxFactory
+                        .AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
+                    SyntaxFactory
+                        .AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)))
+                .NormalizeWhitespace()
+                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
+                .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
+
+
+        if (variableDeclaration.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
+        {
+            editor.InsertBefore(fieldDeclarationNode, new[] { propertyDeclaration });
+            editor.RemoveNode(variableDeclarator, SyntaxRemoveOptions.KeepNoTrivia);
+        }
+        else
+        {
+            editor.ReplaceNode(fieldDeclarationNode, propertyDeclaration);
+        }
+
+        var normalizedRoot = editor.GetChangedRoot().NormalizeWhitespace();
+
+        return context.Document.WithSyntaxRoot(normalizedRoot);
+    }
+
+    private static async Task<Document> ProcessNotPublicField(
+        CodeFixContext context,
+        SyntaxNode root,
+        Diagnostic diagnostic,
+        Document document,
+        VariableDeclaratorSyntax variableDeclarator,
+        VariableDeclarationSyntax variableDeclaration)
+    {
+        var editor = await DocumentEditor.CreateAsync(document);
+
+        var variableType = variableDeclaration.Type;
+
+        if (variableDeclaration.Parent is not FieldDeclarationSyntax fieldDeclarationNode)
+        {
+            return editor.OriginalDocument;
+        }
+
+        var getterMethod = GetGetterMethodAndDelete(root, diagnostic, editor);
+        var setterMethod = GetSetterMethodAndDelete(root, diagnostic, editor);
+
+        if (getterMethod is null)
+        {
+            return editor.OriginalDocument;
+        }
+
+        var propertyKind = getterMethod.Modifiers.First().Kind();
+
+        var propertyDeclaration =
+            SyntaxFactory.PropertyDeclaration(
+                    variableType,
+                    SyntaxFactory
+                        .Identifier(GetPropertyName(variableDeclarator.Identifier.ToString()))
                         .NormalizeWhitespace())
                 .AddAccessorListAccessors(
                     SyntaxFactory
@@ -100,8 +168,9 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
                 .AddModifiers(SyntaxFactory.Token(propertyKind))
                 .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
 
-        if (diagnostic.AdditionalLocations.Count == 2)
+        if (setterMethod is not null)
         {
+            var setterKind = setterMethod.Modifiers.First().Kind();
             var setterDeclaration = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
 
@@ -113,25 +182,14 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             propertyDeclaration = propertyDeclaration.AddAccessorListAccessors(setterDeclaration);
         }
 
-        if (variableDeclarationNode.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
+        if (variableDeclaration.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
         {
             editor.InsertBefore(fieldDeclarationNode, new[] { propertyDeclaration });
-            editor.RemoveNode(variableNode, SyntaxRemoveOptions.KeepNoTrivia);
+            editor.RemoveNode(variableDeclarator, SyntaxRemoveOptions.KeepNoTrivia);
         }
         else
         {
             editor.ReplaceNode(fieldDeclarationNode, propertyDeclaration);
-        }
-
-        switch (diagnostic.AdditionalLocations.Count)
-        {
-            case 1:
-                editor.RemoveNode(getMethodDeclaration);
-                break;
-            case 2:
-                editor.RemoveNode(getMethodDeclaration);
-                editor.RemoveNode(setMethodDeclaration);
-                break;
         }
 
         var normalizedRoot = editor.GetChangedRoot().NormalizeWhitespace();
@@ -143,5 +201,47 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
     {
         variableName = variableName.Insert(0, char.ToUpper(variableName[0]).ToString());
         return variableName.Remove(1, 1);
+    }
+
+    private static MethodDeclarationSyntax? GetGetterMethodAndDelete(
+        SyntaxNode root,
+        Diagnostic diagnostic,
+        SyntaxEditor editor)
+    {
+        if (diagnostic.AdditionalLocations.Count < 1)
+        {
+            return null;
+        }
+
+        var getterMethodNode = root.FindNode(diagnostic.AdditionalLocations[0].SourceSpan);
+
+        if (getterMethodNode is not MethodDeclarationSyntax getterMethod)
+        {
+            return null;
+        }
+
+        editor.RemoveNode(getterMethod);
+        return getterMethod;
+    }
+
+    private static MethodDeclarationSyntax? GetSetterMethodAndDelete(
+        SyntaxNode root,
+        Diagnostic diagnostic,
+        SyntaxEditor editor)
+    {
+        if (diagnostic.AdditionalLocations.Count < 2)
+        {
+            return null;
+        }
+
+        var setterMethodNode = root.FindNode(diagnostic.AdditionalLocations[1].SourceSpan);
+
+        if (setterMethodNode is not MethodDeclarationSyntax setterMethod)
+        {
+            return null;
+        }
+
+        editor.RemoveNode(setterMethod);
+        return setterMethod;
     }
 }
