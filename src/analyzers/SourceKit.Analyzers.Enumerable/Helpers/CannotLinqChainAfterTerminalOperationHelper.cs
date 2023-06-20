@@ -14,8 +14,14 @@ internal static class CannotLinqChainAfterTerminalOperationHelper
     };
     internal static bool IsLinqEnumerable(MemberAccessExpressionSyntax syntax, SemanticModel? model)
     {
-        var symbol = GetSymbol(syntax, model) ?? throw new InvalidOperationException();
-        return IsLinqEnumerable(symbol, model);
+        try
+        {
+            var symbol = GetSymbol(syntax, model) ?? throw new InvalidOperationException();
+            return IsLinqEnumerable(symbol, model);
+        } catch (InvalidOperationException e)
+        {
+            return false;
+        }
     }
     
     private static bool IsLinqEnumerable(IMethodSymbol? symbol, SemanticModel? model)

@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
+using Microsoft.CodeAnalysis.Text;
 using SourceKit.Analyzers.Enumerable.Analyzers;
 using Helper = SourceKit.Analyzers.Enumerable.Helpers.CannotLinqChainAfterTerminalOperationHelper;
 
@@ -22,11 +23,11 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        var diagnostic = context.Diagnostics.First();
-        var semantic = await context.Document.GetSemanticModelAsync();
-        var location = diagnostic.Location.SourceSpan;
-        var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
-        var termNode = root?
+        Diagnostic diagnostic = context.Diagnostics.First();
+        SemanticModel? semantic = await context.Document.GetSemanticModelAsync();
+        TextSpan location = diagnostic.Location.SourceSpan;
+        SyntaxNode? root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
+        MemberAccessExpressionSyntax? termNode = root?
             .FindToken(location.Start).Parent?
             .Ancestors()
             .FirstOrDefault()?
@@ -34,7 +35,7 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
             .OfType<MemberAccessExpressionSyntax>()
             .FirstOrDefault(x => Helper.TerminationMethods.Contains(x.GetLastToken().ToString()));
 
-        var token = termNode?.GetLastToken();
+        SyntaxToken? token = termNode?.GetLastToken();
         
         if (token == null) return;
         context.RegisterCodeFix(

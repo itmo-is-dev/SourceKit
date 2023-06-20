@@ -39,7 +39,7 @@ public class CannotLinqChainAfterTerminalOperationAnalyzer : DiagnosticAnalyzer
 
             var termNode = node.DescendantNodes(x =>  x is not ArgumentListSyntax)
                 .OfType<MemberAccessExpressionSyntax>()
-                .Where(node => Helper.IsLinqEnumerable(node, semanticModel))
+                .Where(expressionSyntax => Helper.IsLinqEnumerable(expressionSyntax, semanticModel))
                 .FirstOrDefault(expressionSyntax => Helper.TerminationMethods.Contains(expressionSyntax.GetLastToken().ToString()));
 
             if (termNode == null) return;
