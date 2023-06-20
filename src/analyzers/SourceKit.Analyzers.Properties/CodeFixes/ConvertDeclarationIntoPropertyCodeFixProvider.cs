@@ -174,7 +174,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             var setterDeclaration = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
 
-            if (setterKind is not SyntaxKind.PublicKeyword)
+            if (setterKind != propertyKind)
             {
                 setterDeclaration = setterDeclaration.AddModifiers(SyntaxFactory.Token(setterKind));
             }
