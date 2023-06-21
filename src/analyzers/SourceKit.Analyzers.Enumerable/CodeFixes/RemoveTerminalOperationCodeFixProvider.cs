@@ -41,16 +41,16 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
         context.RegisterCodeFix(
             CodeAction.Create(
                 title: string.Format(Title, token),
-                createChangedSolution: c => RemoveToList(context.Document, termNode, c),
+                createChangedSolution: c => RemoveToList(context.Document, termNode!, c),
                 equivalenceKey: string.Format(Title, token)), diagnostic);
     }
 
-    private static async Task<Solution> RemoveToList(Document document, SyntaxNode? node, CancellationToken ctx)
+    private static async Task<Solution> RemoveToList(Document document, SyntaxNode node, CancellationToken ctx)
     {
 
         var editor = await DocumentEditor.CreateAsync(document, ctx);
-        var invocationExpressions = node?.Parent ?? throw new InvalidOperationException();
-        var before = node.ChildNodes().First() ?? throw new InvalidOperationException();
+        var invocationExpressions = node.Parent ?? throw new InvalidOperationException("Node doesn't have parent");
+        var before = node.ChildNodes().First();
         editor.ReplaceNode(invocationExpressions, before);
         return editor.GetChangedDocument().Project.Solution;
     }
