@@ -9,6 +9,7 @@ using SourceKit.Analyzers.Properties.Analyzers;
 
 namespace SourceKit.Analyzers.Properties.CodeFixes;
 
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(ConvertDeclarationIntoPropertyCodeFixProvider))]
 public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 {
     public const string Title = "Convert into auto-property";
@@ -34,12 +35,18 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         CodeFixContext context,
         Diagnostic diagnostic)
     {
+        var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
+        if (root is null)
+        {
+            return;
+        }
+
         var action = CodeAction.Create(
             Title,
             equivalenceKey: nameof(Title),
             createChangedDocument: async _ =>
             {
-                var newDocument = await ReplaceField(context, diagnostic);
+                var newDocument = await ReplaceField(root, context, diagnostic);
                 return newDocument;
             });
 
@@ -47,18 +54,13 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
     }
 
     private static async Task<Document> ReplaceField(
+        SyntaxNode root,
         CodeFixContext context,
         Diagnostic diagnostic)
     {
-        var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
-        if (root is null)
-        {
-            return context.Document;
-        }
-
         var document = context.Document.WithSyntaxRoot(root);
 
-        var variableNode = root.FindNode(diagnostic.Location.SourceSpan);
+        var variableNode = root.FindNode(diagnostic.AdditionalLocations[0].SourceSpan);
         if (variableNode is not VariableDeclaratorSyntax variableDeclarator)
         {
             return document;
@@ -208,12 +210,12 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         Diagnostic diagnostic,
         SyntaxEditor editor)
     {
-        if (diagnostic.AdditionalLocations.Count < 1)
+        if (diagnostic.AdditionalLocations.Count < 2)
         {
             return null;
         }
 
-        var getterMethodNode = root.FindNode(diagnostic.AdditionalLocations[0].SourceSpan);
+        var getterMethodNode = root.FindNode(diagnostic.AdditionalLocations[1].SourceSpan);
 
         if (getterMethodNode is not MethodDeclarationSyntax getterMethod)
         {
@@ -229,12 +231,12 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         Diagnostic diagnostic,
         SyntaxEditor editor)
     {
-        if (diagnostic.AdditionalLocations.Count < 2)
+        if (diagnostic.AdditionalLocations.Count < 3)
         {
             return null;
         }
 
-        var setterMethodNode = root.FindNode(diagnostic.AdditionalLocations[1].SourceSpan);
+        var setterMethodNode = root.FindNode(diagnostic.AdditionalLocations[2].SourceSpan);
 
         if (setterMethodNode is not MethodDeclarationSyntax setterMethod)
         {

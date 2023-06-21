@@ -12,14 +12,14 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
     public const string DiagnosticId = "SK1400";
     public const string Title = nameof(DeclarationCouldBeConvertedToPropertyAnalyzer);
 
-    public const string Format = """Variable {0} could be converted to property.""";
+    public const string Format = """Variable '{0}' could be converted to property.""";
 
     public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
         DiagnosticId,
         Title,
         Format,
         "Design",
-        DiagnosticSeverity.Error,
+        DiagnosticSeverity.Warning,
         true);
 
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
@@ -41,6 +41,11 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
         var fields = classDeclaration.Members.OfType<FieldDeclarationSyntax>().ToList();
         fields.ForEach(field =>
         {
+            if (field.Modifiers.Count != 1)
+            {
+                return;
+            }
+
             if (field.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.PublicKeyword))
             {
                 AnalyzePublicVariableDeclaration(context, field.Declaration);
@@ -60,7 +65,7 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
         foreach (var variable in variableDeclaration.Variables)
         {
             var location = variable.GetLocation();
-            var diagnostic = Diagnostic.Create(Descriptor, location, variable.Identifier.Text);
+            var diagnostic = Diagnostic.Create(Descriptor, location, new[] { location }, variable.Identifier.Text);
             context.ReportDiagnostic(diagnostic);
         }
     }
@@ -81,19 +86,27 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
                 return;
             }
 
-            var location = variable.GetLocation();
+            var variableLocation = variable.GetLocation();
             var getMethodLocation = getMethod.Identifier.GetLocation();
-            var additionalLocations = new List<Location> { getMethodLocation };
+            var additionalLocations = new List<Location> { variableLocation, getMethodLocation };
 
             var isSetMethod = setMethods.TryGetValue(variable.Identifier.ToString(), out var setMethod);
             if (isSetMethod && setMethod is not null)
             {
                 var setMethodLocation = setMethod.Identifier.GetLocation();
                 additionalLocations.Add(setMethodLocation);
+
+                context.ReportDiagnostic(Diagnostic.Create(
+                    Descriptor,
+                    setMethodLocation,
+                    additionalLocations,
+                    variable.Identifier.Text));
             }
 
-            var diagnostic = Diagnostic.Create(Descriptor, location, additionalLocations, variable.Identifier.Text);
-            context.ReportDiagnostic(diagnostic);
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, getMethodLocation, additionalLocations,
+                variable.Identifier.Text));
+            context.ReportDiagnostic(Diagnostic.Create(Descriptor, variableLocation, additionalLocations,
+                variable.Identifier.Text));
         }
     }
 

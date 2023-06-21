@@ -12,17 +12,13 @@
     <ItemGroup Condition="'$(Configuration)' != 'Release'">
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" OutputItemType="Analyzer" />
         <ProjectReference Include="..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Properties\SourceKit.Analyzers.Properties.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
         <PackageReference Include="SourceKit.Analyzers.MustBePartial" />
         <PackageReference Include="SourceKit.Generators.Builder" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Analyzers\DeclarationCouldBeConvertedToProperty\OnePublicField.cs">
-        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-      </Compile>
+        <PackageReference Include="SourceKit.Analyzers.Properties" />
     </ItemGroup>
 
 </Project>
