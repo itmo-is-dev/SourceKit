@@ -14,9 +14,8 @@ public class ConvertDeclarationIntoPropertyTests
     [Fact]
     public async Task ConvertPublicDeclarationIntoProperty_ShouldGenerateCorrectProperty()
     {
-        var sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OnePublicField.cs");
-        var fixedFile = new SourceFile(OnePublicFieldName, OnePublicFieldFile);
+        var sourceFile = await SourceFile.LoadAsync(OnePublicFieldFilePath);
+        var fixedFile = new SourceFile(FixedOnePublicFieldFileName, OnePublicFieldFile);
 
         var diagnostic = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 5, 19)
@@ -44,9 +43,8 @@ public class ConvertDeclarationIntoPropertyTests
     [Fact]
     public async Task ConvertPublicDeclarationsIntoProperties_ShouldGenerateCorrectProperties()
     {
-        var sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/ManyPublicFields.cs");
-        var fixedFile = new SourceFile(ManyPublicFieldsName, ManyPublicFieldsFile);
+        var sourceFile = await SourceFile.LoadAsync(ManyPublicFieldsFilePath);
+        var fixedFile = new SourceFile(FixedManyPublicFieldsFileName, FixedManyPublicFieldsFile);
 
         var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 7, 25)
@@ -81,9 +79,8 @@ public class ConvertDeclarationIntoPropertyTests
     [Fact]
     public async Task ConvertDeclarationIntoProperty_ShouldGenerateCorrectProperty()
     {
-        var sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OneField.cs");
-        var fixedFile = new SourceFile(OneFieldName, OneFieldFile);
+        var sourceFile = await SourceFile.LoadAsync(OneFieldFilepath);
+        var fixedFile = new SourceFile(FixedOneFieldFileName, FixedOneFieldFile);
 
         var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 5, 20)
@@ -122,7 +119,10 @@ public class ConvertDeclarationIntoPropertyTests
         await test.RunAsync();
     }
 
-    private const string OnePublicFieldName = "OnePublicField.cs";
+    private const string OnePublicFieldFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OnePublicField.cs";
+
+    private const string FixedOnePublicFieldFileName = "OnePublicField.cs";
 
     private const string OnePublicFieldFile = """
 namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
@@ -132,9 +132,12 @@ public class OnePublicField
 }
 """;
 
-    private const string ManyPublicFieldsName = "ManyPublicFields.cs";
+    private const string ManyPublicFieldsFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/ManyPublicFields.cs";
 
-    private const string ManyPublicFieldsFile = """
+    private const string FixedManyPublicFieldsFileName = "ManyPublicFields.cs";
+
+    private const string FixedManyPublicFieldsFile = """
 using System.Collections.Generic;
 
 namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
@@ -146,9 +149,12 @@ public class ManyPublicFields
 }
 """;
 
-    private const string OneFieldName = "OneField.cs";
+    private const string OneFieldFilepath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OneField.cs";
 
-    private const string OneFieldFile = """
+    private const string FixedOneFieldFileName = "OneField.cs";
+
+    private const string FixedOneFieldFile = """
 namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
 public class OneField
 {

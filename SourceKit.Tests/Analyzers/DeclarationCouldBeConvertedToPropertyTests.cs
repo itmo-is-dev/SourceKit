@@ -13,9 +13,7 @@ public class DeclarationCouldBeConvertedToPropertyTests
     [Fact]
     public async Task PublicDeclarationCouldNotBeConvertedToProperty_ShouldNotReportDiagnostic()
     {
-        var sourceFile =
-            await SourceFile.LoadAsync(
-                "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/PublicProperty.cs");
+        var sourceFile = await SourceFile.LoadAsync(PublicPropertyFilePath);
 
         var test = new CSharpAnalyzerTest<DeclarationCouldBeConvertedToPropertyAnalyzer, XUnitVerifier>
         {
@@ -34,9 +32,7 @@ public class DeclarationCouldBeConvertedToPropertyTests
     [Fact]
     public async Task DeclarationCouldNotBeConvertedToProperty_ShouldNotReportDiagnostic()
     {
-        var sourceFile =
-            await SourceFile.LoadAsync(
-                "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/PrivateFieldWithoutMethods.cs");
+        var sourceFile = await SourceFile.LoadAsync(PrivateFieldWithoutMethodsFilePath);
 
         var test = new CSharpAnalyzerTest<DeclarationCouldBeConvertedToPropertyAnalyzer, XUnitVerifier>
         {
@@ -55,9 +51,7 @@ public class DeclarationCouldBeConvertedToPropertyTests
     [Fact]
     public async Task DeclarationCouldBeConvertedToProperty_ShouldReportDiagnostic_WhenPublicField()
     {
-        var sourceFile =
-            await SourceFile.LoadAsync(
-                "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OnePublicField.cs");
+        var sourceFile = await SourceFile.LoadAsync(OnePublicFieldFilePath);
 
         var diagnostic = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 5, 19)
@@ -82,9 +76,7 @@ public class DeclarationCouldBeConvertedToPropertyTests
     [Fact]
     public async Task DeclarationsCouldBeConvertedToProperties_ShouldReportAllDiagnostics_WhenEveryPublicField()
     {
-        var sourceFile =
-            await SourceFile.LoadAsync(
-                "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/ManyPublicFields.cs");
+        var sourceFile = await SourceFile.LoadAsync(ManyPublicFieldsFilePath);
 
         var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 7, 25)
@@ -113,9 +105,7 @@ public class DeclarationCouldBeConvertedToPropertyTests
     [Fact]
     public async Task DeclarationCouldBeConvertedToProperty_ShouldReportDiagnostic_WhenField()
     {
-        var sourceFile =
-            await SourceFile.LoadAsync(
-                "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OneField.cs");
+        var sourceFile = await SourceFile.LoadAsync(OneFieldFilePath);
 
         var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 5, 20)
@@ -150,4 +140,19 @@ public class DeclarationCouldBeConvertedToPropertyTests
 
         await test.RunAsync();
     }
+
+    private const string PublicPropertyFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/PublicProperty.cs";
+
+    private const string PrivateFieldWithoutMethodsFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/PrivateFieldWithoutMethods.cs";
+
+    private const string OnePublicFieldFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OnePublicField.cs";
+
+    private const string ManyPublicFieldsFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/ManyPublicFields.cs";
+
+    private const string OneFieldFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OneField.cs";
 }
