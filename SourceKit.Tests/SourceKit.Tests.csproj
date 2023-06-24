@@ -52,17 +52,4 @@
         <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </Compile>
     </ItemGroup>
-
-    <ItemGroup>
-      <None Update="CodeFixProviders\TxtSamples\OnePublicField.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="CodeFixProviders\TxtSamples\ManyPublicFields.txt">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-      <None Update="CodeFixProviders\FixedSamples\OnePublicField.cs">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
-    </ItemGroup>
-
 </Project>
