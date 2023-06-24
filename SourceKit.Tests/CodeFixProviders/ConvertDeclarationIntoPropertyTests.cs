@@ -20,7 +20,7 @@ public class ConvertDeclarationIntoPropertyTests
         var diagnostic = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 5, 19)
             .WithLocation(sourceFile.Name, 5, 19)
-            .WithMessage("Variable 'field' could be converted to property.");
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         var test = new CSharpCodeFixTest<DeclarationCouldBeConvertedToPropertyAnalyzer,
             ConvertDeclarationIntoPropertyCodeFixProvider,
@@ -49,11 +49,11 @@ public class ConvertDeclarationIntoPropertyTests
         var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 7, 25)
             .WithLocation(sourceFile.Name, 7, 25)
-            .WithMessage("Variable 'first' could be converted to property.");
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "first"));
         var diagnostic2 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 7, 32)
             .WithLocation(sourceFile.Name, 7, 32)
-            .WithMessage("Variable 'second' could be converted to property.");
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "second"));
 
         var test = new CSharpCodeFixTest<DeclarationCouldBeConvertedToPropertyAnalyzer,
             ConvertDeclarationIntoPropertyCodeFixProvider,
@@ -87,19 +87,19 @@ public class ConvertDeclarationIntoPropertyTests
             .WithLocation(sourceFile.Name, 5, 20)
             .WithLocation(sourceFile.Name, 7, 19)
             .WithLocation(sourceFile.Name, 12, 17)
-            .WithMessage("Variable 'field' could be converted to property.");
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
         var diagnostic2 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 7, 19)
             .WithLocation(sourceFile.Name, 5, 20)
             .WithLocation(sourceFile.Name, 7, 19)
             .WithLocation(sourceFile.Name, 12, 17)
-            .WithMessage("Variable 'field' could be converted to property.");
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
         var diagnostic3 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 12, 17)
             .WithLocation(sourceFile.Name, 5, 20)
             .WithLocation(sourceFile.Name, 7, 19)
             .WithLocation(sourceFile.Name, 12, 17)
-            .WithMessage("Variable 'field' could be converted to property.");
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         var test = new CSharpCodeFixTest<DeclarationCouldBeConvertedToPropertyAnalyzer,
             ConvertDeclarationIntoPropertyCodeFixProvider,
