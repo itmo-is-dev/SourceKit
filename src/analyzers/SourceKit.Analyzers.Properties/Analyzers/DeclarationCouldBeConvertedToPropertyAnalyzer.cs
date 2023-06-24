@@ -12,7 +12,7 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
     public const string DiagnosticId = "SK1400";
     public const string Title = nameof(DeclarationCouldBeConvertedToPropertyAnalyzer);
 
-    public const string Format = """Variable '{0}' could be converted to property.""";
+    public const string Format = """Field '{0}' could be converted to property.""";
 
     public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
         DiagnosticId,
@@ -36,14 +36,13 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
 
     private void AnalyzeClass(SyntaxNodeAnalysisContext context)
     {
-        var classDeclaration = (ClassDeclarationSyntax) context.Node;
-
-        var fields = classDeclaration.Members.OfType<FieldDeclarationSyntax>().ToList();
-        fields.ForEach(field =>
+        var classDeclaration = (ClassDeclarationSyntax)context.Node;
+        
+        foreach (var field in classDeclaration.Members.OfType<FieldDeclarationSyntax>())
         {
             if (field.Modifiers.Count != 1)
             {
-                return;
+                continue;
             }
 
             if (field.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.PublicKeyword))
@@ -53,9 +52,9 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
 
             if (field.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.PrivateKeyword))
             {
-                FindMethods(context, field.Declaration, classDeclaration);
+                AnalyzeFieldsMethods(context, field.Declaration, classDeclaration);
             }
-        });
+        }
     }
 
     private void AnalyzePublicVariableDeclaration(
@@ -70,7 +69,7 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
         }
     }
 
-    private void FindMethods(
+    private void AnalyzeFieldsMethods(
         SyntaxNodeAnalysisContext context,
         VariableDeclarationSyntax variableDeclaration,
         ClassDeclarationSyntax classDeclaration)
@@ -80,8 +79,9 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
 
         foreach (var variable in variableDeclaration.Variables)
         {
-            var isGetMethod = getMethods.TryGetValue(variable.Identifier.ToString(), out var getMethod);
-            if (!isGetMethod || getMethod is null)
+            var variableName = variable.Identifier.ToString();
+            
+            if (getMethods.TryGetValue(variableName, out var getMethod) is false)
             {
                 return;
             }
@@ -90,8 +90,7 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
             var getMethodLocation = getMethod.Identifier.GetLocation();
             var additionalLocations = new List<Location> { variableLocation, getMethodLocation };
 
-            var isSetMethod = setMethods.TryGetValue(variable.Identifier.ToString(), out var setMethod);
-            if (isSetMethod && setMethod is not null)
+            if (setMethods.TryGetValue(variableName, out var setMethod))
             {
                 var setMethodLocation = setMethod.Identifier.GetLocation();
                 additionalLocations.Add(setMethodLocation);
@@ -103,9 +102,15 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
                     variable.Identifier.Text));
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, getMethodLocation, additionalLocations,
+            context.ReportDiagnostic(Diagnostic.Create(
+                Descriptor,
+                getMethodLocation, 
+                additionalLocations,
                 variable.Identifier.Text));
-            context.ReportDiagnostic(Diagnostic.Create(Descriptor, variableLocation, additionalLocations,
+            context.ReportDiagnostic(Diagnostic.Create(
+                Descriptor, 
+                variableLocation, 
+                additionalLocations,
                 variable.Identifier.Text));
         }
     }
