@@ -5,6 +5,10 @@ using SourceKit.Analyzers.Properties.CodeFixes;
 using SourceKit.Tests.Tools;
 using AnalyzerVerifier = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<
     SourceKit.Analyzers.Properties.Analyzers.DeclarationCouldBeConvertedToPropertyAnalyzer>;
+using CodeFixTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixTest<
+    SourceKit.Analyzers.Properties.Analyzers.DeclarationCouldBeConvertedToPropertyAnalyzer,
+    SourceKit.Analyzers.Properties.CodeFixes.ConvertDeclarationIntoPropertyCodeFixProvider,
+    Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 using Xunit;
 
 namespace SourceKit.Tests.CodeFixProviders;
@@ -22,9 +26,7 @@ public class ConvertDeclarationIntoPropertyTests
             .WithLocation(sourceFile.Name, 5, 19)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
-        var test = new CSharpCodeFixTest<DeclarationCouldBeConvertedToPropertyAnalyzer,
-            ConvertDeclarationIntoPropertyCodeFixProvider,
-            XUnitVerifier>
+        var test = new CodeFixTest
         {
             TestState =
             {
@@ -55,9 +57,7 @@ public class ConvertDeclarationIntoPropertyTests
             .WithLocation(sourceFile.Name, 7, 32)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "second"));
 
-        var test = new CSharpCodeFixTest<DeclarationCouldBeConvertedToPropertyAnalyzer,
-            ConvertDeclarationIntoPropertyCodeFixProvider,
-            XUnitVerifier>
+        var test = new CodeFixTest
         {
             TestState =
             {
@@ -101,9 +101,7 @@ public class ConvertDeclarationIntoPropertyTests
             .WithLocation(sourceFile.Name, 12, 17)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
-        var test = new CSharpCodeFixTest<DeclarationCouldBeConvertedToPropertyAnalyzer,
-            ConvertDeclarationIntoPropertyCodeFixProvider,
-            XUnitVerifier>
+        var test = new CodeFixTest
         {
             TestState =
             {
