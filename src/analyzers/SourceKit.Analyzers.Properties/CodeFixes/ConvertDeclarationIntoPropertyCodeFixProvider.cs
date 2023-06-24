@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -6,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using SourceKit.Analyzers.Properties.Analyzers;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Analyzers.Properties.CodeFixes;
 
@@ -24,11 +26,10 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
     {
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        IEnumerable<Task> declarationCouldBeConvertedToPropertyDiagnostics = context.Diagnostics
+        IEnumerable<Task> diagnostics = context.Diagnostics
             .Where(x => x.Id.Equals(DeclarationCouldBeConvertedToPropertyAnalyzer.DiagnosticId))
             .Select(x => ProvideConvertDeclarationIntoPropertyCodeFix(context, x));
-
-        await Task.WhenAll(declarationCouldBeConvertedToPropertyDiagnostics);
+        await Task.WhenAll(diagnostics);
     }
 
     private static async Task ProvideConvertDeclarationIntoPropertyCodeFix(
@@ -36,6 +37,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         Diagnostic diagnostic)
     {
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
+
         if (root is null)
         {
             return;
@@ -43,7 +45,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         var action = CodeAction.Create(
             Title,
-            equivalenceKey: nameof(Title),
+            equivalenceKey: nameof(ConvertDeclarationIntoPropertyCodeFixProvider),
             createChangedDocument: async _ =>
             {
                 var newDocument = await ReplaceField(root, context, diagnostic);
@@ -76,6 +78,8 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             return document;
         }
 
+        // TODO: ѕопробовать убрать context из аргументов, так как больше не нужно будет делать нормалайз на весь документ
+        // » добавить к аргументов kind.
         return fieldDeclaration.Modifiers.First().Kind() is SyntaxKind.PublicKeyword
             ? await ProcessPublicField(context, document, variableDeclarator, variableDeclaration)
             : await ProcessNotPublicField(context, root, diagnostic, document, variableDeclarator, variableDeclaration);
@@ -96,22 +100,17 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             return editor.OriginalDocument;
         }
 
-        var propertyDeclaration =
-            SyntaxFactory.PropertyDeclaration(
-                    variableTypeNode,
-                    SyntaxFactory
-                        .Identifier(GetPropertyName(variableDeclarator.Identifier.ToString()))
-                        .NormalizeWhitespace())
-                .AddAccessorListAccessors(
-                    SyntaxFactory
-                        .AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)),
-                    SyntaxFactory
-                        .AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)))
-                .NormalizeWhitespace()
-                .AddModifiers(SyntaxFactory.Token(SyntaxKind.PublicKeyword))
-                .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
+        var propertyDeclaration = PropertyDeclaration(
+                variableTypeNode,
+                Identifier(GetPropertyName(variableDeclarator.Identifier.ToString())))
+            .AddAccessorListAccessors(
+                AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
+                AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
+            .NormalizeWhitespace()
+            .AddModifiers(Token(SyntaxKind.PublicKeyword))
+            .WithTrailingTrivia(CarriageReturnLineFeed);
 
 
         if (variableDeclaration.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
@@ -146,8 +145,8 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             return editor.OriginalDocument;
         }
 
-        var getterMethod = GetGetterMethodAndDelete(root, diagnostic, editor);
-        var setterMethod = GetSetterMethodAndDelete(root, diagnostic, editor);
+        var getterMethod = FindGetterMethodAndDelete(root, diagnostic, editor);
+        var setterMethod = FindSetterMethodAndDelete(root, diagnostic, editor);
 
         if (getterMethod is null)
         {
@@ -157,28 +156,26 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         var propertyKind = getterMethod.Modifiers.First().Kind();
 
         var propertyDeclaration =
-            SyntaxFactory.PropertyDeclaration(
+            PropertyDeclaration(
                     variableType,
-                    SyntaxFactory
-                        .Identifier(GetPropertyName(variableDeclarator.Identifier.ToString()))
-                        .NormalizeWhitespace())
+                    Identifier(GetPropertyName(variableDeclarator.Identifier.ToString())))
                 .AddAccessorListAccessors(
-                    SyntaxFactory
-                        .AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken)))
+                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
                 .NormalizeWhitespace()
-                .AddModifiers(SyntaxFactory.Token(propertyKind))
-                .WithTrailingTrivia(SyntaxFactory.CarriageReturnLineFeed);
+                .AddModifiers(Token(propertyKind))
+                .WithTrailingTrivia(CarriageReturnLineFeed);
 
         if (setterMethod is not null)
         {
             var setterKind = setterMethod.Modifiers.First().Kind();
-            var setterDeclaration = SyntaxFactory.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                .WithSemicolonToken(SyntaxFactory.Token(SyntaxKind.SemicolonToken));
+
+            var setterDeclaration = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
             if (setterKind != propertyKind)
             {
-                setterDeclaration = setterDeclaration.AddModifiers(SyntaxFactory.Token(setterKind));
+                setterDeclaration = setterDeclaration.AddModifiers(Token(setterKind));
             }
 
             propertyDeclaration = propertyDeclaration.AddAccessorListAccessors(setterDeclaration);
@@ -201,11 +198,19 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
     private static string GetPropertyName(string variableName)
     {
-        variableName = variableName.Insert(0, char.ToUpper(variableName[0]).ToString());
-        return variableName.Remove(1, 1);
+        var variableNameBuilder = new StringBuilder(variableName);
+
+        if (variableNameBuilder[0] == '_' && variableNameBuilder.Length > 1)
+        {
+            variableNameBuilder.Remove(0, 1);
+        }
+
+        variableNameBuilder.Insert(0, char.ToUpper(variableNameBuilder[0]));
+        variableNameBuilder.Remove(1, 1);
+        return variableNameBuilder.ToString();
     }
 
-    private static MethodDeclarationSyntax? GetGetterMethodAndDelete(
+    private static MethodDeclarationSyntax? FindGetterMethodAndDelete(
         SyntaxNode root,
         Diagnostic diagnostic,
         SyntaxEditor editor)
@@ -226,7 +231,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         return getterMethod;
     }
 
-    private static MethodDeclarationSyntax? GetSetterMethodAndDelete(
+    private static MethodDeclarationSyntax? FindSetterMethodAndDelete(
         SyntaxNode root,
         Diagnostic diagnostic,
         SyntaxEditor editor)
