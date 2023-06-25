@@ -3,6 +3,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
+using SourceKit.Analyzers.Properties.General;
 
 namespace SourceKit.Analyzers.Properties.Analyzers;
 
@@ -37,20 +39,14 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
     private void AnalyzeClass(SyntaxNodeAnalysisContext context)
     {
         var classDeclaration = (ClassDeclarationSyntax)context.Node;
-        
+
         foreach (var field in classDeclaration.Members.OfType<FieldDeclarationSyntax>())
         {
-            if (field.Modifiers.Count != 1)
-            {
-                continue;
-            }
-
             if (field.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.PublicKeyword))
             {
                 AnalyzePublicVariableDeclaration(context, field.Declaration);
             }
-
-            if (field.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.PrivateKeyword))
+            else
             {
                 AnalyzeFieldsMethods(context, field.Declaration, classDeclaration);
             }
@@ -74,79 +70,105 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
         VariableDeclarationSyntax variableDeclaration,
         ClassDeclarationSyntax classDeclaration)
     {
-        var getMethods = FindGetMethods(classDeclaration);
-        var setMethods = FindSetMethods(classDeclaration);
+        var semanticModel = context.SemanticModel;
+
+        var getMethods = FindGetMethods(semanticModel, classDeclaration);
+        var setMethods = FindSetMethods(semanticModel, classDeclaration);
 
         foreach (var variable in variableDeclaration.Variables)
         {
-            var variableName = variable.Identifier.ToString();
-            
-            if (getMethods.TryGetValue(variableName, out var getMethod) is false)
+            var fieldWithMethods = Finder.FindFieldWithMethods(context, variable, getMethods, setMethods);
+
+            if (fieldWithMethods.GetMethods.Count == 0)
             {
                 return;
             }
-
-            var variableLocation = variable.GetLocation();
-            var getMethodLocation = getMethod.Identifier.GetLocation();
-            var additionalLocations = new List<Location> { variableLocation, getMethodLocation };
-
-            if (setMethods.TryGetValue(variableName, out var setMethod))
+            
+            var variableLocation = variable.Identifier.GetLocation();
+            var additionalLocations = new List<Location> { variableLocation };
+            
+            context.ReportDiagnostic(Diagnostic.Create(
+                Descriptor,
+                variableLocation,
+                additionalLocations,
+                variable.Identifier.Text));
+            
+            foreach (var getMethod in fieldWithMethods.GetMethods)
             {
-                var setMethodLocation = setMethod.Identifier.GetLocation();
-                additionalLocations.Add(setMethodLocation);
-
                 context.ReportDiagnostic(Diagnostic.Create(
                     Descriptor,
-                    setMethodLocation,
+                    getMethod.Identifier.GetLocation(),
                     additionalLocations,
                     variable.Identifier.Text));
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(
-                Descriptor,
-                getMethodLocation, 
-                additionalLocations,
-                variable.Identifier.Text));
-            context.ReportDiagnostic(Diagnostic.Create(
-                Descriptor, 
-                variableLocation, 
-                additionalLocations,
-                variable.Identifier.Text));
+            foreach (var setMethod in fieldWithMethods.SetMethods)
+            {
+                context.ReportDiagnostic(Diagnostic.Create(
+                    Descriptor,
+                    setMethod.Identifier.GetLocation(),
+                    additionalLocations,
+                    variable.Identifier.Text));
+            }
         }
     }
 
-    private Dictionary<string, MethodDeclarationSyntax> FindGetMethods(ClassDeclarationSyntax classDeclaration)
+    private ILookup<ISymbol?, MethodDeclarationSyntax> FindGetMethods(
+        SemanticModel semanticModel,
+        ClassDeclarationSyntax classDeclaration)
     {
         return classDeclaration
             .ChildNodes()
             .OfType<MethodDeclarationSyntax>()
             .Where(method =>
-                !method.ParameterList.ChildNodes().Any() &&
-                method.Body?.ChildNodes().Count() == 1 &&
-                method.Body.ChildNodes().First() is ReturnStatementSyntax)
-            .ToDictionary(method =>
-            {
-                var returnStatement = (ReturnStatementSyntax) method.Body?.ChildNodes().First()!;
-                return returnStatement.ChildNodes().First().ToString();
-            });
+                !method.ParameterList.Parameters.Any() &&
+                method.Body?.Statements.Count == 1 &&
+                method.Body.Statements.First() is ReturnStatementSyntax returnStatementSyntax &&
+                semanticModel.GetOperation(returnStatementSyntax) is IReturnOperation
+                {
+                    ReturnedValue: IFieldReferenceOperation
+                })
+            .ToLookup(method =>
+                {
+                    var returnSyntax = method.Body!.ChildNodes().First();
+                    var returnSymbol = (IReturnOperation) semanticModel.GetOperation(returnSyntax)!;
+                    var fieldReferenceSymbol = (IFieldReferenceOperation) returnSymbol.ReturnedValue!;
+
+                    return fieldReferenceSymbol.Field;
+                },
+                SymbolEqualityComparer.Default);
     }
 
-    private Dictionary<string, MethodDeclarationSyntax> FindSetMethods(ClassDeclarationSyntax classDeclaration)
+    private ILookup<ISymbol?, MethodDeclarationSyntax> FindSetMethods(
+        SemanticModel semanticModel,
+        ClassDeclarationSyntax classDeclaration)
     {
         return classDeclaration
             .ChildNodes()
             .OfType<MethodDeclarationSyntax>()
             .Where(method =>
-                method.ParameterList.ChildNodes().Count() == 1 &&
-                method.ParameterList.ChildNodes().First() is ParameterSyntax parameterSyntax &&
-                method.Body?.ChildNodes().Count() == 1 &&
-                method.Body.ChildNodes().First() is ExpressionStatementSyntax expressionStatement &&
-                expressionStatement.Expression.ChildNodes().Count() == 2 &&
-                expressionStatement.Expression.ChildNodes().Last().ToString() == parameterSyntax.Identifier.ToString())
-            .ToDictionary(method =>
-            {
-                var expressionStatement = (ExpressionStatementSyntax) method.Body?.ChildNodes().First()!;
-                return expressionStatement.Expression.ChildNodes().First().ToString();
-            });
+                method.ParameterList.Parameters.Count == 1 &&
+                method.Body?.Statements.Count == 1 &&
+                method.Body.Statements.First() is ExpressionStatementSyntax expressionStatement &&
+                semanticModel.GetOperation(expressionStatement) is IExpressionStatementOperation
+                {
+                    Operation: ISimpleAssignmentOperation
+                    {
+                        Value: IParameterReferenceOperation valueReferenceOperation
+                    }
+                } &&
+                SymbolEqualityComparer.Default.Equals(
+                    semanticModel.GetDeclaredSymbol(method.ParameterList.Parameters.First()),
+                    valueReferenceOperation.Parameter))
+            .ToLookup(method =>
+                {
+                    var expressionStatement = method.Body!.ChildNodes().First();
+                    var expressionStatementOperation =
+                        (IExpressionStatementOperation) semanticModel.GetOperation(expressionStatement)!;
+                    var simpleAssignmentOperation = (ISimpleAssignmentOperation) expressionStatementOperation.Operation;
+                    var fieldReferenceOperation = (IFieldReferenceOperation) simpleAssignmentOperation.Target;
+                    return fieldReferenceOperation.Field;
+                },
+                SymbolEqualityComparer.Default);
     }
 }

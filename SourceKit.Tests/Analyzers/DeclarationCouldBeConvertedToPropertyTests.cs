@@ -110,20 +110,14 @@ public class DeclarationCouldBeConvertedToPropertyTests
         var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 5, 20)
             .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 7, 19)
-            .WithLocation(sourceFile.Name, 12, 17)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
         var diagnostic2 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 7, 19)
             .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 7, 19)
-            .WithLocation(sourceFile.Name, 12, 17)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
         var diagnostic3 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 12, 17)
             .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 7, 19)
-            .WithLocation(sourceFile.Name, 12, 17)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         var test = new CSharpAnalyzerTest<DeclarationCouldBeConvertedToPropertyAnalyzer, XUnitVerifier>

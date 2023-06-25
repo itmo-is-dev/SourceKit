@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using SourceKit.Analyzers.Properties.Analyzers;
+using SourceKit.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Analyzers.Properties.CodeFixes;
@@ -78,8 +79,6 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             return document;
         }
 
-        // TODO: ѕопробовать убрать context из аргументов, так как больше не нужно будет делать нормалайз на весь документ
-        // » добавить к аргументов kind.
         return fieldDeclaration.Modifiers.First().Kind() is SyntaxKind.PublicKeyword
             ? await ProcessPublicField(context, document, variableDeclarator, variableDeclaration)
             : await ProcessNotPublicField(context, root, diagnostic, document, variableDeclarator, variableDeclaration);
@@ -146,7 +145,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         }
 
         var getterMethod = FindGetterMethodAndDelete(root, diagnostic, editor);
-        var setterMethod = FindSetterMethodAndDelete(root, diagnostic, editor);
+        var setterKind = FindSetterMethodAndDelete(root, diagnostic, editor);
 
         if (getterMethod is null)
         {
@@ -166,16 +165,14 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
                 .AddModifiers(Token(propertyKind))
                 .WithTrailingTrivia(CarriageReturnLineFeed);
 
-        if (setterMethod is not null)
+        if (setterKind is not null)
         {
-            var setterKind = setterMethod.Modifiers.First().Kind();
-
             var setterDeclaration = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
             if (setterKind != propertyKind)
             {
-                setterDeclaration = setterDeclaration.AddModifiers(Token(setterKind));
+                setterDeclaration = setterDeclaration.AddModifiers(Token(setterKind.Value));
             }
 
             propertyDeclaration = propertyDeclaration.AddAccessorListAccessors(setterDeclaration);
@@ -231,24 +228,40 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         return getterMethod;
     }
 
-    private static MethodDeclarationSyntax? FindSetterMethodAndDelete(
+    private static SyntaxKind? FindSetterMethodAndDelete(
         SyntaxNode root,
         Diagnostic diagnostic,
         SyntaxEditor editor)
     {
-        if (diagnostic.AdditionalLocations.Count < 3)
+        var numberOfGetMethods = Convert.ToInt32(diagnostic.Properties["GetMethodsAmount"]);
+        var numberOfSetMethods = Convert.ToInt32(diagnostic.Properties["SetMethodsAmount"]);
+
+        if (numberOfSetMethods == 0)
         {
             return null;
         }
 
-        var setterMethodNode = root.FindNode(diagnostic.AdditionalLocations[2].SourceSpan);
-
-        if (setterMethodNode is not MethodDeclarationSyntax setterMethod)
+        var higherSyntaxKind = Accessibility.Private;
+        for (var i = numberOfGetMethods + 1; i < diagnostic.AdditionalLocations.Count; i++)
         {
-            return null;
-        }
+            var setterMethodNode = root.FindNode(diagnostic.AdditionalLocations[i].SourceSpan);
+            if (setterMethodNode is not MethodDeclarationSyntax setterMethod)
+            {
+                return null;
+            }
 
-        editor.RemoveNode(setterMethod);
-        return setterMethod;
+            if (Enum.TryParse<Accessibility>(setterMethod.Modifiers.First().Kind().ToString(), out var kind))
+            {
+                if (higherSyntaxKind < kind)
+                {
+                    higherSyntaxKind = kind;
+                }
+            }
+            
+            editor.RemoveNode(setterMethod);
+        }
+        
+        var t = higherSyntaxKind.ToSyntaxTokenList();
+        return null;
     }
 }
