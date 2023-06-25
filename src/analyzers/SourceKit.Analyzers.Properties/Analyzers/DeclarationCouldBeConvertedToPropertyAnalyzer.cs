@@ -3,7 +3,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Operations;
 using SourceKit.Analyzers.Properties.General;
 
 namespace SourceKit.Analyzers.Properties.Analyzers;
@@ -72,27 +71,25 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
     {
         var semanticModel = context.SemanticModel;
 
-        var getMethods = FindGetMethods(semanticModel, classDeclaration);
-        var setMethods = FindSetMethods(semanticModel, classDeclaration);
-
         foreach (var variable in variableDeclaration.Variables)
         {
-            var fieldWithMethods = Finder.FindFieldWithMethods(context, variable, getMethods, setMethods);
+            var fieldWithMethods = Finder.FindFieldWithMethods(semanticModel, variable, classDeclaration);
 
             if (fieldWithMethods.GetMethods.Count == 0)
             {
                 return;
             }
-            
+
             var variableLocation = variable.Identifier.GetLocation();
-            var additionalLocations = new List<Location> { variableLocation };
-            
+            var classLocation = classDeclaration.GetLocation();
+            var additionalLocations = new List<Location> { variableLocation, classLocation };
+
             context.ReportDiagnostic(Diagnostic.Create(
                 Descriptor,
                 variableLocation,
                 additionalLocations,
                 variable.Identifier.Text));
-            
+
             foreach (var getMethod in fieldWithMethods.GetMethods)
             {
                 context.ReportDiagnostic(Diagnostic.Create(
@@ -111,64 +108,5 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
                     variable.Identifier.Text));
             }
         }
-    }
-
-    private ILookup<ISymbol?, MethodDeclarationSyntax> FindGetMethods(
-        SemanticModel semanticModel,
-        ClassDeclarationSyntax classDeclaration)
-    {
-        return classDeclaration
-            .ChildNodes()
-            .OfType<MethodDeclarationSyntax>()
-            .Where(method =>
-                !method.ParameterList.Parameters.Any() &&
-                method.Body?.Statements.Count == 1 &&
-                method.Body.Statements.First() is ReturnStatementSyntax returnStatementSyntax &&
-                semanticModel.GetOperation(returnStatementSyntax) is IReturnOperation
-                {
-                    ReturnedValue: IFieldReferenceOperation
-                })
-            .ToLookup(method =>
-                {
-                    var returnSyntax = method.Body!.ChildNodes().First();
-                    var returnSymbol = (IReturnOperation) semanticModel.GetOperation(returnSyntax)!;
-                    var fieldReferenceSymbol = (IFieldReferenceOperation) returnSymbol.ReturnedValue!;
-
-                    return fieldReferenceSymbol.Field;
-                },
-                SymbolEqualityComparer.Default);
-    }
-
-    private ILookup<ISymbol?, MethodDeclarationSyntax> FindSetMethods(
-        SemanticModel semanticModel,
-        ClassDeclarationSyntax classDeclaration)
-    {
-        return classDeclaration
-            .ChildNodes()
-            .OfType<MethodDeclarationSyntax>()
-            .Where(method =>
-                method.ParameterList.Parameters.Count == 1 &&
-                method.Body?.Statements.Count == 1 &&
-                method.Body.Statements.First() is ExpressionStatementSyntax expressionStatement &&
-                semanticModel.GetOperation(expressionStatement) is IExpressionStatementOperation
-                {
-                    Operation: ISimpleAssignmentOperation
-                    {
-                        Value: IParameterReferenceOperation valueReferenceOperation
-                    }
-                } &&
-                SymbolEqualityComparer.Default.Equals(
-                    semanticModel.GetDeclaredSymbol(method.ParameterList.Parameters.First()),
-                    valueReferenceOperation.Parameter))
-            .ToLookup(method =>
-                {
-                    var expressionStatement = method.Body!.ChildNodes().First();
-                    var expressionStatementOperation =
-                        (IExpressionStatementOperation) semanticModel.GetOperation(expressionStatement)!;
-                    var simpleAssignmentOperation = (ISimpleAssignmentOperation) expressionStatementOperation.Operation;
-                    var fieldReferenceOperation = (IFieldReferenceOperation) simpleAssignmentOperation.Target;
-                    return fieldReferenceOperation.Field;
-                },
-                SymbolEqualityComparer.Default);
     }
 }

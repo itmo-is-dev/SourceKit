@@ -1,7 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
 namespace SourceKit.Analyzers.Properties.General;
@@ -9,21 +7,21 @@ namespace SourceKit.Analyzers.Properties.General;
 public static class Finder
 {
     public static FieldWithMethods FindFieldWithMethods(
-        SyntaxNodeAnalysisContext context,
+        SemanticModel semanticModel,
         VariableDeclaratorSyntax variableDeclarator,
-        ILookup<ISymbol?, MethodDeclarationSyntax> getMethods,
-        ILookup<ISymbol?, MethodDeclarationSyntax> setMethods)
+        ClassDeclarationSyntax classDeclaration)
     {
         var fieldWithMethods = new FieldWithMethods(variableDeclarator);
-        
-        var semanticModel = context.SemanticModel;
 
-        var fieldSymbol = ModelExtensions.GetDeclaredSymbol(semanticModel, variableDeclarator);
+        var fieldSymbol = semanticModel.GetDeclaredSymbol(variableDeclarator);
         if (fieldSymbol is null)
         {
             return fieldWithMethods;
         }
 
+        var getMethods = FindGetMethods(semanticModel, classDeclaration);
+        var setMethods = FindSetMethods(semanticModel, classDeclaration);
+        
         if (getMethods.Contains(fieldSymbol) is false)
         {
             return fieldWithMethods;
@@ -33,5 +31,64 @@ public static class Finder
         fieldWithMethods.SetMethods = setMethods[fieldSymbol].ToList();
 
         return fieldWithMethods;
+    }
+    
+    private static ILookup<ISymbol?, MethodDeclarationSyntax> FindGetMethods(
+        SemanticModel semanticModel,
+        SyntaxNode classDeclaration)
+    {
+        return classDeclaration
+            .ChildNodes()
+            .OfType<MethodDeclarationSyntax>()
+            .Where(method =>
+                !method.ParameterList.Parameters.Any() &&
+                method.Body?.Statements.Count == 1 &&
+                method.Body.Statements.First() is ReturnStatementSyntax returnStatementSyntax &&
+                semanticModel.GetOperation(returnStatementSyntax) is IReturnOperation
+                {
+                    ReturnedValue: IFieldReferenceOperation
+                })
+            .ToLookup(method =>
+                {
+                    var returnSyntax = method.Body!.ChildNodes().First();
+                    var returnSymbol = (IReturnOperation) semanticModel.GetOperation(returnSyntax)!;
+                    var fieldReferenceSymbol = (IFieldReferenceOperation) returnSymbol.ReturnedValue!;
+
+                    return fieldReferenceSymbol.Field;
+                },
+                SymbolEqualityComparer.Default);
+    }
+
+    private static ILookup<ISymbol?, MethodDeclarationSyntax> FindSetMethods(
+        SemanticModel semanticModel,
+        SyntaxNode classDeclaration)
+    {
+        return classDeclaration
+            .ChildNodes()
+            .OfType<MethodDeclarationSyntax>()
+            .Where(method =>
+                method.ParameterList.Parameters.Count == 1 &&
+                method.Body?.Statements.Count == 1 &&
+                method.Body.Statements.First() is ExpressionStatementSyntax expressionStatement &&
+                semanticModel.GetOperation(expressionStatement) is IExpressionStatementOperation
+                {
+                    Operation: ISimpleAssignmentOperation
+                    {
+                        Value: IParameterReferenceOperation valueReferenceOperation
+                    }
+                } &&
+                SymbolEqualityComparer.Default.Equals(
+                    semanticModel.GetDeclaredSymbol(method.ParameterList.Parameters.First()),
+                    valueReferenceOperation.Parameter))
+            .ToLookup(method =>
+                {
+                    var expressionStatement = method.Body!.ChildNodes().First();
+                    var expressionStatementOperation =
+                        (IExpressionStatementOperation) semanticModel.GetOperation(expressionStatement)!;
+                    var simpleAssignmentOperation = (ISimpleAssignmentOperation) expressionStatementOperation.Operation;
+                    var fieldReferenceOperation = (IFieldReferenceOperation) simpleAssignmentOperation.Target;
+                    return fieldReferenceOperation.Field;
+                },
+                SymbolEqualityComparer.Default);
     }
 }

@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Editing;
 using SourceKit.Analyzers.Properties.Analyzers;
+using SourceKit.Analyzers.Properties.General;
 using SourceKit.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -101,7 +102,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         var propertyDeclaration = PropertyDeclaration(
                 variableTypeNode,
-                Identifier(GetPropertyName(variableDeclarator.Identifier.ToString())))
+                Identifier(NameProducer.GetPropertyName(variableDeclarator.Identifier.ToString())))
             .AddAccessorListAccessors(
                 AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                     .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
@@ -144,38 +145,56 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             return editor.OriginalDocument;
         }
 
-        var getterMethod = FindGetterMethodAndDelete(root, diagnostic, editor);
-        var setterKind = FindSetterMethodAndDelete(root, diagnostic, editor);
-
-        if (getterMethod is null)
+        var semanticModel = await context.Document.GetSemanticModelAsync();
+        if (semanticModel is null)
         {
             return editor.OriginalDocument;
         }
 
-        var propertyKind = getterMethod.Modifiers.First().Kind();
+        var classDeclarationNode = root.FindNode(diagnostic.AdditionalLocations[1].SourceSpan);
+        if (classDeclarationNode is not ClassDeclarationSyntax classDeclaration)
+        {
+            return editor.OriginalDocument;
+        }
 
+        var fieldWithMethods = Finder.FindFieldWithMethods(semanticModel, variableDeclarator, classDeclaration);
+
+
+        var getMethod = FindMostAccessibleGetMethod(fieldWithMethods);
+        var setMethod = FindMostAccessibleSetMethod(fieldWithMethods);
+        DeleteAllMethods(fieldWithMethods, editor);
+
+        if (getMethod is null)
+        {
+            return editor.OriginalDocument;
+        }
+
+        var propertyAccessor = getMethod.Modifiers;
+        
         var propertyDeclaration =
             PropertyDeclaration(
                     variableType,
-                    Identifier(GetPropertyName(variableDeclarator.Identifier.ToString())))
+                    Identifier(NameProducer.GetPropertyName(variableDeclarator.Identifier.ToString())))
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                         .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
                 .NormalizeWhitespace()
-                .AddModifiers(Token(propertyKind))
+                .WithModifiers(propertyAccessor)
                 .WithTrailingTrivia(CarriageReturnLineFeed);
 
-        if (setterKind is not null)
+        var setMethodAccessor = setMethod?.Modifiers;
+        
+        if (setMethodAccessor is not null)
         {
-            var setterDeclaration = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+            var setMethodDeclaration = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-            if (setterKind != propertyKind)
+            if (setMethodAccessor.Value.Equals(propertyAccessor))
             {
-                setterDeclaration = setterDeclaration.AddModifiers(Token(setterKind.Value));
+                setMethodDeclaration = setMethodDeclaration.WithModifiers(setMethodAccessor.Value);
             }
 
-            propertyDeclaration = propertyDeclaration.AddAccessorListAccessors(setterDeclaration);
+            propertyDeclaration = propertyDeclaration.AddAccessorListAccessors(setMethodDeclaration);
         }
 
         if (variableDeclaration.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
@@ -193,75 +212,56 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         return context.Document.WithSyntaxRoot(normalizedRoot);
     }
 
-    private static string GetPropertyName(string variableName)
+    private static MethodDeclarationSyntax? FindMostAccessibleGetMethod(FieldWithMethods fieldWithMethods)
     {
-        var variableNameBuilder = new StringBuilder(variableName);
-
-        if (variableNameBuilder[0] == '_' && variableNameBuilder.Length > 1)
+        if (fieldWithMethods.GetMethods.Count == 0)
         {
-            variableNameBuilder.Remove(0, 1);
+            return null;
         }
 
-        variableNameBuilder.Insert(0, char.ToUpper(variableNameBuilder[0]));
-        variableNameBuilder.Remove(1, 1);
-        return variableNameBuilder.ToString();
+        var higherAccessor = Accessibility.Private;
+        MethodDeclarationSyntax? higherAccessorMethod = null;
+        foreach (var getMethod in fieldWithMethods.GetMethods)
+        {
+            var accessibility = getMethod.Modifiers.ToSyntaxTokenList();
+            if (higherAccessor >= accessibility) continue;
+            higherAccessor = accessibility;
+            higherAccessorMethod = getMethod;
+        }
+
+        return higherAccessorMethod;
     }
 
-    private static MethodDeclarationSyntax? FindGetterMethodAndDelete(
-        SyntaxNode root,
-        Diagnostic diagnostic,
-        SyntaxEditor editor)
+    private static MethodDeclarationSyntax? FindMostAccessibleSetMethod(FieldWithMethods fieldWithMethods)
     {
-        if (diagnostic.AdditionalLocations.Count < 2)
+        if (fieldWithMethods.SetMethods.Count == 0)
         {
             return null;
         }
 
-        var getterMethodNode = root.FindNode(diagnostic.AdditionalLocations[1].SourceSpan);
-
-        if (getterMethodNode is not MethodDeclarationSyntax getterMethod)
+        var higherAccessor = Accessibility.Private;
+        MethodDeclarationSyntax? higherAccessorMethod = null;
+        foreach (var setMethod in fieldWithMethods.SetMethods)
         {
-            return null;
+            var accessibility = setMethod.Modifiers.ToSyntaxTokenList();
+            if (higherAccessor >= accessibility) continue;
+            higherAccessor = accessibility;
+            higherAccessorMethod = setMethod;
         }
 
-        editor.RemoveNode(getterMethod);
-        return getterMethod;
+        return higherAccessorMethod;
     }
 
-    private static SyntaxKind? FindSetterMethodAndDelete(
-        SyntaxNode root,
-        Diagnostic diagnostic,
-        SyntaxEditor editor)
+    private static void DeleteAllMethods(FieldWithMethods fieldWithMethods, DocumentEditor editor)
     {
-        var numberOfGetMethods = Convert.ToInt32(diagnostic.Properties["GetMethodsAmount"]);
-        var numberOfSetMethods = Convert.ToInt32(diagnostic.Properties["SetMethodsAmount"]);
-
-        if (numberOfSetMethods == 0)
+        foreach (var getMethod in fieldWithMethods.GetMethods)
         {
-            return null;
+            editor.RemoveNode(getMethod);
         }
 
-        var higherSyntaxKind = Accessibility.Private;
-        for (var i = numberOfGetMethods + 1; i < diagnostic.AdditionalLocations.Count; i++)
+        foreach (var setMethod in fieldWithMethods.SetMethods)
         {
-            var setterMethodNode = root.FindNode(diagnostic.AdditionalLocations[i].SourceSpan);
-            if (setterMethodNode is not MethodDeclarationSyntax setterMethod)
-            {
-                return null;
-            }
-
-            if (Enum.TryParse<Accessibility>(setterMethod.Modifiers.First().Kind().ToString(), out var kind))
-            {
-                if (higherSyntaxKind < kind)
-                {
-                    higherSyntaxKind = kind;
-                }
-            }
-            
-            editor.RemoveNode(setterMethod);
+            editor.RemoveNode(setMethod);
         }
-        
-        var t = higherSyntaxKind.ToSyntaxTokenList();
-        return null;
     }
 }
