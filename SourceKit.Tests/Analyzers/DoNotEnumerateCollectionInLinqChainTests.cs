@@ -17,23 +17,23 @@ public class DoNotEnumerateCollectionInLinqChainTests
     [Fact]
     public async Task NoIssues_WhenNoLinqMethodsUsedAfterConversionMethods()
     {
-        const string testCode = @"
+        const string testCode = 
+            """
             using System;
             using System.Collections.Generic;
             using System.Linq;
-
             class Program
             {
                 static void Main(string[] args)
                 {
                     var list = GetItems().Select(x => new List<int>{x}).Select(x => x.First()).ToList();
                 }
-
                 static IEnumerable<int> GetItems()
                 {
                     return Enumerable.Range(1, 10);
                 }
-            }";
+            }
+            """;
         var test = new CSharpAnalyzerTest
         {
             TestCode = testCode,
@@ -44,26 +44,26 @@ public class DoNotEnumerateCollectionInLinqChainTests
     [Fact]
     public async Task AnalyzerReportsIssue_WhenLinqMethodUsedAfterToList()
     {
-        const string testCode = @"
+        const string testCode = 
+            """
             using System;
             using System.Collections.Generic;
             using System.Linq;
-
             class Program
             {
                 static void Main(string[] args)
                 {
                     var list = GetItems().ToList().Where(x => x > 5);
                 }
-
                 static IEnumerable<int> GetItems()
                 {
                     return Enumerable.Range(1, 10);
                 }
-            }";
+            }
+            """;
 
         var expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
-            .WithLocation(10, 43).WithArguments("ToList");
+            .WithLocation(8, 31).WithArguments("ToList");
 
         var test = new CSharpAnalyzerTest
         {
@@ -77,10 +77,10 @@ public class DoNotEnumerateCollectionInLinqChainTests
     [Fact]
     public async Task AnalyzerReportsIssue_WhenLinqMethodUsedAfterToLookup()
     {
-        const string testCode = @"
+        const string testCode = 
+            """
             using System.Collections.Generic;
             using System.Linq;
-
             class Program
             {
                 private class Comparer<T> : IEqualityComparer<T>
@@ -89,7 +89,6 @@ public class DoNotEnumerateCollectionInLinqChainTests
                     {
                         return x.Equals(y);
                     }
-
                     int IEqualityComparer<T>.GetHashCode(T obj)
                     {
                         return obj.GetHashCode();
@@ -99,15 +98,15 @@ public class DoNotEnumerateCollectionInLinqChainTests
                 {
                     var list = GetItems().ToLookup(x => x, new Comparer<int>()).Where(x => x.Key > 4);
                 }
-
                 static IEnumerable<int> GetItems()
                 {
                     return Enumerable.Range(1, 10);
                 }
-            }";
+            }
+            """;
 
         var expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
-            .WithLocation(21, 43).WithArguments("ToLookup");
+            .WithLocation(18, 31).WithArguments("ToLookup");
 
         var test = new CSharpAnalyzerTest
         {
@@ -121,26 +120,26 @@ public class DoNotEnumerateCollectionInLinqChainTests
     [Fact]
     public async Task AnalyzerReportsIssue_WhenLinqMethodUsedAfterToArray()
     {
-        const string testCode = @"
+        const string testCode =
+            """
             using System;
             using System.Collections.Generic;
             using System.Linq;
-
             class Program
             {
                 static void Main(string[] args)
                 {
                     var list = GetItems().ToArray().Where(x => x > 5);
                 }
-
                 static IEnumerable<int> GetItems()
                 {
                     return Enumerable.Range(1, 10);
                 }
-            }";
+            }
+            """;
 
         var expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
-            .WithLocation(10, 43).WithArguments("ToArray");
+            .WithLocation(8, 31).WithArguments("ToArray");
 
         var test = new CSharpAnalyzerTest
         {
@@ -154,62 +153,60 @@ public class DoNotEnumerateCollectionInLinqChainTests
     [Fact]
     public async Task CodeFixerFix_WhenLinqUsedAfterTerminationMethods()
     {
-        string fix = @"
-using System.Collections.Generic;
-using System.Linq;
-
-class Program
-{
-    private class Comparer<T> : IEqualityComparer<T>
-    {
-        bool IEqualityComparer<T>.Equals(T x, T y)
-        {
-            return x.Equals(y);
-        }
-
-        int IEqualityComparer<T>.GetHashCode(T obj)
-        {
-            return obj.GetHashCode();
-        }
-    }
-    static void Main(string[] args)
-    {
-        var list = GetItems().First();
-    }
-
-    static IEnumerable<int> GetItems()
-    {
-        return Enumerable.Range(1, 10);
-    }
-}";
-        var testCode = @"
-using System.Collections.Generic;
-using System.Linq;
-
-class Program
-{
-    private class Comparer<T> : IEqualityComparer<T>
-    {
-        bool IEqualityComparer<T>.Equals(T x, T y)
-        {
-            return x.Equals(y);
-        }
-
-        int IEqualityComparer<T>.GetHashCode(T obj)
-        {
-            return obj.GetHashCode();
-        }
-    }
-    static void Main(string[] args)
-    {
-        var list = GetItems().ToLookup(x => x, new Comparer<int>()).First();
-    }
-
-    static IEnumerable<int> GetItems()
-    {
-        return Enumerable.Range(1, 10);
-    }
-}";
+        string fix = 
+            """
+            using System.Collections.Generic;
+            using System.Linq;
+            class Program
+            {
+                private class Comparer<T> : IEqualityComparer<T>
+                {
+                    bool IEqualityComparer<T>.Equals(T x, T y)
+                    {
+                        return x.Equals(y);
+                    }
+                    int IEqualityComparer<T>.GetHashCode(T obj)
+                    {
+                        return obj.GetHashCode();
+                    }
+                }
+                static void Main(string[] args)
+                {
+                    var list = GetItems().First();
+                }
+                static IEnumerable<int> GetItems()
+                {
+                    return Enumerable.Range(1, 10);
+                }
+            }
+            """;
+        var testCode = 
+            """
+            using System.Collections.Generic;
+            using System.Linq;
+            class Program
+            {
+                private class Comparer<T> : IEqualityComparer<T>
+                {
+                    bool IEqualityComparer<T>.Equals(T x, T y)
+                    {
+                        return x.Equals(y);
+                    }
+                    int IEqualityComparer<T>.GetHashCode(T obj)
+                    {
+                        return obj.GetHashCode();
+                    }
+                }
+                static void Main(string[] args)
+                {
+                    var list = GetItems().ToLookup(x => x, new Comparer<int>()).First();
+                }
+                static IEnumerable<int> GetItems()
+                {
+                    return Enumerable.Range(1, 10);
+                }
+            }
+            """;
 
         var test = new CodeFixTest
         {
@@ -218,7 +215,7 @@ class Program
             ExpectedDiagnostics =
             {
                 AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
-                    .WithLocation(21, 31).WithArguments("ToLookup"),
+                    .WithLocation(18, 31).WithArguments("ToLookup"),
             },
             DisabledDiagnostics =
             {

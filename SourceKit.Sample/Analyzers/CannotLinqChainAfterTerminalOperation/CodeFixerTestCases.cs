@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-class Program
+class CodeFixerTestCases
 {
     private class Comparer<T> : IEqualityComparer<T>
     {
@@ -15,7 +15,7 @@ class Program
             return obj.GetHashCode();
         }
     }
-    static void Main(string[] args)
+    static void Test(string[] args)
     {
         var list = GetItems().ToLookup(x => x, new Comparer<int>()).First();
         var list1 = GetItems().ToArray().Where(x => x > 4);
