@@ -24,8 +24,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>0.0.0-alpha</Version>
-        <PackageReleaseNotes></PackageReleaseNotes>
+        <Version>0.0.1</Version>
+        <PackageReleaseNotes>Added OfType analyzer</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
