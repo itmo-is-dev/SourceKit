@@ -1,18 +1,18 @@
 ﻿using SourceKit.Analyzers.Enumerable.Analyzers;
 using Xunit;
 using CSharpAnalyzerTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<
-    SourceKit.Analyzers.Enumerable.Analyzers.CannotLinqChainAfterTerminalOperationAnalyzer,
+    SourceKit.Analyzers.Enumerable.Analyzers.DoNotEnumerateCollectionInLinqChain,
     Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 using AnalyzerVerifier = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<
-    SourceKit.Analyzers.Enumerable.Analyzers.CannotLinqChainAfterTerminalOperationAnalyzer>;
+    SourceKit.Analyzers.Enumerable.Analyzers.DoNotEnumerateCollectionInLinqChain>;
 using CodeFixTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpCodeFixTest<
-    SourceKit.Analyzers.Enumerable.Analyzers.CannotLinqChainAfterTerminalOperationAnalyzer,
+    SourceKit.Analyzers.Enumerable.Analyzers.DoNotEnumerateCollectionInLinqChain,
     SourceKit.Analyzers.Enumerable.CodeFixes.RemoveTerminalOperationCodeFixProvider,
     Microsoft.CodeAnalysis.Testing.Verifiers.XUnitVerifier>;
 
 namespace SourceKit.Tests.Analyzers;
 
-public class CannotLinqChainAfterTerminalOperationTests
+public class DoNotEnumerateCollectionInLinqChainTests
 {
     [Fact]
     public async Task NoIssues_WhenNoLinqMethodsUsedAfterConversionMethods()
@@ -62,8 +62,8 @@ public class CannotLinqChainAfterTerminalOperationTests
                 }
             }";
 
-        var expectedDiagnostic = AnalyzerVerifier.Diagnostic(CannotLinqChainAfterTerminalOperationAnalyzer.Descriptor)
-            .WithLocation(10, 52).WithArguments("ToList");
+        var expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
+            .WithLocation(10, 43).WithArguments("ToList");
 
         var test = new CSharpAnalyzerTest
         {
@@ -106,8 +106,8 @@ public class CannotLinqChainAfterTerminalOperationTests
                 }
             }";
 
-        var expectedDiagnostic = AnalyzerVerifier.Diagnostic(CannotLinqChainAfterTerminalOperationAnalyzer.Descriptor)
-            .WithLocation(21, 81).WithArguments("ToLookup");
+        var expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
+            .WithLocation(21, 43).WithArguments("ToLookup");
 
         var test = new CSharpAnalyzerTest
         {
@@ -139,8 +139,8 @@ public class CannotLinqChainAfterTerminalOperationTests
                 }
             }";
 
-        var expectedDiagnostic = AnalyzerVerifier.Diagnostic(CannotLinqChainAfterTerminalOperationAnalyzer.Descriptor)
-            .WithLocation(10, 53).WithArguments("ToArray");
+        var expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
+            .WithLocation(10, 43).WithArguments("ToArray");
 
         var test = new CSharpAnalyzerTest
         {
@@ -217,8 +217,8 @@ class Program
             FixedCode = fix,
             ExpectedDiagnostics =
             {
-                AnalyzerVerifier.Diagnostic(CannotLinqChainAfterTerminalOperationAnalyzer.Descriptor)
-                    .WithLocation(21, 69).WithArguments("ToLookup"),
+                AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
+                    .WithLocation(21, 31).WithArguments("ToLookup"),
             },
             DisabledDiagnostics =
             {
