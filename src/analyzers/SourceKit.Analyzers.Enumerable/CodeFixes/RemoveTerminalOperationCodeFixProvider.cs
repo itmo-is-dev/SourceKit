@@ -25,9 +25,12 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
         var location = diagnostic.Location;
         var root = await context.Document.GetSyntaxRootAsync();
         var node = root?.FindNode(location.SourceSpan);
+        
         if (node == null) return;
+        
         var token = node.GetLastToken();
         var title = string.Format(Title, token);
+        
         context.RegisterCodeFix(
             CodeAction.Create(
                 title: title,
@@ -38,7 +41,6 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
 
     private static async Task<Solution> RemoveToList(Document document, SyntaxNode node, CancellationToken ctx)
     {
-    
         var editor = await DocumentEditor.CreateAsync(document, ctx);
         var invocationExpressions = node.AncestorsAndSelf().OfType<InvocationExpressionSyntax>().First();
         var before = invocationExpressions.DescendantNodes().OfType<InvocationExpressionSyntax>().First();

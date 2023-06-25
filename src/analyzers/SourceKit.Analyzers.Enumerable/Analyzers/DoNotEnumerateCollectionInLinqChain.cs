@@ -39,7 +39,6 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-
         context.RegisterSyntaxNodeAction(RegisterDiagnostic, SyntaxKind.SimpleMemberAccessExpression);
     }
 
@@ -59,26 +58,26 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
         context.ReportDiagnostic(Diagnostic.Create(Descriptor, token.GetLocation(), node.Name));
     }
 
-    private static bool IsTerminationMethod(ExpressionSyntax syntax, SemanticModel? model)
+    private static bool IsTerminationMethod(ExpressionSyntax syntax, SemanticModel model)
     {
         return TerminationMethods.Contains(syntax.GetLastToken().ToString()) && IsLinqEnumerable(syntax, model);
     }
     
-    private static bool IsLinqEnumerable(ExpressionSyntax syntax, SemanticModel? model)
+    private static bool IsLinqEnumerable(ExpressionSyntax syntax, SemanticModel model)
     {
-        var symbol = GetSymbol(syntax, model) ?? throw new InvalidOperationException();
+        var symbol = GetSymbol(syntax, model);
         return IsLinqEnumerable(symbol, model);
     }
     
     
     
-    private static bool IsLinqEnumerable(ISymbol? symbol, SemanticModel? model)
+    private static bool IsLinqEnumerable(ISymbol? symbol, SemanticModel model)
     {
         var linqSymbol = model?.Compilation.GetTypeSymbol(typeof(System.Linq.Enumerable));
         var comparer = SymbolEqualityComparer.Default;
         return comparer.Equals(symbol?.ContainingType, linqSymbol);
     }
 
-    private static IMethodSymbol? GetSymbol(ExpressionSyntax syntax, SemanticModel? model) 
-        => model?.GetSymbolInfo(syntax).Symbol as IMethodSymbol;
+    private static IMethodSymbol? GetSymbol(ExpressionSyntax syntax, SemanticModel model) 
+        => model.GetSymbolInfo(syntax).Symbol as IMethodSymbol;
 }
