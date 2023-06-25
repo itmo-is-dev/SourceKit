@@ -68,4 +68,10 @@ public static class TypeSymbolExtensions
 
         return constructedFrom.TypeArguments.Single();
     }
+
+    public static INamedTypeSymbol? GetRequiredImplementedInterfaceByName(this ITypeSymbol symbol, string interfaceType)
+    {
+        return symbol.AllInterfaces.FirstOrDefault(
+            x => x.ToString() == interfaceType);
+    } 
 }
