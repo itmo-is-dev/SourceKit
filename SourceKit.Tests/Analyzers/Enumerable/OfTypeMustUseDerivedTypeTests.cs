@@ -11,7 +11,7 @@ namespace SourceKit.Tests.Analyzers.Enumerable;
 public class OfTypeMustUseDerivedTypeTests
 {
     [Fact]
-    public async Task A()
+    public async Task OfTypeMustUseDerivedType_ShouldReportDiagnostic_WhenUsedWithNotDerivedType()
     {
         var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Enumerable/OfTypeSample.cs");
 
