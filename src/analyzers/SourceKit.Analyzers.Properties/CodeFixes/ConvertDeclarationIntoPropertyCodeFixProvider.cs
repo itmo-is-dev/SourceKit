@@ -189,7 +189,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             var setMethodDeclaration = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
                 .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
 
-            if (setMethodAccessor.Value.Equals(propertyAccessor))
+            if (setMethodAccessor.Value.ToString() != propertyAccessor.ToString())
             {
                 setMethodDeclaration = setMethodDeclaration.WithModifiers(setMethodAccessor.Value);
             }

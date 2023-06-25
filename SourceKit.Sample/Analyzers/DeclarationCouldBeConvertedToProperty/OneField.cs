@@ -9,7 +9,7 @@ public class OneField
         return field;
     }
 
-    protected void SetField(string value)
+    public void SetField(string value)
     {
         field = value;
     }
