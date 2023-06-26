@@ -45,6 +45,7 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
     private static void RegisterDiagnostic(SyntaxNodeAnalysisContext context)
     {
         SemanticModel semanticModel = context.SemanticModel;
+        
         if (context.Node is not MemberAccessExpressionSyntax node || IsTerminationMethod(node, semanticModel) is false)
             return;
 
@@ -58,11 +59,6 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
         context.ReportDiagnostic(Diagnostic.Create(Descriptor, terminalOperationWithoutParamsToken.GetLocation(), node.Name));
     }
 
-    private static bool IsTerminationMethod(ExpressionSyntax syntax, SemanticModel model)
-    {
-        return TerminationMethods.Contains(syntax.GetLastToken().ToString()) && IsLinqEnumerable(syntax, model);
-    }
-    
     private static bool IsLinqEnumerable(ExpressionSyntax syntax, SemanticModel model)
     {
         IMethodSymbol? symbol = GetSymbol(syntax, model);
@@ -73,8 +69,12 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
     {
         INamedTypeSymbol linqSymbol = model.Compilation.GetTypeSymbol(typeof(System.Linq.Enumerable));
         var comparer = SymbolEqualityComparer.Default;
+        
         return comparer.Equals(symbol?.ContainingType, linqSymbol);
     }
+    
+    private static bool IsTerminationMethod(ExpressionSyntax syntax, SemanticModel model)
+        => TerminationMethods.Contains(syntax.GetLastToken().ToString()) && IsLinqEnumerable(syntax, model);
 
     private static IMethodSymbol? GetSymbol(ExpressionSyntax syntax, SemanticModel model) 
         => model.GetSymbolInfo(syntax).Symbol as IMethodSymbol;

@@ -1,4 +1,5 @@
-﻿using SourceKit.Analyzers.Enumerable.Analyzers;
+﻿using Microsoft.CodeAnalysis.Testing;
+using SourceKit.Analyzers.Enumerable.Analyzers;
 using Xunit;
 using CSharpAnalyzerTest = Microsoft.CodeAnalysis.CSharp.Testing.CSharpAnalyzerTest<
     SourceKit.Analyzers.Enumerable.Analyzers.DoNotEnumerateCollectionInLinqChain,
@@ -62,7 +63,7 @@ public class DoNotEnumerateCollectionInLinqChainTests
             }
             """;
 
-        var expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
+        DiagnosticResult expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
             .WithLocation(8, 31).WithArguments("ToList");
 
         var test = new CSharpAnalyzerTest
@@ -105,7 +106,7 @@ public class DoNotEnumerateCollectionInLinqChainTests
             }
             """;
 
-        var expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
+        DiagnosticResult expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
             .WithLocation(18, 31).WithArguments("ToLookup");
 
         var test = new CSharpAnalyzerTest
@@ -138,7 +139,7 @@ public class DoNotEnumerateCollectionInLinqChainTests
             }
             """;
 
-        var expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
+        DiagnosticResult expectedDiagnostic = AnalyzerVerifier.Diagnostic(DoNotEnumerateCollectionInLinqChain.Descriptor)
             .WithLocation(8, 31).WithArguments("ToArray");
 
         var test = new CSharpAnalyzerTest
@@ -153,8 +154,7 @@ public class DoNotEnumerateCollectionInLinqChainTests
     [Fact]
     public async Task CodeFixerFix_WhenLinqUsedAfterTerminationMethods()
     {
-        string fix = 
-            """
+        const string fix = """
             using System.Collections.Generic;
             using System.Linq;
             class Program
@@ -180,8 +180,7 @@ public class DoNotEnumerateCollectionInLinqChainTests
                 }
             }
             """;
-        var testCode = 
-            """
+        const string testCode = """
             using System.Collections.Generic;
             using System.Linq;
             class Program
@@ -222,6 +221,7 @@ public class DoNotEnumerateCollectionInLinqChainTests
                 "CS1061", 
             }
         };
+        
         await test.RunAsync();
     }
 }

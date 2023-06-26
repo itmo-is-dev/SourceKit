@@ -23,6 +23,7 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
     {
         Diagnostic diagnostic = context.Diagnostics.First();
         Location location = diagnostic.Location;
+        
         SyntaxNode? root = await context.Document.GetSyntaxRootAsync();
         SyntaxNode? node = root?.FindNode(location.SourceSpan);
         
@@ -41,10 +42,12 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
 
     private static async Task<Solution> RemoveToList(Document document, SyntaxNode node, CancellationToken cancellationToken)
     {
-        var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
         InvocationExpressionSyntax? invocationExpressions = node.AncestorsAndSelf().OfType<InvocationExpressionSyntax>().First();
         InvocationExpressionSyntax? before = invocationExpressions.DescendantNodes().OfType<InvocationExpressionSyntax>().First();
+        
+        var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
         editor.ReplaceNode(invocationExpressions, before);
+        
         return editor.GetChangedDocument().Project.Solution;
     }
 }
