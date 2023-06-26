@@ -33,11 +33,6 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
         context.RegisterSyntaxNodeAction(AnalyzeGeneric , SyntaxKind.GenericName);
     }
 
-    private string GetRequiredInterface(string keyType)
-    {
-        return $"System.IEquatable<{keyType}>";
-    }
-    
     private SyntaxNode GetFirstGenericArgument(GenericNameSyntax node)
     {
         return node.TypeArgumentList.Arguments.First();
@@ -51,18 +46,16 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
 
         var key = GetFirstGenericArgument(node);
             
-        if (key is OmittedTypeArgumentSyntax)
-            return;
+        if (key is OmittedTypeArgumentSyntax) return;
 
         var keyType = context.GetSymbolFromContext(key) as ITypeSymbol;
 
-        var interfaceName = GetRequiredInterface(keyType!.ToString());
+        var interfaceNamedType = context.Compilation.GetTypeSymbol(typeof(IEquatable<>));
 
-        var iequatable = keyType.GetRequiredImplementedInterfaceByName(interfaceName);
-            
-        if (iequatable is not null)
-            return;
-            
+        var iequatableInterfaces = keyType.FindAssignableTypesConstructedFrom(interfaceNamedType);
+        
+        if (keyType.AllInterfaces.Any(c => iequatableInterfaces.Contains(c))) return;
+        
         var diag = Diagnostic.Create(Descriptor, key.GetLocation());
         context.ReportDiagnostic(diag);
     }

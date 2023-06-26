@@ -35,6 +35,20 @@ public static class TypeSymbolExtensions
         return baseTypes
             .FirstOrDefault(current => current.ConstructedFrom.Equals(baseType, SymbolEqualityComparer.Default));
     }
+    
+    public static IEnumerable<INamedTypeSymbol> FindAssignableTypesConstructedFrom(
+        this ITypeSymbol type,
+        INamedTypeSymbol baseType)
+    {
+        if (type is not INamedTypeSymbol namedTypeSymbol)
+            return Enumerable.Empty<INamedTypeSymbol>();
+
+        IEnumerable<INamedTypeSymbol> baseTypes = namedTypeSymbol.GetBaseTypesAndInterfaces();
+
+        return baseTypes
+            .Where(current => 
+                current.ConstructedFrom.Equals(baseType, SymbolEqualityComparer.Default));
+    }
 
     public static INamedTypeSymbol GetAssignableTypeConstructedFrom(
         this ITypeSymbol type,
