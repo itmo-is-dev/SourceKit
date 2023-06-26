@@ -16,7 +16,7 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
     public const string Format = """Cannot chain LINQ methods after terminal operation {0}""";
 
 
-    private static readonly HashSet<string> TerminationMethods = new HashSet<string>()
+    private static readonly HashSet<string> TerminationMethods = new()
     {
         nameof(System.Linq.Enumerable.ToArray),
         nameof(System.Linq.Enumerable.ToList),
@@ -24,7 +24,7 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
         nameof(System.Linq.Enumerable.ToLookup),
     };
 
-    public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
         Title,
         Format,
@@ -39,14 +39,14 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-        context.RegisterSyntaxNodeAction(RegisterDiagnostic, SyntaxKind.SimpleMemberAccessExpression);
+        context.RegisterSyntaxNodeAction(RegisterDiagnostic, SyntaxKind.InvocationExpression);
     }
 
     private static void RegisterDiagnostic(SyntaxNodeAnalysisContext context)
     {
         SemanticModel semanticModel = context.SemanticModel;
         
-        if (context.Node is not MemberAccessExpressionSyntax node || IsTerminationMethod(node, semanticModel) is false)
+        if (context.Node is not InvocationExpressionSyntax node || IsTerminationMethod(node, semanticModel) is false)
             return;
 
         bool hasLinqAncestor = node.Ancestors()
@@ -55,8 +55,10 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
 
         if (hasLinqAncestor is false) return;
 
-        SyntaxToken terminalOperationWithoutParamsToken = node.GetLastToken();
-        context.ReportDiagnostic(Diagnostic.Create(Descriptor, terminalOperationWithoutParamsToken.GetLocation(), node.Name));
+        ExpressionSyntax terminalOperationExpression = node.Expression;
+        SyntaxToken terminalOperationWithoutParamsToken = terminalOperationExpression.GetLastToken();
+        
+        context.ReportDiagnostic(Diagnostic.Create(Descriptor, terminalOperationWithoutParamsToken.GetLocation(), terminalOperationWithoutParamsToken));
     }
 
     private static bool IsLinqEnumerable(ExpressionSyntax syntax, SemanticModel model)
@@ -67,14 +69,20 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
     
     private static bool IsLinqEnumerable(ISymbol? symbol, SemanticModel model)
     {
-        INamedTypeSymbol linqSymbol = model.Compilation.GetTypeSymbol(typeof(System.Linq.Enumerable));
+        Type linqEnumerableType = typeof(System.Linq.Enumerable);
+        INamedTypeSymbol linqSymbol = model.Compilation.GetTypeSymbol(linqEnumerableType);
         var comparer = SymbolEqualityComparer.Default;
         
         return comparer.Equals(symbol?.ContainingType, linqSymbol);
     }
-    
-    private static bool IsTerminationMethod(ExpressionSyntax syntax, SemanticModel model)
-        => TerminationMethods.Contains(syntax.GetLastToken().ToString()) && IsLinqEnumerable(syntax, model);
+
+    private static bool IsTerminationMethod(InvocationExpressionSyntax syntax, SemanticModel model)
+    {
+        ExpressionSyntax expression = syntax.Expression;
+        SyntaxToken method = expression.GetLastToken();
+        
+        return TerminationMethods.Contains(method.ToString()) && IsLinqEnumerable(syntax, model);
+    }
 
     private static IMethodSymbol? GetSymbol(ExpressionSyntax syntax, SemanticModel model) 
         => model.GetSymbolInfo(syntax).Symbol as IMethodSymbol;
