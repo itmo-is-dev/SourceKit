@@ -118,6 +118,7 @@ public class ConvertDeclarationIntoPropertyTests
 
     private const string OnePublicFieldFile = """
 namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+
 public class OnePublicField
 {
     public string Field { get; set; }
@@ -133,10 +134,10 @@ public class OnePublicField
 using System.Collections.Generic;
 
 namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+
 public class ManyPublicFields
 {
     public List<string> First { get; set; }
-
     public List<string> Second { get; set; }
 }
 """;
@@ -148,6 +149,7 @@ public class ManyPublicFields
 
     private const string FixedOneFieldFile = """
 namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+
 public class OneField
 {
     public string Field { get; set; }

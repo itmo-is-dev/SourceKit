@@ -123,9 +123,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             editor.ReplaceNode(fieldDeclarationNode, propertyDeclaration);
         }
 
-        var normalizedRoot = editor.GetChangedRoot().NormalizeWhitespace();
-
-        return context.Document.WithSyntaxRoot(normalizedRoot);
+        return editor.GetChangedDocument();
     }
 
     private static async Task<Document> ProcessNotPublicField(
@@ -170,7 +168,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         }
 
         var propertyAccessor = getMethod.Modifiers;
-        
+
         var propertyDeclaration =
             PropertyDeclaration(
                     variableType,
@@ -180,10 +178,10 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
                         .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
                 .NormalizeWhitespace()
                 .WithModifiers(propertyAccessor)
-                .WithTrailingTrivia(CarriageReturnLineFeed);
+                .WithLeadingTrivia(ElasticTab);
 
         var setMethodAccessor = setMethod?.Modifiers;
-        
+
         if (setMethodAccessor is not null)
         {
             var setMethodDeclaration = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
@@ -207,9 +205,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             editor.ReplaceNode(fieldDeclarationNode, propertyDeclaration);
         }
 
-        var normalizedRoot = editor.GetChangedRoot().NormalizeWhitespace();
-
-        return context.Document.WithSyntaxRoot(normalizedRoot);
+        return editor.GetChangedDocument();
     }
 
     private static MethodDeclarationSyntax? FindMostAccessibleGetMethod(FieldWithMethods fieldWithMethods)
