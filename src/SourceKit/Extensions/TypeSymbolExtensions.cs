@@ -27,13 +27,11 @@ public static class TypeSymbolExtensions
         this ITypeSymbol type,
         INamedTypeSymbol baseType)
     {
-        if (type is not INamedTypeSymbol namedTypeSymbol)
-            return null;
+        var symbols = type.FindAssignableTypesConstructedFrom(baseType);
 
-        IEnumerable<INamedTypeSymbol> baseTypes = namedTypeSymbol.GetBaseTypesAndInterfaces();
-
-        return baseTypes
-            .FirstOrDefault(current => current.ConstructedFrom.Equals(baseType, SymbolEqualityComparer.Default));
+        return symbols
+            .FirstOrDefault(current => 
+                current.ConstructedFrom.Equals(baseType, SymbolEqualityComparer.Default));
     }
     
     public static IEnumerable<INamedTypeSymbol> FindAssignableTypesConstructedFrom(
@@ -82,10 +80,4 @@ public static class TypeSymbolExtensions
 
         return constructedFrom.TypeArguments.Single();
     }
-
-    public static INamedTypeSymbol? GetRequiredImplementedInterfaceByName(this ITypeSymbol symbol, string interfaceType)
-    {
-        return symbol.AllInterfaces.FirstOrDefault(
-            x => x.ToString() == interfaceType);
-    } 
 }
