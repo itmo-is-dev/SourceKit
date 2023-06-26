@@ -52,7 +52,7 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
             .OfType<MemberAccessExpressionSyntax>()
             .Any(expressionSyntax => IsLinqEnumerable(expressionSyntax, semanticModel));
 
-        if (!hasLinqAncestor) return;
+        if (hasLinqAncestor is false) return;
 
         SyntaxToken token = node.GetLastToken();
         context.ReportDiagnostic(Diagnostic.Create(Descriptor, token.GetLocation(), node.Name));
