@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -50,17 +49,18 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             equivalenceKey: nameof(ConvertDeclarationIntoPropertyCodeFixProvider),
             createChangedDocument: async _ =>
             {
-                var newDocument = await ReplaceField(root, context, diagnostic);
+                var newDocument = await ReplaceFieldAsync(root, context, diagnostic, context.CancellationToken);
                 return newDocument;
             });
 
         context.RegisterCodeFix(action, diagnostic);
     }
 
-    private static async Task<Document> ReplaceField(
+    private static async Task<Document> ReplaceFieldAsync(
         SyntaxNode root,
         CodeFixContext context,
-        Diagnostic diagnostic)
+        Diagnostic diagnostic,
+        CancellationToken cancellationToken)
     {
         var document = context.Document.WithSyntaxRoot(root);
 
@@ -81,17 +81,28 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         }
 
         return fieldDeclaration.Modifiers.First().Kind() is SyntaxKind.PublicKeyword
-            ? await ProcessPublicField(context, document, variableDeclarator, variableDeclaration)
-            : await ProcessNotPublicField(context, root, diagnostic, document, variableDeclarator, variableDeclaration);
+            ? await ProcessPublicFieldAsync(
+                document, 
+                variableDeclarator, 
+                variableDeclaration, 
+                cancellationToken)
+            : await ProcessNotPublicFieldAsync(
+                context, 
+                root,
+                diagnostic, 
+                document, 
+                variableDeclarator, 
+                variableDeclaration,
+                cancellationToken);
     }
 
-    private static async Task<Document> ProcessPublicField(
-        CodeFixContext context,
+    private static async Task<Document> ProcessPublicFieldAsync(
         Document document,
         VariableDeclaratorSyntax variableDeclarator,
-        VariableDeclarationSyntax variableDeclaration)
+        VariableDeclarationSyntax variableDeclaration,
+        CancellationToken cancellationToken)
     {
-        var editor = await DocumentEditor.CreateAsync(document);
+        var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
 
         var variableTypeNode = variableDeclaration.Type;
 
@@ -126,15 +137,16 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         return editor.GetChangedDocument();
     }
 
-    private static async Task<Document> ProcessNotPublicField(
+    private static async Task<Document> ProcessNotPublicFieldAsync(
         CodeFixContext context,
         SyntaxNode root,
         Diagnostic diagnostic,
         Document document,
         VariableDeclaratorSyntax variableDeclarator,
-        VariableDeclarationSyntax variableDeclaration)
+        VariableDeclarationSyntax variableDeclaration,
+        CancellationToken cancellationToken)
     {
-        var editor = await DocumentEditor.CreateAsync(document);
+        var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
 
         var variableType = variableDeclaration.Type;
 
@@ -143,7 +155,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             return editor.OriginalDocument;
         }
 
-        var semanticModel = await context.Document.GetSemanticModelAsync();
+        var semanticModel = await context.Document.GetSemanticModelAsync(cancellationToken);
         if (semanticModel is null)
         {
             return editor.OriginalDocument;
