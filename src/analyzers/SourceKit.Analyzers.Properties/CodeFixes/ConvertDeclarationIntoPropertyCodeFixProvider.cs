@@ -82,16 +82,16 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         return fieldDeclaration.Modifiers.First().Kind() is SyntaxKind.PublicKeyword
             ? await ProcessPublicFieldAsync(
-                document, 
-                variableDeclarator, 
-                variableDeclaration, 
+                document,
+                variableDeclarator,
+                variableDeclaration,
                 cancellationToken)
             : await ProcessNotPublicFieldAsync(
-                context, 
+                context,
                 root,
-                diagnostic, 
-                document, 
-                variableDeclarator, 
+                diagnostic,
+                document,
+                variableDeclarator,
                 variableDeclaration,
                 cancellationToken);
     }
@@ -111,18 +111,24 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             return editor.OriginalDocument;
         }
 
-        var propertyDeclaration = PropertyDeclaration(
-                variableTypeNode,
-                Identifier(NameProducer.GetPropertyName(variableDeclarator.Identifier.ToString())))
-            .AddAccessorListAccessors(
-                AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)),
-                AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
-                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
-            .NormalizeWhitespace()
-            .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .WithTrailingTrivia(CarriageReturnLineFeed);
+        var propertyDeclaration =
+            PropertyDeclaration(
+                    variableTypeNode,
+                    Identifier(NameProducer.GetPropertyName(variableDeclarator.Identifier.ToString())))
+                .AddAccessorListAccessors(
+                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
+                .AddModifiers(Token(SyntaxKind.PublicKeyword));
 
+        if (fieldDeclarationNode.Modifiers.All(modifier => modifier.Kind() is not SyntaxKind.ReadOnlyKeyword))
+        {
+            var setMethodDeclaration = AccessorDeclaration(SyntaxKind.SetAccessorDeclaration)
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+
+            propertyDeclaration = propertyDeclaration.AddAccessorListAccessors(setMethodDeclaration);
+        }
+
+        propertyDeclaration = propertyDeclaration.WithLeadingTrivia(ElasticTab);
 
         if (variableDeclaration.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
         {
@@ -188,9 +194,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                         .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
-                .NormalizeWhitespace()
-                .WithModifiers(propertyAccessor)
-                .WithLeadingTrivia(ElasticTab);
+                .WithModifiers(propertyAccessor);
 
         var setMethodAccessor = setMethod?.Modifiers;
 
@@ -206,6 +210,8 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
             propertyDeclaration = propertyDeclaration.AddAccessorListAccessors(setMethodDeclaration);
         }
+
+        propertyDeclaration = propertyDeclaration.WithLeadingTrivia(ElasticTab);
 
         if (variableDeclaration.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
         {

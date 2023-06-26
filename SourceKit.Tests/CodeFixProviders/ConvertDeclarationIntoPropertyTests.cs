@@ -111,6 +111,104 @@ public class ConvertDeclarationIntoPropertyTests
         await test.RunAsync();
     }
 
+    [Fact]
+    public async Task ConvertDeclarationWithUnderscoreIntoProperty_ShouldGenerateCorrectProperty()
+    {
+        var sourceFile = await SourceFile.LoadAsync(UnderscoreNameFieldFilePath);
+        var fixedFile = new SourceFile(FixedUnderscoreNameFieldFileName, FixedUnderscoreNameFieldFile);
+
+        var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 5, 29)
+            .WithLocation(sourceFile.Name, 5, 29)
+            .WithLocation(sourceFile.Name, 3, 1)
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "_field"));
+        var diagnostic2 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 7, 19)
+            .WithLocation(sourceFile.Name, 5, 29)
+            .WithLocation(sourceFile.Name, 3, 1)
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "_field"));
+
+        var test = new CodeFixTest
+        {
+            TestState =
+            {
+                Sources = { sourceFile },
+                ExpectedDiagnostics = { diagnostic1, diagnostic2 },
+            },
+            FixedState =
+            {
+                Sources = { fixedFile }
+            }
+        };
+
+        await test.RunAsync();
+    }
+
+    [Fact]
+    public async Task ConvertDeclarationWithExpressionBodyIntoProperty_ShouldGenerateCorrectProperty()
+    {
+        var sourceFile = await SourceFile.LoadAsync(ExpressionBodyMethodsFieldFilePath);
+        var fixedFile = new SourceFile(FixedExpressionBodyMethodsFieldFileName, FixedExpressionBodyMethodsFieldFile);
+
+        var diagnostic1 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 5, 20)
+            .WithLocation(sourceFile.Name, 5, 20)
+            .WithLocation(sourceFile.Name, 3, 1)
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
+        var diagnostic2 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 7, 19)
+            .WithLocation(sourceFile.Name, 5, 20)
+            .WithLocation(sourceFile.Name, 3, 1)
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
+        var diagnostic3 = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 9, 29)
+            .WithLocation(sourceFile.Name, 5, 20)
+            .WithLocation(sourceFile.Name, 3, 1)
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
+
+        var test = new CodeFixTest
+        {
+            TestState =
+            {
+                Sources = { sourceFile },
+                ExpectedDiagnostics = { diagnostic1, diagnostic2, diagnostic3 },
+            },
+            FixedState =
+            {
+                Sources = { fixedFile }
+            }
+        };
+
+        await test.RunAsync();
+    }
+    
+    [Fact]
+    public async Task ConvertDeclarationWithReadonlyIntoProperty_ShouldGenerateCorrectProperty()
+    {
+        var sourceFile = await SourceFile.LoadAsync(ReadonlyPublicFieldFilePath);
+        var fixedFile = new SourceFile(ReadonlyPublicFieldFileName, ReadonlyPublicFieldFile);
+
+        var diagnostic = AnalyzerVerifier.Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 5, 28)
+            .WithLocation(sourceFile.Name, 5, 28)
+            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
+
+        var test = new CodeFixTest
+        {
+            TestState =
+            {
+                Sources = { sourceFile },
+                ExpectedDiagnostics = { diagnostic },
+            },
+            FixedState =
+            {
+                Sources = { fixedFile }
+            }
+        };
+
+        await test.RunAsync();
+    }
+
     private const string OnePublicFieldFilePath =
         "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/OnePublicField.cs";
 
@@ -153,6 +251,48 @@ namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
 public class OneField
 {
     public string Field { get; set; }
+}
+""";
+
+    private const string UnderscoreNameFieldFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/UnderscoreNameField.cs";
+
+    private const string FixedUnderscoreNameFieldFileName = "UnderscoreNameField.cs";
+
+    private const string FixedUnderscoreNameFieldFile = """
+namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+
+public class UnderscoreNameField
+{
+    public string Field { get; }
+}
+""";
+
+    private const string ExpressionBodyMethodsFieldFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/ExpressionBodyMethodsField.cs";
+
+    private const string FixedExpressionBodyMethodsFieldFileName = "ExpressionBodyMethodsField.cs";
+
+    private const string FixedExpressionBodyMethodsFieldFile = """
+namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+
+public class ExpressionBodyMethodsField
+{
+    public string Field { get; protected internal set; }
+}
+""";
+    
+    private const string ReadonlyPublicFieldFilePath =
+        "SourceKit.Sample/Analyzers/DeclarationCouldBeConvertedToProperty/ReadonlyPublicField.cs";
+
+    private const string ReadonlyPublicFieldFileName = "ReadonlyPublicField.cs";
+
+    private const string ReadonlyPublicFieldFile = """
+namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
+
+public class ReadonlyPublicField
+{
+    public string Field { get; }
 }
 """;
 }

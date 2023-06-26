@@ -37,13 +37,17 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
 
     private void AnalyzeClass(SyntaxNodeAnalysisContext context)
     {
-        var classDeclaration = (ClassDeclarationSyntax)context.Node;
+        var classDeclaration = (ClassDeclarationSyntax) context.Node;
 
         foreach (var field in classDeclaration.Members.OfType<FieldDeclarationSyntax>())
         {
             if (field.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.PublicKeyword))
             {
-                AnalyzePublicVariableDeclaration(context, field.Declaration);
+                if (field.Modifiers.Count == 1 ||
+                    field.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.ReadOnlyKeyword))
+                {
+                    AnalyzePublicVariableDeclaration(context, field.Declaration);
+                }
             }
             else
             {
