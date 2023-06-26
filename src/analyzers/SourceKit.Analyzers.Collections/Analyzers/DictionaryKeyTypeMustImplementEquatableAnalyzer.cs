@@ -45,7 +45,7 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
 
     private void AnalyzeGeneric(SyntaxNodeAnalysisContext context)
     {
-        var node = context.Node as GenericNameSyntax;
+        var node = (GenericNameSyntax) context.Node;
         if (node!.Identifier.Text != "Dictionary")
             return;
 
