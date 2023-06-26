@@ -37,6 +37,11 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
     {
         return $"System.IEquatable<{keyType}>";
     }
+    
+    private SyntaxNode GetFirstGenericArgument(GenericNameSyntax node)
+    {
+        return node.TypeArgumentList.Arguments.First();
+    }
 
     private void AnalyzeGeneric(SyntaxNodeAnalysisContext context)
     {
@@ -44,7 +49,7 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
         if (node!.Identifier.Text != "Dictionary")
             return;
 
-        var key = node.GetFirstGenericArgument();
+        var key = GetFirstGenericArgument(node);
             
         if (key is OmittedTypeArgumentSyntax)
             return;
