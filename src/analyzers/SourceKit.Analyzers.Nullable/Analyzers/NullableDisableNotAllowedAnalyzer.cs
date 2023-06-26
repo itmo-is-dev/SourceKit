@@ -1,6 +1,9 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace SourceKit.Analyzers.Nullable.Analyzers;
 
@@ -27,5 +30,17 @@ public class NullableDisableNotAllowedAnalyzer : DiagnosticAnalyzer
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+        context.RegisterSyntaxNodeAction(AnalyzeNullableDirectiveTrivia, SyntaxKind.NullableDirectiveTrivia);
+    }
+    
+    private static void AnalyzeNullableDirectiveTrivia(SyntaxNodeAnalysisContext context)
+    {
+        var nullableDirectiveTrivia = (NullableDirectiveTriviaSyntax)context.Node;
+
+        if (nullableDirectiveTrivia.SettingToken.Kind() == SyntaxKind.DisableKeyword)
+        {
+            var diagnostic = Diagnostic.Create(Descriptor, nullableDirectiveTrivia.GetLocation());
+            context.ReportDiagnostic(diagnostic);
+        }
     }
 }
