@@ -88,4 +88,23 @@ public class CollectionsTests
 
         await test.RunAsync();
     }
+    
+    [Fact]
+    public async Task DictionaryInheritedCustomKeyType_ShouldNotReportDiagnostic_WhenTypeImplementsEquatable()
+    {
+        var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/InheritedCustomKeyTypeImplementsEquatable.cs");
+
+        var test = new CSharpAnalyzerTest<DictionaryKeyTypeMustImplementEquatableAnalyzer, XUnitVerifier>
+        {
+            TestState =
+            {
+                Sources =
+                {
+                    sourceFile
+                }
+            },
+        };
+
+        await test.RunAsync();
+    }
 }
