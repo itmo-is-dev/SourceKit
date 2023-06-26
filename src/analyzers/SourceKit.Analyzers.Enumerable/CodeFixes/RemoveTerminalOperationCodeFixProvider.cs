@@ -28,15 +28,15 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
         
         if (node == null) return;
         
-        SyntaxToken token = node.GetLastToken();
-        string title = string.Format(Title, token);
+        SyntaxToken terminalOperationWithoutParamsToken = node.GetLastToken();
+        string title = string.Format(Title, terminalOperationWithoutParamsToken);
+
+        var codeFixAction = CodeAction.Create(
+            title: title,
+            createChangedSolution: c => RemoveToList(context.Document, node, c),
+            equivalenceKey: title);
         
-        context.RegisterCodeFix(
-            CodeAction.Create(
-                title: title,
-                createChangedSolution: c => RemoveToList(context.Document, node, c),
-                equivalenceKey: title)
-            , diagnostic);
+        context.RegisterCodeFix(codeFixAction, diagnostic);
     }
 
     private static async Task<Solution> RemoveToList(Document document, SyntaxNode node, CancellationToken ctx)
