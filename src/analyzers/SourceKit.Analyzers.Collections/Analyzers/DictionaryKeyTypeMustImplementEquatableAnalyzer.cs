@@ -33,11 +33,6 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
         context.RegisterSyntaxNodeAction(AnalyzeGeneric , SyntaxKind.GenericName);
     }
 
-    private SyntaxNode GetFirstGenericArgument(GenericNameSyntax node)
-    {
-        return node.TypeArgumentList.Arguments.First();
-    }
-
     private void AnalyzeGeneric(SyntaxNodeAnalysisContext context)
     {
         var node = (GenericNameSyntax) context.Node;
@@ -48,7 +43,7 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
             
         if (key is OmittedTypeArgumentSyntax) return;
 
-        var keyType = context.GetSymbolFromContext(key) as ITypeSymbol;
+        var keyType = GetSymbolFromContext(context, key) as ITypeSymbol;
 
         var interfaceNamedType = context.Compilation.GetTypeSymbol(typeof(IEquatable<>));
 
@@ -58,5 +53,21 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
         
         var diag = Diagnostic.Create(Descriptor, key.GetLocation());
         context.ReportDiagnostic(diag);
+    }
+    
+    private SyntaxNode GetFirstGenericArgument(GenericNameSyntax node)
+    {
+        return node.TypeArgumentList.Arguments.First();
+    }
+
+    private static ISymbol? GetSymbolFromContext(SyntaxNodeAnalysisContext context, SyntaxNode node)
+    {
+        var model = context.SemanticModel;
+        
+        var symbolInfo = model.GetSymbolInfo(node);
+
+        var symbol = symbolInfo.Symbol;
+
+        return symbol;
     }
 }
