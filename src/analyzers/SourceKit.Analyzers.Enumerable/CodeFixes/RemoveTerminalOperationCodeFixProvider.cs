@@ -39,9 +39,9 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
         context.RegisterCodeFix(codeFixAction, diagnostic);
     }
 
-    private static async Task<Solution> RemoveToList(Document document, SyntaxNode node, CancellationToken ctx)
+    private static async Task<Solution> RemoveToList(Document document, SyntaxNode node, CancellationToken cancellationToken)
     {
-        var editor = await DocumentEditor.CreateAsync(document, ctx);
+        var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
         InvocationExpressionSyntax? invocationExpressions = node.AncestorsAndSelf().OfType<InvocationExpressionSyntax>().First();
         InvocationExpressionSyntax? before = invocationExpressions.DescendantNodes().OfType<InvocationExpressionSyntax>().First();
         editor.ReplaceNode(invocationExpressions, before);
