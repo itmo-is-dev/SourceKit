@@ -1,5 +1,7 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace SourceKit.Analyzers.Nullable.Analyzers;
@@ -26,6 +28,24 @@ public class NullForgivingOperatorNotAllowedAnalyzer : DiagnosticAnalyzer
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze |
+                                               GeneratedCodeAnalysisFlags.ReportDiagnostics);
+
+        context.RegisterSyntaxNodeAction(AnalyseNullForgivingOperator,
+            SyntaxKind.SuppressNullableWarningExpression);
+    }
+
+
+    private static void AnalyseNullForgivingOperator(SyntaxNodeAnalysisContext context)
+    {
+        var suppressionOperator = (PostfixUnaryExpressionSyntax) context.Node;
+        if (suppressionOperator.Ancestors().Any(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression)))
+        {
+            return;
+        }
+
+        var diagnostic = Diagnostic.Create(Descriptor, suppressionOperator.GetLocation(), suppressionOperator);
+
+        context.ReportDiagnostic(diagnostic);
     }
 }
