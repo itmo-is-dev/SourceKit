@@ -44,17 +44,17 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
 
     private static void RegisterDiagnostic(SyntaxNodeAnalysisContext context)
     {
-        var semanticModel = context.SemanticModel;
+        SemanticModel semanticModel = context.SemanticModel;
         if (context.Node is not MemberAccessExpressionSyntax node || IsTerminationMethod(node, semanticModel) is false)
             return;
 
-        var hasLinqAncestor = node.Ancestors()
+        bool hasLinqAncestor = node.Ancestors()
             .OfType<MemberAccessExpressionSyntax>()
             .Any(expressionSyntax => IsLinqEnumerable(expressionSyntax, semanticModel));
 
         if (!hasLinqAncestor) return;
 
-        var token = node.GetLastToken();
+        SyntaxToken token = node.GetLastToken();
         context.ReportDiagnostic(Diagnostic.Create(Descriptor, token.GetLocation(), node.Name));
     }
 
@@ -65,7 +65,7 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
     
     private static bool IsLinqEnumerable(ExpressionSyntax syntax, SemanticModel model)
     {
-        var symbol = GetSymbol(syntax, model);
+        IMethodSymbol? symbol = GetSymbol(syntax, model);
         return IsLinqEnumerable(symbol, model);
     }
     
@@ -73,7 +73,7 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
     
     private static bool IsLinqEnumerable(ISymbol? symbol, SemanticModel model)
     {
-        var linqSymbol = model?.Compilation.GetTypeSymbol(typeof(System.Linq.Enumerable));
+        INamedTypeSymbol linqSymbol = model.Compilation.GetTypeSymbol(typeof(System.Linq.Enumerable));
         var comparer = SymbolEqualityComparer.Default;
         return comparer.Equals(symbol?.ContainingType, linqSymbol);
     }

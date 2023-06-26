@@ -21,15 +21,15 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
 
     public override async Task RegisterCodeFixesAsync(CodeFixContext context)
     {
-        var diagnostic = context.Diagnostics.First();
-        var location = diagnostic.Location;
-        var root = await context.Document.GetSyntaxRootAsync();
-        var node = root?.FindNode(location.SourceSpan);
+        Diagnostic diagnostic = context.Diagnostics.First();
+        Location location = diagnostic.Location;
+        SyntaxNode? root = await context.Document.GetSyntaxRootAsync();
+        SyntaxNode? node = root?.FindNode(location.SourceSpan);
         
         if (node == null) return;
         
-        var token = node.GetLastToken();
-        var title = string.Format(Title, token);
+        SyntaxToken token = node.GetLastToken();
+        string title = string.Format(Title, token);
         
         context.RegisterCodeFix(
             CodeAction.Create(
@@ -42,8 +42,8 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
     private static async Task<Solution> RemoveToList(Document document, SyntaxNode node, CancellationToken ctx)
     {
         var editor = await DocumentEditor.CreateAsync(document, ctx);
-        var invocationExpressions = node.AncestorsAndSelf().OfType<InvocationExpressionSyntax>().First();
-        var before = invocationExpressions.DescendantNodes().OfType<InvocationExpressionSyntax>().First();
+        InvocationExpressionSyntax? invocationExpressions = node.AncestorsAndSelf().OfType<InvocationExpressionSyntax>().First();
+        InvocationExpressionSyntax? before = invocationExpressions.DescendantNodes().OfType<InvocationExpressionSyntax>().First();
         editor.ReplaceNode(invocationExpressions, before);
         return editor.GetChangedDocument().Project.Solution;
     }
