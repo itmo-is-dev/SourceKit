@@ -17,7 +17,7 @@ public class CollectionsTests
         var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/KeyTypeDoesNotImplementEquatable.cs");
 
         var diagnostic = AnalyzerVerifier.Diagnostic(DictionaryKeyTypeMustImplementEquatableAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 7, 23)
+            .WithLocation(sourceFile.Name, 7, 12)
             .WithArguments(nameof(KeyTypeDoesNotImplementEquatable));
 
         var test = new CSharpAnalyzerTest<DictionaryKeyTypeMustImplementEquatableAnalyzer, XUnitVerifier>
@@ -103,6 +103,30 @@ public class CollectionsTests
                     sourceFile
                 }
             },
+        };
+
+        await test.RunAsync();
+    }
+    
+    [Fact]
+    public async Task DictionaryCustomKeyType_ShouldReportDiagnostic_WhenTypeImplementsOtherEquatable()
+    {
+        var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/CustomKeyTypeImplementsOtherEquatable.cs");
+
+        var diagnostic = AnalyzerVerifier.Diagnostic(DictionaryKeyTypeMustImplementEquatableAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 18, 23)
+            .WithArguments(nameof(CustomKeyTypeImplementsOtherEquatable));
+
+        var test = new CSharpAnalyzerTest<DictionaryKeyTypeMustImplementEquatableAnalyzer, XUnitVerifier>
+        {
+            TestState =
+            {
+                Sources =
+                {
+                    sourceFile
+                }
+            },
+            ExpectedDiagnostics = { diagnostic },
         };
 
         await test.RunAsync();

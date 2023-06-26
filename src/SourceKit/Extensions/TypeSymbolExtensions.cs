@@ -14,8 +14,9 @@ public static class TypeSymbolExtensions
 
     public static bool IsAssignableTo(this ITypeSymbol source, ITypeSymbol destination)
     {
-        return source is INamedTypeSymbol namedSource
-               && namedSource.GetBaseTypesAndInterfaces().Contains(destination, SymbolEqualityComparer.Default);
+        return Equals(source, destination)
+            || source is INamedTypeSymbol namedSource
+            && namedSource.GetBaseTypesAndInterfaces().Contains(destination, SymbolEqualityComparer.Default);
     }
 
     public static bool IsAssignableFrom(this ITypeSymbol destination, INamedTypeSymbol source)

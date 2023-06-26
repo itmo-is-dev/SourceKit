@@ -36,28 +36,33 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
     private void AnalyzeGeneric(SyntaxNodeAnalysisContext context)
     {
         var node = (GenericNameSyntax) context.Node;
-        if (node.Identifier.Text != "Dictionary")
-            return;
+        if (node.Identifier.Text != "Dictionary") return;
 
-        var key = GetFirstGenericArgument(node);
-            
-        if (key is OmittedTypeArgumentSyntax) return;
+        var dictionaryTypeSymbol = GetSymbolFromContext(context, node) as ITypeSymbol;
 
-        var keyType = GetSymbolFromContext(context, key) as ITypeSymbol;
+        var keyTypeSymbol = GetFirstTypeSymbolArgument(dictionaryTypeSymbol!);
+
+        if (keyTypeSymbol is null || keyTypeSymbol.MetadataName == "TKey") return;
 
         var interfaceNamedType = context.Compilation.GetTypeSymbol(typeof(IEquatable<>));
 
-        var iequatableInterfaces = keyType.FindAssignableTypesConstructedFrom(interfaceNamedType);
+        var iequatableInterfaces = keyTypeSymbol.FindAssignableTypesConstructedFrom(interfaceNamedType);
         
-        if (keyType.AllInterfaces.Any(c => iequatableInterfaces.Contains(c))) return;
-        
-        var diag = Diagnostic.Create(Descriptor, key.GetLocation());
+        if (iequatableInterfaces
+            .Select(s => s.TypeArguments.First())
+            .Any(s => keyTypeSymbol.IsAssignableTo(s)))
+            return;
+
+        var diag = Diagnostic.Create(Descriptor, node.GetLocation());
         context.ReportDiagnostic(diag);
     }
-    
-    private SyntaxNode GetFirstGenericArgument(GenericNameSyntax node)
+
+    private ITypeSymbol? GetFirstTypeSymbolArgument(ITypeSymbol symbol)
     {
-        return node.TypeArgumentList.Arguments.First();
+        if (symbol is INamedTypeSymbol namedTypeSymbol)
+            return namedTypeSymbol.TypeArguments.FirstOrDefault();
+
+        return null;
     }
 
     private static ISymbol? GetSymbolFromContext(SyntaxNodeAnalysisContext context, SyntaxNode node)
