@@ -5,7 +5,7 @@ namespace SourceKit.Extensions;
 
 public static class SyntaxNodeAnalysisContextExtensions
 {
-    public static ISymbol GetSymbolFromContext(this SyntaxNodeAnalysisContext context, SyntaxNode node)
+    public static ISymbol? GetSymbolFromContext(this SyntaxNodeAnalysisContext context, SyntaxNode node)
     {
         var model = context.SemanticModel;
         
@@ -13,11 +13,6 @@ public static class SyntaxNodeAnalysisContextExtensions
 
         var symbol = symbolInfo.Symbol;
 
-        if (symbol is null)
-        {
-            throw new ArgumentException("Required symbol is not found");
-        }
-        
         return symbol;
     }
 }
