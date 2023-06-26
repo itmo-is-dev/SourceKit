@@ -30,22 +30,16 @@ public class NullableDisableNotAllowedAnalyzer : DiagnosticAnalyzer
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
-        context.RegisterSyntaxTreeAction(AnalyzeSyntaxTree);
+        context.RegisterSyntaxNodeAction(AnalyzeNullableDirectiveTrivia, SyntaxKind.NullableDirectiveTrivia);
     }
     
-
-    private static void AnalyzeSyntaxTree(SyntaxTreeAnalysisContext context)
+    private static void AnalyzeNullableDirectiveTrivia(SyntaxNodeAnalysisContext context)
     {
-        var root = context.Tree.GetRoot(context.CancellationToken);
-        var nullableDirectives = root.DescendantNodesAndTokens(descendIntoTrivia: true)
-            .Where(nodeOrToken => nodeOrToken.IsNode && nodeOrToken.AsNode() is DirectiveTriviaSyntax)
-            .Select(nodeOrToken => nodeOrToken.AsNode())
-            .OfType<NullableDirectiveTriviaSyntax>()
-            .Where(nullableDirective => nullableDirective.SettingToken.Kind() == SyntaxKind.DisableKeyword);
+        var nullableDirectiveTrivia = (NullableDirectiveTriviaSyntax)context.Node;
 
-        foreach (var nullableDirective in nullableDirectives)
+        if (nullableDirectiveTrivia.SettingToken.Kind() == SyntaxKind.DisableKeyword)
         {
-            var diagnostic = Diagnostic.Create(Descriptor, nullableDirective.GetLocation());
+            var diagnostic = Diagnostic.Create(Descriptor, nullableDirectiveTrivia.GetLocation());
             context.ReportDiagnostic(diagnostic);
         }
     }
