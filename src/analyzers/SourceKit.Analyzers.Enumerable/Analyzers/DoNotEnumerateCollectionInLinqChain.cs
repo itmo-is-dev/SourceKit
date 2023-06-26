@@ -54,8 +54,8 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
 
         if (hasLinqAncestor is false) return;
 
-        SyntaxToken token = node.GetLastToken();
-        context.ReportDiagnostic(Diagnostic.Create(Descriptor, token.GetLocation(), node.Name));
+        SyntaxToken terminalOperationWithoutParamsToken = node.GetLastToken();
+        context.ReportDiagnostic(Diagnostic.Create(Descriptor, terminalOperationWithoutParamsToken.GetLocation(), node.Name));
     }
 
     private static bool IsTerminationMethod(ExpressionSyntax syntax, SemanticModel model)
