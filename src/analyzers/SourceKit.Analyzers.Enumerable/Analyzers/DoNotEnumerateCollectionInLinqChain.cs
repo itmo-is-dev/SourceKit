@@ -69,8 +69,6 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
         return IsLinqEnumerable(symbol, model);
     }
     
-    
-    
     private static bool IsLinqEnumerable(ISymbol? symbol, SemanticModel model)
     {
         INamedTypeSymbol linqSymbol = model.Compilation.GetTypeSymbol(typeof(System.Linq.Enumerable));
