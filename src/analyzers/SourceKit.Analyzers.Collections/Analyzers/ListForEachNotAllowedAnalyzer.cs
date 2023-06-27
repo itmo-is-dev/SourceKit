@@ -10,7 +10,7 @@ namespace SourceKit.Analyzers.Collections.Analyzers;
 public class ListForEachNotAllowedAnalyzer : DiagnosticAnalyzer
 {
     public const string DiagnosticId = "SK1501";
-    public const string Title = nameof(DictionaryKeyTypeMustImplementEquatableAnalyzer);
+    public const string Title = nameof(ListForEachNotAllowedAnalyzer);
 
     public const string Format = """Using ForEach method is not allowed""";
 

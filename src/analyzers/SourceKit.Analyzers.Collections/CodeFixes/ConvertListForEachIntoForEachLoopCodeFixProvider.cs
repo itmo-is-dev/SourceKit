@@ -102,26 +102,10 @@ public class ConvertListForEachIntoForEachLoopCodeFixProvider : CodeFixProvider
 
                 break;
             case IdentifierNameSyntax identifierNameSyntax:
-                foreachStatements.Add(
-                    ExpressionStatement(
-                        InvocationExpression(
-                                identifierNameSyntax)
-                            .WithArgumentList(
-                                ArgumentList(
-                                    SingletonSeparatedList(
-                                        Argument(
-                                            foreachIdentifier))))));
+                foreachStatements.Add(CreateForeachStatement(identifierNameSyntax, foreachIdentifier));
                 break;
             case MemberAccessExpressionSyntax expressionSyntax:
-                foreachStatements.Add(
-                    ExpressionStatement(
-                        InvocationExpression(
-                                expressionSyntax)
-                            .WithArgumentList(
-                                ArgumentList(
-                                    SingletonSeparatedList(
-                                        Argument(
-                                            foreachIdentifier))))));
+                foreachStatements.Add(CreateForeachStatement(expressionSyntax, foreachIdentifier));
                 break;
         }
 
@@ -135,5 +119,18 @@ public class ConvertListForEachIntoForEachLoopCodeFixProvider : CodeFixProvider
         var newRoot = root.ReplaceNode(parentOfFoundInvocationExpression, forEachStatement);
 
         return document.WithSyntaxRoot(newRoot);
+    }
+
+    private ExpressionStatementSyntax CreateForeachStatement(ExpressionSyntax expressionSyntax,
+                                                             IdentifierNameSyntax identifierNameSyntax)
+    {
+        return ExpressionStatement(
+            InvocationExpression(
+                    expressionSyntax)
+                .WithArgumentList(
+                    ArgumentList(
+                        SingletonSeparatedList(
+                            Argument(
+                                identifierNameSyntax)))));
     }
 }
