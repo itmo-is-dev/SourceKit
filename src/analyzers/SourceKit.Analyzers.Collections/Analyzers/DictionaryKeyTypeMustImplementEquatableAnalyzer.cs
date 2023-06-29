@@ -36,21 +36,30 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
     private void AnalyzeGeneric(SyntaxNodeAnalysisContext context)
     {
         var node = (GenericNameSyntax) context.Node;
-        if (node.Identifier.Text != "Dictionary") return;
+        
+        if (node.Identifier.Text != "Dictionary") 
+            return;
 
         var dictionaryTypeSymbol = GetSymbolFromContext(context, node) as ITypeSymbol;
 
-        var keyTypeSymbol = GetFirstTypeSymbolArgument(dictionaryTypeSymbol!);
+        if (dictionaryTypeSymbol is null)
+            return;
+        
+        var keyTypeSymbol = GetFirstTypeSymbolArgument(dictionaryTypeSymbol);
 
-        if (keyTypeSymbol is null || keyTypeSymbol.MetadataName == "TKey") return;
+        if (keyTypeSymbol is null || keyTypeSymbol.MetadataName == "TKey") 
+            return;
 
         var interfaceNamedType = context.Compilation.GetTypeSymbol(typeof(IEquatable<>));
 
-        var iequatableInterfaces = keyTypeSymbol.FindAssignableTypesConstructedFrom(interfaceNamedType);
+        var equatableInterfaces = keyTypeSymbol.FindAssignableTypesConstructedFrom(interfaceNamedType);
+
+        var isThereRightEquatableInterface =
+            equatableInterfaces
+                .Select(s => s.TypeArguments.First())
+                .Any(s => keyTypeSymbol.IsAssignableTo(s));
         
-        if (iequatableInterfaces
-            .Select(s => s.TypeArguments.First())
-            .Any(s => keyTypeSymbol.IsAssignableTo(s)))
+        if (isThereRightEquatableInterface)
             return;
 
         var diag = Diagnostic.Create(Descriptor, node.GetLocation());
@@ -68,9 +77,7 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
     private static ISymbol? GetSymbolFromContext(SyntaxNodeAnalysisContext context, SyntaxNode node)
     {
         var model = context.SemanticModel;
-        
         var symbolInfo = model.GetSymbolInfo(node);
-
         var symbol = symbolInfo.Symbol;
 
         return symbol;
