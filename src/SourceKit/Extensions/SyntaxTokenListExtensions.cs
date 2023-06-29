@@ -6,6 +6,7 @@ public static class SyntaxTokenListExtensions
 {
     public static Accessibility ToSyntaxTokenList(this SyntaxTokenList syntaxTokenList)
     {
+        // TODO: Get rid of string comparison.
         switch (syntaxTokenList.ToString())
         {
             case "private":

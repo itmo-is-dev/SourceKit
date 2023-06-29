@@ -30,6 +30,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         IEnumerable<Task> diagnostics = context.Diagnostics
             .Where(x => x.Id.Equals(DeclarationCouldBeConvertedToPropertyAnalyzer.DiagnosticId))
             .Select(x => ProvideConvertDeclarationIntoPropertyCodeFix(context, x));
+
         await Task.WhenAll(diagnostics);
     }
 
@@ -47,9 +48,9 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         var action = CodeAction.Create(
             Title,
             equivalenceKey: nameof(ConvertDeclarationIntoPropertyCodeFixProvider),
-            createChangedDocument: async _ =>
+            createChangedDocument: async token =>
             {
-                var newDocument = await ReplaceFieldAsync(root, context, diagnostic, context.CancellationToken);
+                var newDocument = await ReplaceFieldAsync(root, context, diagnostic, token);
                 return newDocument;
             });
 
@@ -86,7 +87,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
                 variableDeclarator,
                 variableDeclaration,
                 cancellationToken)
-            : await ProcessNotPublicFieldAsync(
+            : await ProcessNonPublicFieldAsync(
                 context,
                 root,
                 diagnostic,
@@ -143,7 +144,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         return editor.GetChangedDocument();
     }
 
-    private static async Task<Document> ProcessNotPublicFieldAsync(
+    private static async Task<Document> ProcessNonPublicFieldAsync(
         CodeFixContext context,
         SyntaxNode root,
         Diagnostic diagnostic,
@@ -153,7 +154,6 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         CancellationToken cancellationToken)
     {
         var editor = await DocumentEditor.CreateAsync(document, cancellationToken);
-
         var variableType = variableDeclaration.Type;
 
         if (variableDeclaration.Parent is not FieldDeclarationSyntax fieldDeclarationNode)
@@ -162,12 +162,14 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         }
 
         var semanticModel = await context.Document.GetSemanticModelAsync(cancellationToken);
+
         if (semanticModel is null)
         {
             return editor.OriginalDocument;
         }
 
         var classDeclarationNode = root.FindNode(diagnostic.AdditionalLocations[1].SourceSpan);
+
         if (classDeclarationNode is not ClassDeclarationSyntax classDeclaration)
         {
             return editor.OriginalDocument;
@@ -178,6 +180,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         var getMethod = FindMostAccessibleGetMethod(fieldWithMethods);
         var setMethod = FindMostAccessibleSetMethod(fieldWithMethods);
+
         DeleteAllMethods(fieldWithMethods, editor);
 
         if (getMethod is null)
@@ -186,15 +189,15 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         }
 
         var propertyAccessor = getMethod.Modifiers;
+        var variableIdentifier = variableDeclarator.Identifier.ToString();
 
-        var propertyDeclaration =
-            PropertyDeclaration(
-                    variableType,
-                    Identifier(NameProducer.GetPropertyName(variableDeclarator.Identifier.ToString())))
-                .AddAccessorListAccessors(
-                    AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
-                        .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
-                .WithModifiers(propertyAccessor);
+        var propertyDeclaration = PropertyDeclaration(
+                variableType,
+                Identifier(NameProducer.GetPropertyName(variableIdentifier)))
+            .AddAccessorListAccessors(
+                AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
+                    .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
+            .WithModifiers(propertyAccessor);
 
         var setMethodAccessor = setMethod?.Modifiers;
 
@@ -235,10 +238,14 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         var higherAccessor = Accessibility.Private;
         MethodDeclarationSyntax? higherAccessorMethod = null;
+
         foreach (var getMethod in fieldWithMethods.GetMethods)
         {
             var accessibility = getMethod.Modifiers.ToSyntaxTokenList();
-            if (higherAccessor >= accessibility) continue;
+
+            if (higherAccessor >= accessibility)
+                continue;
+
             higherAccessor = accessibility;
             higherAccessorMethod = getMethod;
         }
@@ -255,10 +262,14 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         var higherAccessor = Accessibility.Private;
         MethodDeclarationSyntax? higherAccessorMethod = null;
+
         foreach (var setMethod in fieldWithMethods.SetMethods)
         {
             var accessibility = setMethod.Modifiers.ToSyntaxTokenList();
-            if (higherAccessor >= accessibility) continue;
+
+            if (higherAccessor >= accessibility)
+                continue;
+
             higherAccessor = accessibility;
             higherAccessorMethod = setMethod;
         }

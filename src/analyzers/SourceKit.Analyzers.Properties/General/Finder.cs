@@ -14,6 +14,7 @@ public static class Finder
         var fieldWithMethods = new FieldWithMethods(variableDeclarator);
 
         var fieldSymbol = semanticModel.GetDeclaredSymbol(variableDeclarator);
+
         if (fieldSymbol is null)
         {
             return fieldWithMethods;
@@ -42,11 +43,14 @@ public static class Finder
             .OfType<MethodDeclarationSyntax>();
 
         var getMethods = new List<KeyValuePair<ISymbol?, MethodDeclarationSyntax>>();
+
         foreach (var method in methods)
         {
-            if (method.ParameterList.Parameters.Count != 0) continue;
+            if (method.ParameterList.Parameters.Count != 0)
+                continue;
 
             var expressionBody = FindGetMethodInExpressionBody(semanticModel, method);
+
             if (expressionBody is not null)
             {
                 getMethods.Add(expressionBody.Value);
@@ -54,6 +58,7 @@ public static class Finder
             }
 
             var body = FindGetMethodInBody(semanticModel, method);
+
             if (body is not null)
             {
                 getMethods.Add(body.Value);
@@ -75,9 +80,11 @@ public static class Finder
 
         foreach (var method in methods)
         {
-            if (method.ParameterList.Parameters.Count != 1) continue;
+            if (method.ParameterList.Parameters.Count != 1)
+                continue;
 
             var expressionBody = FindSetMethodInExpressionBody(semanticModel, method);
+
             if (expressionBody is not null)
             {
                 setMethods.Add(expressionBody.Value);
@@ -85,6 +92,7 @@ public static class Finder
             }
 
             var body = FindSetMethodInBody(semanticModel, method);
+
             if (body is not null)
             {
                 setMethods.Add(body.Value);
@@ -104,15 +112,13 @@ public static class Finder
         if (expressionBodyOperation is not IBlockOperation blockOperation) return null;
 
         if (blockOperation.Operations.Count() != 1) return null;
-        if (blockOperation.Operations.First() is IReturnOperation
-            {
-                ReturnedValue: IFieldReferenceOperation fieldReferenceOperation
-            })
+        if (blockOperation.Operations.First() is not IReturnOperation returnOperation ||
+            returnOperation.ReturnedValue is not IFieldReferenceOperation fieldReferenceOperation)
         {
-            return new KeyValuePair<ISymbol?, MethodDeclarationSyntax>(fieldReferenceOperation.Field, method);
+            return null;
         }
 
-        return null;
+        return new KeyValuePair<ISymbol?, MethodDeclarationSyntax>(fieldReferenceOperation.Field, method);
     }
 
     private static KeyValuePair<ISymbol?, MethodDeclarationSyntax>? FindGetMethodInBody(
@@ -123,10 +129,8 @@ public static class Finder
         if (method.Body?.Statements.Count != 1) return null;
         if (method.Body.Statements.First() is not ReturnStatementSyntax returnStatementSyntax) return null;
 
-        if (semanticModel.GetOperation(returnStatementSyntax) is not IReturnOperation
-            {
-                ReturnedValue: IFieldReferenceOperation fieldReferenceOperation
-            })
+        if (semanticModel.GetOperation(returnStatementSyntax) is not IReturnOperation returnOperation ||
+            returnOperation.ReturnedValue is not IFieldReferenceOperation fieldReferenceOperation)
         {
             return null;
         }
