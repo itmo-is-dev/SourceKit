@@ -43,11 +43,7 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
         {
             if (field.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.PublicKeyword))
             {
-                if (field.Modifiers.Count == 1 ||
-                    field.Modifiers.Any(modifier => modifier.Kind() is SyntaxKind.ReadOnlyKeyword))
-                {
-                    AnalyzePublicVariableDeclaration(context, field.Declaration);
-                }
+                AnalyzePublicVariableDeclaration(context, field.Declaration);
             }
             else
             {
