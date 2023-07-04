@@ -259,7 +259,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         foreach (var getMethod in fieldWithMethods.GetMethods)
         {
-            var accessibility = getMethod.Modifiers.ToSyntaxTokenList();
+            var accessibility = getMethod.Modifiers.ToAccessibility();
 
             if (higherAccessor >= accessibility)
                 continue;
@@ -283,7 +283,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         foreach (var setMethod in fieldWithMethods.SetMethods)
         {
-            var accessibility = setMethod.Modifiers.ToSyntaxTokenList();
+            var accessibility = setMethod.Modifiers.ToAccessibility();
 
             if (higherAccessor >= accessibility)
                 continue;

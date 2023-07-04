@@ -1,26 +1,20 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace SourceKit.Extensions;
 
 public static class SyntaxTokenListExtensions
 {
-    public static Accessibility ToSyntaxTokenList(this SyntaxTokenList syntaxTokenList)
+    public static Accessibility ToAccessibility(this SyntaxTokenList syntaxTokenList)
     {
-        // TODO: Get rid of string comparison.
-        switch (syntaxTokenList.ToString())
+        return syntaxTokenList.Select(t => t.Kind()).ToList() switch
         {
-            case "private":
-                return Accessibility.Private;
-            case "protected internal":
-                return Accessibility.ProtectedAndInternal;
-            case "protected":
-                return Accessibility.Protected;
-            case "internal":
-                return Accessibility.Internal;
-            case "public":
-                return Accessibility.Public;
-            default:
-                return Accessibility.NotApplicable;
-        }
+            [SyntaxKind.PrivateKeyword] => Accessibility.Private,
+            [SyntaxKind.ProtectedKeyword, SyntaxKind.InternalKeyword] => Accessibility.ProtectedAndInternal,
+            [SyntaxKind.ProtectedKeyword] => Accessibility.Protected,
+            [SyntaxKind.InternalKeyword] => Accessibility.Internal,
+            [SyntaxKind.PublicKeyword] => Accessibility.Public,
+            _ => Accessibility.NotApplicable
+        };
     }
 }
