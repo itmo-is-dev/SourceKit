@@ -58,7 +58,7 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
     {
         foreach (var variable in variableDeclaration.Variables)
         {
-            var location = variable.GetLocation();
+            var location = variable.Identifier.GetLocation();
             var diagnostic = Diagnostic.Create(Descriptor, location, new[] { location }, variable.Identifier.Text);
             context.ReportDiagnostic(diagnostic);
         }

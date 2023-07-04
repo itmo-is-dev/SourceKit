@@ -112,10 +112,13 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
             return editor.OriginalDocument;
         }
 
+        var variableIdentifier = variableDeclarator.Identifier.ToString();
+        var variableInitializer = variableDeclarator.Initializer;
+
         var propertyDeclaration =
             PropertyDeclaration(
                     variableTypeNode,
-                    Identifier(NameProducer.GetPropertyName(variableDeclarator.Identifier.ToString())))
+                    Identifier(NameProducer.GetPropertyName(variableIdentifier)))
                 .AddAccessorListAccessors(
                     AccessorDeclaration(SyntaxKind.GetAccessorDeclaration)
                         .WithSemicolonToken(Token(SyntaxKind.SemicolonToken)))
@@ -130,6 +133,13 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         }
 
         propertyDeclaration = propertyDeclaration.WithLeadingTrivia(ElasticTab);
+        
+        if (variableInitializer is not null)
+        {
+            propertyDeclaration = propertyDeclaration
+                .WithInitializer(variableInitializer)
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        }
 
         if (variableDeclaration.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
         {
@@ -190,6 +200,7 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
 
         var propertyAccessor = getMethod.Modifiers;
         var variableIdentifier = variableDeclarator.Identifier.ToString();
+        var variableInitializer = variableDeclarator.Initializer;
 
         var propertyDeclaration = PropertyDeclaration(
                 variableType,
@@ -215,6 +226,13 @@ public class ConvertDeclarationIntoPropertyCodeFixProvider : CodeFixProvider
         }
 
         propertyDeclaration = propertyDeclaration.WithLeadingTrivia(ElasticTab);
+
+        if (variableInitializer is not null)
+        {
+            propertyDeclaration = propertyDeclaration
+                .WithInitializer(variableInitializer)
+                .WithSemicolonToken(Token(SyntaxKind.SemicolonToken));
+        }
 
         if (variableDeclaration.ChildNodes().OfType<VariableDeclaratorSyntax>().Count() > 1)
         {

@@ -2,7 +2,7 @@
 
 public class OneField
 {
-    private string field;
+    private string field = "10";
 
     public string GetField()
     {

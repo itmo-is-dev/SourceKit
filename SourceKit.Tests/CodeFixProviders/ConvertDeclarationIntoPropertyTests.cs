@@ -250,7 +250,7 @@ namespace SourceKit.Sample.Analyzers.DeclarationCouldBeConvertedToProperty;
 
 public class OneField
 {
-    public string Field { get; set; }
+    public string Field { get; set; } = "10";
 }
 """;
 
