@@ -46,9 +46,6 @@
 
     <ItemGroup>
         <Content Include="..\SourceKit.Sample\**\*.cs" Exclude="..\SourceKit.Sample\obj\**" LinkBase="SourceKit.Sample\" CopyToOutputDirectory="Always" />
-        <Content Update="..\SourceKit.Sample\Analyzers\NullForgivingOperatorNotAllowed\JokeExample.cs">
-          <Link>SourceKit.Sample\Analyzers\NullForgivingOperatorNotAllowed\JokeExample.cs</Link>
-        </Content>
         <Content Update="..\SourceKit.Sample\CodeFixProviders\JokeExample.cs">
           <Link>SourceKit.Sample\CodeFixProviders\JokeExample.cs</Link>
         </Content>

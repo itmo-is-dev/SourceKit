@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -39,14 +40,28 @@ public class PropagateNullableCorrectlyCodeFixProvider : CodeFixProvider
         var diagnosticSpan = diagnostic.Location.SourceSpan;
         var diagnosticNode = root.FindNode(diagnosticSpan);
         var nodeToFix = FindNodeToFix(diagnosticNode);
-        var fixedNode = nodeToFix.DescendantNodesAndSelf()
-            .Any(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression))
-            ? FixedNodeConstructor.FromNullForgivingExpression(nodeToFix)
-            : nodeToFix.ChildNodes().First();
+
+        var isSuppressFound = nodeToFix.DescendantNodesAndSelf()
+            .Any(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression));
+
+        SyntaxNode? fixedNode;
+
+        if (isSuppressFound)
+        {
+            fixedNode = FixedNodeConstructor.FromNullForgivingExpression(nodeToFix);
+        }
+        else
+        {
+            fixedNode = nodeToFix.ChildNodes().FirstOrDefault();
+        }
+
+        if (fixedNode is null)
+        {
+            return;
+        }
 
         var codeFixResult = TypeChanger.TryToChangeTypeIfNecessary(nodeToFix, fixedNode);
         editor.ReplaceNode(codeFixResult.Initial, codeFixResult.Fixed);
-
 
         context.RegisterCodeFix(
             CodeAction.Create(
@@ -60,19 +75,22 @@ public class PropagateNullableCorrectlyCodeFixProvider : CodeFixProvider
             diagnostic);
     }
 
-    private SyntaxNode FindNodeToFix(SyntaxNode currentNode)
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static SyntaxNode FindNodeToFix(SyntaxNode currentNode)
     {
-        while (true)
-        {
-            if (currentNode.Parent == null ||
-                (!currentNode.Parent.IsKind(SyntaxKind.InvocationExpression) &&
-                 !currentNode.Parent.IsKind(SyntaxKind.SimpleMemberAccessExpression) &&
-                 !currentNode.Parent.IsKind(SyntaxKind.PointerMemberAccessExpression)))
-            {
-                return currentNode;
-            }
+        return currentNode.Parent is not null && IsNodeProcessable(currentNode.Parent) 
+            ? FindNodeToFix(currentNode.Parent) 
+            : currentNode;
+    }
 
-            currentNode = currentNode.Parent;
-        }
+    private static bool IsNodeProcessable(SyntaxNode node)
+    {
+        return node.Kind() switch
+        {
+            SyntaxKind.InvocationExpression => true,
+            SyntaxKind.SimpleMemberAccessExpression => true,
+            SyntaxKind.PointerMemberAccessExpression => true,
+            _ => false
+        };
     }
 }

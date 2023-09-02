@@ -6,7 +6,7 @@ namespace SourceKit.Analyzers.Nullable.CodeFixes.Tools;
 
 public static class FixedNodeConstructor
 {
-    public static SyntaxNode FromNullForgivingExpression(SyntaxNode expression)
+    public static SyntaxNode? FromNullForgivingExpression(SyntaxNode expression)
     {
         var nullForgivingExpression = (ExpressionSyntax) expression
             .DescendantNodesAndSelf()
@@ -16,31 +16,42 @@ public static class FixedNodeConstructor
         if (nullForgivingExpression.Parent.IsKind(SyntaxKind.PointerMemberAccessExpression) ||
             nullForgivingExpression.Parent.IsKind(SyntaxKind.SimpleMemberAccessExpression))
         {
+            var firstChild = (ExpressionSyntax?) nullForgivingExpression.ChildNodes().FirstOrDefault();
+            var memberName = ParseNullForgivingSyntax((PostfixUnaryExpressionSyntax) nullForgivingExpression);
+
+            if (firstChild is null || memberName is null)
+            {
+                return null;
+            }
+            
             return SyntaxFactory.ConditionalAccessExpression(
-                (ExpressionSyntax) nullForgivingExpression.ChildNodes().First(),
-                ParseNullForgivingSyntax((PostfixUnaryExpressionSyntax) nullForgivingExpression)
+                firstChild,
+                memberName
             );
         }
 
         return nullForgivingExpression.ChildNodes().First();
     }
 
-    private static SimpleNameSyntax GetMemberNameFromExpression(MemberAccessExpressionSyntax expressionSyntax)
+    private static SimpleNameSyntax GetMemberNameFromExpression(this SyntaxNode expressionSyntax)
     {
-        return expressionSyntax.Name;
+        return ((MemberAccessExpressionSyntax) expressionSyntax).Name;
     }
 
-    private static ExpressionSyntax ParseNullForgivingSyntax(
-        PostfixUnaryExpressionSyntax expressionSyntax)
+    private static ExpressionSyntax? ParseNullForgivingSyntax(PostfixUnaryExpressionSyntax expressionSyntax)
     {
         var currentNode = expressionSyntax.Parent;
 
-        var memberName = GetMemberNameFromExpression((MemberAccessExpressionSyntax) currentNode);
+        if (currentNode is null)
+        {
+            return null;
+        }
+        
+        var memberName = currentNode.GetMemberNameFromExpression();
 
-        ExpressionSyntax whenNotNullExpression =
-            SyntaxFactory.MemberBindingExpression(memberName);
+        ExpressionSyntax whenNotNullExpression = SyntaxFactory.MemberBindingExpression(memberName);
 
-        while (currentNode.Parent != null &&
+        while (currentNode.Parent is not null &&
                (currentNode.Parent.IsKind(SyntaxKind.InvocationExpression) ||
                 currentNode.Parent.IsKind(SyntaxKind.SimpleMemberAccessExpression) ||
                 currentNode.Parent.IsKind(SyntaxKind.PointerMemberAccessExpression) ||
@@ -57,15 +68,20 @@ public static class FixedNodeConstructor
                 if (currentNode.Parent.Parent.IsKind(SyntaxKind.PointerMemberAccessExpression) ||
                     currentNode.Parent.Parent.IsKind(SyntaxKind.SimpleMemberAccessExpression))
                 {
+                    var forgivingSyntax = ParseNullForgivingSyntax((PostfixUnaryExpressionSyntax) currentNode.Parent);
+
+                    if (forgivingSyntax is null)
+                    {
+                        return null;
+                    }
+                    
                     return SyntaxFactory.ConditionalAccessExpression(
                         whenNotNullExpression,
-                        ParseNullForgivingSyntax((PostfixUnaryExpressionSyntax) currentNode.Parent)
+                        forgivingSyntax
                     );
                 }
-                else
-                {
-                    return whenNotNullExpression;
-                }
+
+                return whenNotNullExpression;
 
             }
             else
