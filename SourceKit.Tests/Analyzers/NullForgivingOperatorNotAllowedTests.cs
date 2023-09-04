@@ -17,7 +17,8 @@ public class NullForgivingOperatorNotAllowedTests
     [Fact]
     public async Task NullForgivingOperatorNotAllowed_ShouldReportDiagnostic_AllVariationsOfNullSuppression()
     {
-        var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/NullForgivingOperatorNotAllowed/JokeExample.cs");
+        var sourceFile =
+            await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/NullForgivingOperatorNotAllowed/JokeExample.cs");
 
         var test = new CSharpAnalyzerTest<NullForgivingOperatorNotAllowedAnalyzer, XUnitVerifier>
         {
@@ -28,7 +29,8 @@ public class NullForgivingOperatorNotAllowedTests
                     sourceFile
                 }
             },
-            ExpectedDiagnostics = {
+            ExpectedDiagnostics =
+            {
                 AnalyzerVerifier.Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
                     .WithSpan(sourceFile.Name, 34, 36, 34, 65),
                 AnalyzerVerifier.Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
@@ -47,7 +49,7 @@ public class NullForgivingOperatorNotAllowedTests
                     .WithSpan(sourceFile.Name, 46, 13, 46, 63),
                 AnalyzerVerifier.Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
                     .WithSpan(sourceFile.Name, 48, 13, 48, 67),
-            } ,
+            }
         };
 
         await test.RunAsync();

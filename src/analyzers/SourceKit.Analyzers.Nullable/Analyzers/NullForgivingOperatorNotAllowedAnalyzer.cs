@@ -39,6 +39,12 @@ public class NullForgivingOperatorNotAllowedAnalyzer : DiagnosticAnalyzer
     private static void AnalyseNullForgivingOperator(SyntaxNodeAnalysisContext context)
     {
         var suppressionOperator = (PostfixUnaryExpressionSyntax) context.Node;
+        
+        if (suppressionOperator.Ancestors().Any(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression)))
+        {
+            return;
+        }
+
         var diagnostic = Diagnostic.Create(Descriptor, suppressionOperator.GetLocation(), suppressionOperator);
 
         context.ReportDiagnostic(diagnostic);

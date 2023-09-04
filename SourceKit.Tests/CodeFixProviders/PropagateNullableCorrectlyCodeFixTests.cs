@@ -24,8 +24,7 @@ public class PropagateNullableCorrectlyCodeFixTests
         var test = new CSharpCodeFixTest<
             NullForgivingOperatorNotAllowedAnalyzer,
             PropagateNullableCorrectlyCodeFixProvider,
-            XUnitVerifier
-        >()
+            XUnitVerifier>
         {
             TestState =
             {
@@ -161,7 +160,7 @@ public class JokeExampleWithVariableDeclarations
     }
 }
 """;
-    
+
     const string JokeExampleWithFieldAndProperties = """
 namespace SourceKit.Sample.CodeFixProviders;
 
