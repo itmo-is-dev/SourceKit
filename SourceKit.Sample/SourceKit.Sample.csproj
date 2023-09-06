@@ -19,6 +19,7 @@
         <PackageReference Include="SourceKit.Analyzers.MustBePartial" />
         <PackageReference Include="SourceKit.Analyzers.Enumerable" />
         <PackageReference Include="SourceKit.Generators.Builder" />
+        <PackageReference Include="SourceKit.Analyzers.Nullable" />
     </ItemGroup>
 
 </Project>
