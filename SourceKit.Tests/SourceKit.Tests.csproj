@@ -39,6 +39,7 @@
         <ProjectReference Include="..\SourceKit.Sample\SourceKit.Sample.csproj" />
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Collections\SourceKit.Analyzers.Collections.csproj" />
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Enumerable\SourceKit.Analyzers.Enumerable.csproj" />
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Nullable\SourceKit.Analyzers.Nullable.csproj" />
         <ProjectReference Include="..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj" />
         <ProjectReference Include="..\src\SourceKit.Reflect\SourceKit.Reflect.csproj" />
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" />
@@ -46,6 +47,9 @@
 
     <ItemGroup>
         <Content Include="..\SourceKit.Sample\**\*.cs" Exclude="..\SourceKit.Sample\obj\**" LinkBase="SourceKit.Sample\" CopyToOutputDirectory="Always" />
+        <Content Update="..\SourceKit.Sample\CodeFixProviders\JokeExample.cs">
+          <Link>SourceKit.Sample\CodeFixProviders\JokeExample.cs</Link>
+        </Content>
     </ItemGroup>
 
 </Project>
