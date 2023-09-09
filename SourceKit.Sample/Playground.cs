@@ -13,8 +13,12 @@ public class Playground
 
     public static void X()
     {
-        SomeQuery.Build(x => x.WithOrderById(null));
+        var temp = new List<string> { "asd" };
+
+        var g = temp.FirstOrDefault(x => x == "asd")!.ToString();
+
+        /*SomeQuery.Build(x => x.WithOrderById(null));
         ArrayQuery.Build(x => x.WithId(Guid.NewGuid()));
-        CustomModelQuery.Build(x => x.WithPoint(new Point()));
+        CustomModelQuery.Build(x => x.WithPoint(new Point()));*/
     }
 }
