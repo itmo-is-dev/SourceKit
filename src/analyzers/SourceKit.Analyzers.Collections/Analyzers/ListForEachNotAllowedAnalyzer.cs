@@ -58,15 +58,20 @@ public class ListForEachNotAllowedAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        if (invocationTargetTypeSymbol
-                .ToString()
-                .Contains("System.Collections.Generic.List") &&
-            expressionName.ToString() == "ForEach")
+        var isInvocationTargetList = invocationTargetTypeSymbol
+            .ToString()
+            .Contains("System.Collections.Generic.List");
+
+        var isExpressionForEach = expressionName.ToString() == "ForEach";
+        
+        if (!isInvocationTargetList || !isExpressionForEach)
         {
-            context.ReportDiagnostic(
-                Diagnostic.Create(
-                    Descriptor,
-                    context.Node.GetLocation()));
+            return;
         }
+
+        context.ReportDiagnostic(
+            Diagnostic.Create(
+                Descriptor,
+                context.Node.GetLocation()));
     }
 }
