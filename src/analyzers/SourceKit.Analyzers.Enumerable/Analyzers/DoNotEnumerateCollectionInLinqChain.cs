@@ -18,7 +18,8 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
 
     private static readonly HashSet<string> TerminationMethods = new()
     {
-        nameof(System.Linq.Enumerable.ToHashSet),
+        // ToHashSet is missing in standard 2.0
+        "ToHashSet",
         nameof(System.Linq.Enumerable.ToLookup),
         nameof(System.Linq.Enumerable.ToArray),
         nameof(System.Linq.Enumerable.ToDictionary),
