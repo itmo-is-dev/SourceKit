@@ -70,6 +70,7 @@ jobs:
           rm -rf .packages
           mkdir .packages
           mv src/analyzers/SourceKit.Analyzers.MustBePartial/bin/Release/*.nupkg .packages/
+          mv src/analyzers/SourceKit.Analyzers.MustBePartial.Annotations/bin/Release/*.nupkg .packages/
           mv src/analyzers/SourceKit.Analyzers.MemberAccessibility/bin/Release/*.nupkg .packages/
           mv src/analyzers/SourceKit.Analyzers.Nullable/bin/Release/*.nupkg .packages/
           mv src/analyzers/SourceKit.Analyzers.Enumerable/bin/Release/*.nupkg .packages/
