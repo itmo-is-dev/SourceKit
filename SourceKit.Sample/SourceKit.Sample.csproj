@@ -13,7 +13,8 @@
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" OutputItemType="Analyzer" />
         <ProjectReference Include="..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj" OutputItemType="Analyzer" />
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Properties\SourceKit.Analyzers.Properties.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Enumerable\SourceKit.Analyzers.Enumerable.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Enumerable\SourceKit.Analyzers.Enumerable.csproj" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Nullable\SourceKit.Analyzers.Nullable.csproj" OutputItemType="Analyzer" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
