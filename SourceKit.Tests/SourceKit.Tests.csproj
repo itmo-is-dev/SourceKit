@@ -38,6 +38,7 @@
     <ItemGroup>
         <ProjectReference Include="..\SourceKit.Sample\SourceKit.Sample.csproj" />
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Collections\SourceKit.Analyzers.Collections.csproj" />
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Properties\SourceKit.Analyzers.Properties.csproj" />
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Enumerable\SourceKit.Analyzers.Enumerable.csproj" />
         <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Nullable\SourceKit.Analyzers.Nullable.csproj" />
         <ProjectReference Include="..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj" />
@@ -51,5 +52,4 @@
           <Link>SourceKit.Sample\CodeFixProviders\JokeExample.cs</Link>
         </Content>
     </ItemGroup>
-
 </Project>
