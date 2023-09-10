@@ -29,6 +29,7 @@
     <PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageVersion Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
     <PackageVersion Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+    <PackageVersion Include="SourceKit.Analyzers.Collections" Version="0.0.1" />
     <PackageVersion Include="SourceKit.Analyzers.Enumerable" Version="0.0.1" />
     <PackageVersion Include="SourceKit.Analyzers.Collections" Version="0.0.1" />
     <PackageVersion Include="SourceKit.Analyzers.Nullable" Version="0.0.0-alpha" />
