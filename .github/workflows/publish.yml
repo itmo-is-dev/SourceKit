@@ -69,8 +69,14 @@ jobs:
         run: |
           rm -rf .packages
           mkdir .packages
-          mv src/analyzers/SourceKit.Analyzers.*/bin/Release/*.nupkg .packages/
-          mv src/analyzers/SourceKit.Generators.*/bin/Release/*.nupkg .packages/
+          mv src/analyzers/SourceKit.Analyzers.MustBePartial/bin/Release/*.nupkg .packages/
+          mv src/analyzers/SourceKit.Analyzers.MemberAccessibility/bin/Release/*.nupkg .packages/
+          mv src/analyzers/SourceKit.Analyzers.Nullable/bin/Release/*.nupkg .packages/
+          mv src/analyzers/SourceKit.Analyzers.Enumerable/bin/Release/*.nupkg .packages/
+          mv src/analyzers/SourceKit.Analyzers.Properties/bin/Release/*.nupkg .packages/
+          mv src/analyzers/SourceKit.Analyzers.Collections/bin/Release/*.nupkg .packages/
+          mv src/generators/SourceKit.Generators.Builder/bin/Release/*.nupkg .packages/
+          mv src/generators/SourceKit.Generators.Builder.Annotations/bin/Release/*.nupkg .packages/
   
   publish:
     name: publish
