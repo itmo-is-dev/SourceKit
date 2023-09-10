@@ -34,6 +34,7 @@
     <PackageVersion Include="SourceKit.Analyzers.MustBePartial" Version="1.1.0" />
     <PackageVersion Include="SourceKit.Analyzers.Nullable" Version="1.1.0" />
     <PackageVersion Include="SourceKit.Analyzers.MustBePartial.Annotations" Version="1.1.0" />
+    <PackageVersion Include="SourceKit.Analyzers.Properties" Version="0.0.0-alpha" />
     <PackageVersion Include="SourceKit.Generators.Builder" Version="1.0.4" />
     <PackageVersion Include="SourceKit.Generators.Builder.Annonataions" Version="1.0.0" />
     <PackageVersion Include="xunit" Version="2.4.2" />
