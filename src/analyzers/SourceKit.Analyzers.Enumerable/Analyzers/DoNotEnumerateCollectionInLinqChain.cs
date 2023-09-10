@@ -18,10 +18,17 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
 
     private static readonly HashSet<string> TerminationMethods = new()
     {
-        nameof(System.Linq.Enumerable.ToArray),
-        nameof(System.Linq.Enumerable.ToList),
-        nameof(System.Linq.Enumerable.ToDictionary),
+        nameof(System.Linq.Enumerable.ToHashSet),
         nameof(System.Linq.Enumerable.ToLookup),
+        nameof(System.Linq.Enumerable.ToArray),
+        nameof(System.Linq.Enumerable.ToDictionary),
+        nameof(System.Linq.Enumerable.ToList),
+        nameof(System.Collections.Immutable.ImmutableArray.ToImmutableArray),
+        nameof(System.Collections.Immutable.ImmutableDictionary.ToImmutableDictionary),
+        nameof(System.Collections.Immutable.ImmutableList.ToImmutableList),
+        nameof(System.Collections.Immutable.ImmutableHashSet.ToImmutableHashSet),
+        nameof(System.Collections.Immutable.ImmutableSortedDictionary.ToImmutableSortedDictionary),
+        nameof(System.Collections.Immutable.ImmutableSortedSet.ToImmutableSortedSet),
     };
 
     public static readonly DiagnosticDescriptor Descriptor = new(
