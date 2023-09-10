@@ -24,7 +24,8 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>0.0.1</Version>
+        <PatchVersion>0</PatchVersion>
+        <Version>1.0.$(PatchVersion)</Version>
         <PackageReleaseNotes>Added OfType analyzer</PackageReleaseNotes>
     </PropertyGroup>
 

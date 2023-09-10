@@ -29,17 +29,15 @@
     <PackageVersion Include="System.Reflection.Emit" Version="4.7.0" />
     <PackageVersion Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
     <PackageVersion Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
-    <PackageVersion Include="SourceKit.Analyzers.Collections" Version="0.0.0-alpha" />
-    <PackageVersion Include="SourceKit.Analyzers.Enumerable" Version="0.0.1" />
-    <PackageVersion Include="SourceKit.Analyzers.Collections" Version="0.0.1" />
-    <PackageVersion Include="SourceKit.Analyzers.Nullable" Version="0.0.0-alpha" />
+    <PackageVersion Include="SourceKit.Analyzers.Collections" Version="1.0.0" />
+    <PackageVersion Include="SourceKit.Analyzers.Enumerable" Version="1.0.0" />
+    <PackageVersion Include="SourceKit.Analyzers.Nullable" Version="1.0.0" />
     <PackageVersion Include="SourceKit.Analyzers.MustBePartial" Version="1.1.0" />
-    <PackageVersion Include="SourceKit.Analyzers.Nullable" Version="1.1.0" />
     <PackageVersion Include="SourceKit.Analyzers.MustBePartial.Annotations" Version="1.1.0" />
-    <PackageVersion Include="SourceKit.Analyzers.Properties" Version="0.0.0-alpha" />
-    <PackageVersion Include="SourceKit.Analyzers.MemberAccessibility" Version="0.0.0-alpha" />
-    <PackageVersion Include="SourceKit.Generators.Builder" Version="1.0.4" />
-    <PackageVersion Include="SourceKit.Generators.Builder.Annonataions" Version="1.0.0" />
+    <PackageVersion Include="SourceKit.Analyzers.Properties" Version="1.0.0" />
+    <PackageVersion Include="SourceKit.Analyzers.MemberAccessibility" Version="1.0.0" />
+    <PackageVersion Include="SourceKit.Generators.Builder" Version="1.1.0" />
+    <PackageVersion Include="SourceKit.Generators.Builder.Annonataions" Version="1.1.0" />
     <PackageVersion Include="xunit" Version="2.4.2" />
     <PackageVersion Include="Xunit.DependencyInjection.Demystifier" Version="8.0.1" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="2.4.5" />
