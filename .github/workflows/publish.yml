@@ -47,10 +47,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: exclude test project
+      - name: exclude redundant projects and files
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
         run: |
-          dotnet sln SourceKit.sln remove SourceKit.Tests\SourceKit.Tests.csproj
+          dotnet sln SourceKit.sln remove SourceKit.Tests/SourceKit.Tests.csproj
+          dotnet sln SourceKit.sln remove SourceKit.Sample/SourceKit.Sample.csproj
+          rm -rf SourceKit.Sample
+          rm -rf SourceKit.Tests
+          rm NuGet.config -f
 
       - name: restore
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
