@@ -41,6 +41,15 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.Packages.props', '**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
+            
+      - name: Build sources
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        run: |
+          cd src
+          for csproj in $(find . | grep csproj$)
+          do
+            dotnet build -c Release "$csproj"
+          done
 
       - name: Build
         if: steps.cache-tests.outputs.cache-hit != 'true'
