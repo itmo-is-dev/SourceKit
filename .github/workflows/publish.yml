@@ -50,10 +50,12 @@ jobs:
       - name: exclude redundant projects and files
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
         run: |
-          dotnet sln SourceKit.sln remove SourceKit.Tests/SourceKit.Tests.csproj
+          dotnet sln SourceKit.sln remove tests/SourceKit.Tests/SourceKit.Tests.csproj
+          dotnet sln SourceKit.sln remove tests/SourceKit.Reflect.Tests/SourceKit.Reflect.Tests.csproj
           dotnet sln SourceKit.sln remove SourceKit.Sample/SourceKit.Sample.csproj
           rm -rf SourceKit.Sample
-          rm -rf SourceKit.Tests
+          rm -rf tests/SourceKit.Tests
+          rm -rf tests/SourceKit.Reflect.Tests
           rm NuGet.config -f
 
       - name: restore
