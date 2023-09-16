@@ -31,16 +31,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\SourceKit.Reflect\SourceKit.Reflect.csproj" SetConfiguration="Configuration=Release"/>
-        <ProjectReference Include="..\src\SourceKit\SourceKit.csproj" SetConfiguration="Configuration=Release"/>
+        <ProjectReference Include="..\..\src\SourceKit.Reflect\SourceKit.Reflect.csproj" SetConfiguration="Configuration=Release"/>
+        <ProjectReference Include="..\..\src\SourceKit\SourceKit.csproj" SetConfiguration="Configuration=Release"/>
 
         <ProjectReference Include="..\SourceKit.Tests.Common\SourceKit.Tests.Common.csproj"/>
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Collections\SourceKit.Analyzers.Collections.csproj"/>
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Properties\SourceKit.Analyzers.Properties.csproj"/>
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Enumerable\SourceKit.Analyzers.Enumerable.csproj"/>
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Nullable\SourceKit.Analyzers.Nullable.csproj"/>
-        <ProjectReference Include="..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj"/>
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj"/>
+        <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers.Collections\SourceKit.Analyzers.Collections.csproj"/>
+        <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers.Properties\SourceKit.Analyzers.Properties.csproj"/>
+        <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers.Enumerable\SourceKit.Analyzers.Enumerable.csproj"/>
+        <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers.Nullable\SourceKit.Analyzers.Nullable.csproj"/>
+        <ProjectReference Include="..\..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj"/>
+        <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

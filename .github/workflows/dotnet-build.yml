@@ -1,0 +1,55 @@
+name: .NET
+
+on:
+  pull_request:
+    branches: [ master ]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - '.github/workflows/dotnet-build.yml'
+      - '*.props'
+      - '*.sln*'
+
+jobs:
+  build:
+    name: Build & Test
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.create-cache-key.outputs.key }}
+    permissions:
+      packages: read
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create cache key
+        id: create-cache-key
+        run: |
+          echo key=${{ runner.os }}-${{ hashFiles('src/**', 'tests/**') }}-test-results >> "$GITHUB_OUTPUT"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        with:
+          dotnet-version: 7.0.203
+
+      - name: Cache nuget packages
+        uses: actions/cache@v3
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-${{ hashFiles('**/*.Packages.props', '**/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Install dependencies
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        run: dotnet restore
+
+      - name: Build
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        run: dotnet build -c Release --no-restore
+
+      - name: Test
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        run: dotnet test -c Release --no-restore --no-build

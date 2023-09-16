@@ -23,10 +23,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SourceKit.Sample\SourceKit.Sample.csproj"/>
-        <ProjectReference Include="..\SourceKit.Tests.Common\SourceKit.Tests.Common.csproj" />
-        <ProjectReference Include="..\src\SourceKit.Reflect\SourceKit.Reflect.csproj"/>
-        <ProjectReference Include="..\src\SourceKit\SourceKit.csproj"/>
+        <ProjectReference Include="..\..\SourceKit.Sample\SourceKit.Sample.csproj"/>
+        <ProjectReference Include="..\SourceKit.Tests.Common\SourceKit.Tests.Common.csproj"/>
+        <ProjectReference Include="..\..\src\SourceKit.Reflect\SourceKit.Reflect.csproj" SetConfiguration="Configuration=Release"/>
+        <ProjectReference Include="..\..\src\SourceKit\SourceKit.csproj" SetConfiguration="Configuration=Release"/>
     </ItemGroup>
 
 </Project>
