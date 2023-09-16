@@ -20,6 +20,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Sigil"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -27,6 +28,10 @@
         <ProjectReference Include="..\SourceKit.Tests.Common\SourceKit.Tests.Common.csproj"/>
         <ProjectReference Include="..\..\src\SourceKit.Reflect\SourceKit.Reflect.csproj" SetConfiguration="Configuration=Release"/>
         <ProjectReference Include="..\..\src\SourceKit\SourceKit.csproj" SetConfiguration="Configuration=Release"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\..\SourceKit.Sample\**\*.cs" Exclude="..\..\SourceKit.Sample\obj\**" LinkBase="SourceKit.Sample\" CopyToOutputDirectory="Always"/>
     </ItemGroup>
 
 </Project>

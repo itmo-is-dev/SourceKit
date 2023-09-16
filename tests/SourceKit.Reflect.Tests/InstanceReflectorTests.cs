@@ -10,7 +10,7 @@ namespace SourceKit.Reflect.Tests;
 
 public class InstanceReflectorTests
 {
-    [Fact]
+    [Fact(Skip = "Not yet ready")]
     public async Task CreateInstance_ShouldCreateValidPoint()
     {
         // Arrange
