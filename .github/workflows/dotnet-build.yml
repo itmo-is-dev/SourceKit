@@ -42,13 +42,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Install dependencies
-        if: steps.cache-tests.outputs.cache-hit != 'true'
-        run: dotnet restore
-
       - name: Build
         if: steps.cache-tests.outputs.cache-hit != 'true'
-        run: dotnet build -c Release --no-restore
+        run: dotnet build -c Release
 
       - name: Test
         if: steps.cache-tests.outputs.cache-hit != 'true'
