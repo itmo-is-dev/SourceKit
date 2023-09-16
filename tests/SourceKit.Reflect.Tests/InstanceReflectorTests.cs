@@ -31,7 +31,6 @@ public class InstanceReflectorTests
         var instanceSyntax1 = body.First().FindValue()!;
         var instanceSyntax2 = body.Skip(1).First().FindValue()!;
 
-
         // Act
         var point1 = reflector.CreateInstance<Point>(instanceSyntax1, compilation);
         var point2 = reflector.CreateInstance<Point>(instanceSyntax2, compilation);
