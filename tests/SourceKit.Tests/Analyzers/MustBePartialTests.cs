@@ -2,7 +2,6 @@ using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using SourceKit.Analyzers.MustBePartial.Analyzers;
 using SourceKit.Analyzers.MustBePartial.Annotations;
-using SourceKit.Sample.Analyzers.MustBePartial;
 using SourceKit.Tests.Tools;
 using Xunit;
 using AnalyzerVerifier = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<
@@ -23,7 +22,7 @@ public class MustBePartialTests
 
         var diagnostic = AnalyzerVerifier.Diagnostic(TypeMustBePartialAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 3, 14)
-            .WithArguments(nameof(NonPartialDerivative));
+            .WithArguments("NonPartialDerivative");
 
         var test = new CSharpAnalyzerTest<TypeMustBePartialAnalyzer, XUnitVerifier>
         {
@@ -72,7 +71,7 @@ public class MustBePartialTests
 
         var diagnostic = AnalyzerVerifier.Diagnostic(TypeMustBePartialAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 3, 14)
-            .WithArguments(nameof(NonPartialDerivative));
+            .WithArguments("NonPartialDerivative");
 
         var test = new CodeFixTest
         {

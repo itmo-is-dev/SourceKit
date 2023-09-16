@@ -3,10 +3,10 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Reflect.Reflectors;
 using SourceKit.Sample.Models;
-using SourceKit.Tests.Tools;
+using SourceKit.Tests.Common;
 using Xunit;
 
-namespace SourceKit.Tests;
+namespace SourceKit.Reflect.Tests;
 
 public class InstanceReflectorTests
 {

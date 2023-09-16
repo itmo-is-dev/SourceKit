@@ -1,7 +1,6 @@
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using SourceKit.Analyzers.Collections.Analyzers;
-using SourceKit.Sample.Analyzers.Collections.Dictionary;
 using SourceKit.Tests.Tools;
 using AnalyzerVerifier = Microsoft.CodeAnalysis.CSharp.Testing.XUnit.AnalyzerVerifier<
     SourceKit.Analyzers.MustBePartial.Analyzers.TypeMustBePartialAnalyzer>;
@@ -14,11 +13,12 @@ public class CollectionsTests
     [Fact]
     public async Task DictionaryKeyType_ShouldReportDiagnostic_WhenTypeIsNotImplementEquatable()
     {
-        var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/KeyTypeDoesNotImplementEquatable.cs");
+        var sourceFile = await SourceFile.LoadAsync(
+            "SourceKit.Sample/Analyzers/Collections/Dictionary/KeyTypeDoesNotImplementEquatable.cs");
 
         var diagnostic = AnalyzerVerifier.Diagnostic(DictionaryKeyTypeMustImplementEquatableAnalyzer.Descriptor)
             .WithLocation(sourceFile.Name, 7, 12)
-            .WithArguments(nameof(KeyTypeDoesNotImplementEquatable));
+            .WithArguments("KeyTypeDoesNotImplementEquatable");
 
         var test = new CSharpAnalyzerTest<DictionaryKeyTypeMustImplementEquatableAnalyzer, XUnitVerifier>
         {
@@ -26,8 +26,33 @@ public class CollectionsTests
             {
                 Sources =
                 {
-                    sourceFile
-                }
+                    sourceFile,
+                },
+            },
+            ExpectedDiagnostics = { diagnostic },
+        };
+
+        await test.RunAsync();
+    }
+
+    [Fact]
+    public async Task DictionaryCustomKeyType_ShouldReportDiagnostic_WhenTypeImplementsOtherEquatable()
+    {
+        var sourceFile = await SourceFile.LoadAsync(
+            "SourceKit.Sample/Analyzers/Collections/Dictionary/CustomKeyTypeImplementsOtherEquatable.cs");
+
+        var diagnostic = AnalyzerVerifier.Diagnostic(DictionaryKeyTypeMustImplementEquatableAnalyzer.Descriptor)
+            .WithLocation(sourceFile.Name, 18, 23)
+            .WithArguments("CustomKeyTypeImplementsOtherEquatable");
+
+        var test = new CSharpAnalyzerTest<DictionaryKeyTypeMustImplementEquatableAnalyzer, XUnitVerifier>
+        {
+            TestState =
+            {
+                Sources =
+                {
+                    sourceFile,
+                },
             },
             ExpectedDiagnostics = { diagnostic },
         };
@@ -44,18 +69,20 @@ public class CollectionsTests
             {
                 Sources =
                 {
-                    await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/KeyTypeImplementsEquatable.cs")
-                }
+                    await SourceFile.LoadAsync(
+                        "SourceKit.Sample/Analyzers/Collections/Dictionary/KeyTypeImplementsEquatable.cs"),
+                },
             },
         };
 
         await test.RunAsync();
     }
-    
+
     [Fact]
     public async Task DictionaryCustomKeyType_ShouldNotReportDiagnostic_WhenTypeImplementsEquatable()
     {
-        var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/CustomKeyTypeImplementsEquatable.cs");
+        var sourceFile = await SourceFile.LoadAsync(
+            "SourceKit.Sample/Analyzers/Collections/Dictionary/CustomKeyTypeImplementsEquatable.cs");
 
         var test = new CSharpAnalyzerTest<DictionaryKeyTypeMustImplementEquatableAnalyzer, XUnitVerifier>
         {
@@ -64,8 +91,8 @@ public class CollectionsTests
                 Sources =
                 {
                     sourceFile,
-                    await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/EquatableType.cs")
-                }
+                    await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/EquatableType.cs"),
+                },
             },
         };
 
@@ -81,18 +108,19 @@ public class CollectionsTests
             {
                 Sources =
                 {
-                    await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/EmptyKeyType.cs")
-                }
+                    await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/EmptyKeyType.cs"),
+                },
             },
         };
 
         await test.RunAsync();
     }
-    
+
     [Fact]
     public async Task DictionaryInheritedCustomKeyType_ShouldNotReportDiagnostic_WhenTypeImplementsEquatable()
     {
-        var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/InheritedCustomKeyTypeImplementsEquatable.cs");
+        var sourceFile = await SourceFile.LoadAsync(
+            "SourceKit.Sample/Analyzers/Collections/Dictionary/InheritedCustomKeyTypeImplementsEquatable.cs");
 
         var test = new CSharpAnalyzerTest<DictionaryKeyTypeMustImplementEquatableAnalyzer, XUnitVerifier>
         {
@@ -100,22 +128,19 @@ public class CollectionsTests
             {
                 Sources =
                 {
-                    sourceFile
-                }
+                    sourceFile,
+                },
             },
         };
 
         await test.RunAsync();
     }
-    
-    [Fact]
-    public async Task DictionaryCustomKeyType_ShouldReportDiagnostic_WhenTypeImplementsOtherEquatable()
-    {
-        var sourceFile = await SourceFile.LoadAsync("SourceKit.Sample/Analyzers/Collections/Dictionary/CustomKeyTypeImplementsOtherEquatable.cs");
 
-        var diagnostic = AnalyzerVerifier.Diagnostic(DictionaryKeyTypeMustImplementEquatableAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 18, 23)
-            .WithArguments(nameof(CustomKeyTypeImplementsOtherEquatable));
+    [Fact]
+    public async Task DictionaryInheritedCustomKeyType_ShouldNotReportDiagnostic_WhenKeyTypeIsEnum()
+    {
+        var sourceFile = await SourceFile.LoadAsync(
+            "SourceKit.Sample/Analyzers/Collections/Dictionary/EnumKeyDictionary.cs");
 
         var test = new CSharpAnalyzerTest<DictionaryKeyTypeMustImplementEquatableAnalyzer, XUnitVerifier>
         {
@@ -123,10 +148,9 @@ public class CollectionsTests
             {
                 Sources =
                 {
-                    sourceFile
-                }
+                    sourceFile,
+                },
             },
-            ExpectedDiagnostics = { diagnostic },
         };
 
         await test.RunAsync();

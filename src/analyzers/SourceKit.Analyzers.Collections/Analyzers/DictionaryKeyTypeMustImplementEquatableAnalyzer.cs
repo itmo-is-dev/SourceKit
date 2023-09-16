@@ -36,7 +36,7 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
 
     private void AnalyzeGeneric(SyntaxNodeAnalysisContext context)
     {
-        var node = (GenericNameSyntax) context.Node;
+        var node = (GenericNameSyntax)context.Node;
 
         if (node.Identifier.Text != "Dictionary")
             return;
@@ -45,12 +45,15 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
 
         if (dictionaryTypeSymbol is null)
             return;
-        
+
         var keyTypeSymbol = dictionaryTypeSymbol is INamedTypeSymbol namedTypeSymbol
             ? namedTypeSymbol.TypeArguments.FirstOrDefault()
             : null;
 
         if (keyTypeSymbol is null || keyTypeSymbol.MetadataName == "TKey")
+            return;
+        
+        if (keyTypeSymbol.TypeKind is TypeKind.Enum)
             return;
 
         var interfaceNamedType = context.Compilation.GetTypeSymbol(typeof(IEquatable<>));
@@ -68,7 +71,7 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
         var diag = Diagnostic.Create(Descriptor, node.GetLocation());
         context.ReportDiagnostic(diag);
     }
-    
+
     private static ISymbol? GetSymbolFromContext(SyntaxNodeAnalysisContext context, SyntaxNode node)
     {
         var model = context.SemanticModel;
