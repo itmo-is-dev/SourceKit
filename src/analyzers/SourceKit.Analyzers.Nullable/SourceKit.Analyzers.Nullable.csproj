@@ -24,7 +24,6 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <PatchVersion>0</PatchVersion>
         <Version>1.0.$(PatchVersion)</Version>
         <PackageReleaseNotes></PackageReleaseNotes>
     </PropertyGroup>

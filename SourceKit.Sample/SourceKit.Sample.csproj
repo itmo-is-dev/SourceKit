@@ -6,27 +6,28 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\src\SourceKit\SourceKit.csproj" OutputItemType="Analyzer" Condition="'$(Configuration)' != 'Release'" />
+
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' != 'Release'">
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Enumerable\SourceKit.Analyzers.Enumerable.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Collections\SourceKit.Analyzers.Collections.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Properties\SourceKit.Analyzers.Properties.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Nullable\SourceKit.Analyzers.Nullable.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MemberAccessibility\SourceKit.Analyzers.MemberAccessibility.csproj" OutputItemType="Analyzer" />
-        <ProjectReference Include="..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\src\SourceKit\SourceKit.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Enumerable\SourceKit.Analyzers.Enumerable.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Collections\SourceKit.Analyzers.Collections.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Properties\SourceKit.Analyzers.Properties.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.Nullable\SourceKit.Analyzers.Nullable.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\src\analyzers\SourceKit.Analyzers.MemberAccessibility\SourceKit.Analyzers.MemberAccessibility.csproj" OutputItemType="Analyzer"/>
+        <ProjectReference Include="..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj" OutputItemType="Analyzer"/>
     </ItemGroup>
 
     <ItemGroup Condition="'$(Configuration)' == 'Release'">
-        <PackageReference Include="SourceKit.Analyzers.MustBePartial" />
-        <PackageReference Include="SourceKit.Analyzers.Enumerable" />
-        <PackageReference Include="SourceKit.Analyzers.Collections" />
-        <PackageReference Include="SourceKit.Analyzers.Properties" />
-        <PackageReference Include="SourceKit.Analyzers.Nullable" />
-        <PackageReference Include="SourceKit.Analyzers.MemberAccessibility" />
-        <PackageReference Include="SourceKit.Generators.Builder" />
+        <PackageReference Include="SourceKit.Analyzers.MustBePartial"/>
+        <PackageReference Include="SourceKit.Analyzers.Enumerable"/>
+        <PackageReference Include="SourceKit.Analyzers.Collections"/>
+        <PackageReference Include="SourceKit.Analyzers.Properties"/>
+        <PackageReference Include="SourceKit.Analyzers.Nullable"/>
+        <PackageReference Include="SourceKit.Analyzers.MemberAccessibility"/>
+        <PackageReference Include="SourceKit.Generators.Builder"/>
     </ItemGroup>
 
 </Project>

@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-namespace SourceKit.Tests.Tools;
+namespace SourceKit.Tests.Common;
 
 public static class CompilationBuilder
 {

@@ -13,39 +13,37 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <InternalsVisibleTo Include="SourceKit.Tests" />
+        <InternalsVisibleTo Include="SourceKit.Tests"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Lokad.ILPack" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all" />
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all" />
+        <PackageReference Include="Lokad.ILPack"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
 
-        <PackageReference Include="Sigil" GeneratePathProperty="true" PrivateAssets="all" />
-        <PackageReference Include="System.Reflection.Emit" GeneratePathProperty="true" PrivateAssets="all" />
-        <PackageReference Include="System.Reflection.Emit.ILGeneration" GeneratePathProperty="true" PrivateAssets="all" />
-        <PackageReference Include="System.Reflection.Emit.Lightweight" GeneratePathProperty="true" PrivateAssets="all" />
+        <PackageReference Include="Sigil" GeneratePathProperty="true" PrivateAssets="all"/>
+        <PackageReference Include="System.Reflection.Emit" GeneratePathProperty="true" PrivateAssets="all"/>
+        <PackageReference Include="System.Reflection.Emit.ILGeneration" GeneratePathProperty="true" PrivateAssets="all"/>
+        <PackageReference Include="System.Reflection.Emit.Lightweight" GeneratePathProperty="true" PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="PolySharp" Condition="'$(Configuration)' == 'Release'">
             <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>
-                runtime; build; native; contentfiles; analyzers; buildtransitive
-            </IncludeAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(PkgSigil)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(PkgSystem_Reflection_Emit)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(PkgSystem_Reflection_Emit_ILGeneration)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(PkgSystem_Reflection_Emit_Lightweight)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(PkgSigil)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(PkgSystem_Reflection_Emit)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(PkgSystem_Reflection_Emit_ILGeneration)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(PkgSystem_Reflection_Emit_Lightweight)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SourceKit\SourceKit.csproj" />
+        <ProjectReference Include="..\SourceKit\SourceKit.csproj"/>
     </ItemGroup>
 
 </Project>

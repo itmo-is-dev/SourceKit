@@ -25,7 +25,6 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <PatchVersion>0</PatchVersion>
         <Version>1.1.$(PatchVersion)</Version>
         <PackageReleaseNotes>Fixed property type usings generation</PackageReleaseNotes>
     </PropertyGroup>
