@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-dotnet@v1
         if: steps.cache-tests.outputs.cache-hit != 'true'
         with:
-          dotnet-version: 7.0.203
+          dotnet-version: 7.0.x
 
       - name: Cache nuget packages
         uses: actions/cache@v3
@@ -41,18 +41,6 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.Packages.props', '**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-
-      - name: Build sources
-        if: steps.cache-tests.outputs.cache-hit != 'true'
-        run: |
-          dotnet build -c Release ./src/analyzers/SourceKit.Analyzers.MustBePartial.Annotations/SourceKit.Analyzers.MustBePartial.Annotations.csproj
-          dotnet build -c Release ./src/generators/SourceKit.Generators.Builder.Annotations/SourceKit.Generators.Builder.Annotations.csproj
-
-          cd src
-          for csproj in $(find . | grep csproj$)
-          do
-            dotnet build -c Release "$csproj"
-          done
 
       - name: Build
         if: steps.cache-tests.outputs.cache-hit != 'true'
