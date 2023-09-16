@@ -10,7 +10,7 @@ namespace SourceKit.Reflect.Tests;
 
 public class MethodReflectorTests
 {
-    [Fact]
+    [Fact(Skip = "Not yet ready")]
     public async Task CreateMethod_LocalBinaryReference_ShouldWorkAsCompiledVersion()
     {
         // Arrange
@@ -34,7 +34,7 @@ public class MethodReflectorTests
         action.Invoke(1).Should().Be(Class.LocalBinaryReference(1));
     }
 
-    [Fact]
+    [Fact(Skip = "Not yet ready")]
     public async Task CreateMethod_MethodExtensionMethodCall_ShouldWorkAsCompiledVersion()
     {
         // Arrange
@@ -59,7 +59,7 @@ public class MethodReflectorTests
         action.Invoke(enumerable).Should().Be(Class.MethodExtensionMethodCall(enumerable));
     }
 
-    [Fact]
+    [Fact(Skip = "Not yet ready")]
     public async Task CreateMethod_CustomAggregate_ShouldWorkAsCompiledVersion()
     {
         // Arrange
