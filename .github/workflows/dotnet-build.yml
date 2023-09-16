@@ -41,10 +41,13 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.Packages.props', '**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-            
+
       - name: Build sources
         if: steps.cache-tests.outputs.cache-hit != 'true'
         run: |
+          dotnet build -c Release ./src/analyzers/SourceKit.Analyzers.MustBePartial.Annotations/SourceKit.Analyzers.MustBePartial.Annotations.csproj
+          dotnet build -c Release ./src/generators/SourceKit.Generators.Builder.Annotations/SourceKit.Generators.Builder.Annotations.csproj
+
           cd src
           for csproj in $(find . | grep csproj$)
           do
