@@ -86,10 +86,7 @@ public class BuilderSourceGenerator : ISourceGenerator
         if (context.SyntaxContextReceiver is not BuilderAttributeSyntaxContextReceiver receiver)
             return;
 
-        foreach (var typeSymbol in receiver.TypeSymbols)
-        {
-            GenerateForType(context, typeSymbol);
-        }
+        Parallel.ForEach(receiver.TypeSymbols, x => GenerateForType(context, x));
     }
 
     private void GenerateForType(GeneratorExecutionContext context, INamedTypeSymbol symbol)
