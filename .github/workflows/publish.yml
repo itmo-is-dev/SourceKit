@@ -73,7 +73,7 @@ jobs:
         run: |
           rm -rf .packages
           mkdir .packages
-          mv src/analyzers/SourceKit/bin/Release/*.nupkg .packages/
+          mv src/SourceKit/bin/Release/*.nupkg .packages/
           mv src/analyzers/SourceKit.Analyzers.MustBePartial/bin/Release/*.nupkg .packages/
           mv src/analyzers/SourceKit.Analyzers.MustBePartial.Annotations/bin/Release/*.nupkg .packages/
           mv src/analyzers/SourceKit.Analyzers.MemberAccessibility/bin/Release/*.nupkg .packages/
