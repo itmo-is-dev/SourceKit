@@ -82,9 +82,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath=""/>
-
-        <None Include="$(OutputPath)\SourceKit*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(OutputPath)\SourceKit.Generators.Builder.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
 
         <None Include="$(PkgFluentChaining)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(PkgHumanizer_Core)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
