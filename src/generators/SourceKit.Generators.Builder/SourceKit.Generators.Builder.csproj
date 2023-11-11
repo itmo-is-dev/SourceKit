@@ -82,6 +82,8 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="tools\*.ps1" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath=""/>
+
         <None Include="$(OutputPath)\SourceKit*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
 
         <None Include="$(PkgFluentChaining)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
