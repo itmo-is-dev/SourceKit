@@ -27,7 +27,6 @@
     <PropertyGroup>
         <Version>1.1.$(PatchVersion)</Version>
         <PackageReleaseNotes>
-            Fixed global namespace generation
         </PackageReleaseNotes>
     </PropertyGroup>
 
