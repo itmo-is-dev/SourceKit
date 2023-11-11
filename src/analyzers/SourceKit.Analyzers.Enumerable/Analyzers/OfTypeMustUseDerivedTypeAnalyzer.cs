@@ -68,6 +68,12 @@ public class OfTypeMustUseDerivedTypeAnalyzer : DiagnosticAnalyzer
         if (returnElementType.IsAssignableTo(sourceElementType))
             return;
 
+        if (sourceElementType is ITypeParameterSymbol parameterSymbol &&
+            parameterSymbol.ConstraintTypes.Any(c => returnElementType.IsAssignableTo(c)))
+        {
+            return;
+        }
+
         var diagnostic = Diagnostic.Create(
             Descriptor,
             operation.Syntax.GetLocation(),
