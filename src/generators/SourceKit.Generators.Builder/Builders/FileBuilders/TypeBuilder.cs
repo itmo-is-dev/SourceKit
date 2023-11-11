@@ -28,7 +28,11 @@ public class TypeBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
                 .Append(Token(SyntaxKind.PartialKeyword))
         );
 
-        var namespaceIdentifier = IdentifierName(request.Symbol.ContainingNamespace.GetFullyQualifiedName());
+        var namespaceString = request.Symbol.ContainingNamespace.IsGlobalNamespace
+            ? request.Symbol.ContainingNamespace.Name
+            : request.Symbol.ContainingNamespace.GetFullyQualifiedName();
+
+        var namespaceIdentifier = IdentifierName(namespaceString);
         var namespaceDeclaration = NamespaceDeclaration(namespaceIdentifier);
         var declaration = request.Symbol.ToSyntax().WithModifiers(modifiers);
 
