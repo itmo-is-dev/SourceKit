@@ -64,7 +64,9 @@ jobs:
 
       - name: build
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
-        run: dotnet build SourceKit.sln -c Release --no-restore /p:PatchVersion=${{ github.run_number }}
+        run: |
+          dotnet build SourceKit.sln -c Release --no-restore /p:PatchVersion=${{ github.run_number }} /p:GeneratePackageOnBuild=false
+          dotnet build SourceKit.sln -c Release --no-restore /p:PatchVersion=${{ github.run_number }}
 
       - name: move packages
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
