@@ -74,15 +74,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj" PrivateAssets="all">
-            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
-        </ProjectReference>
-
+        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj"/>
         <ProjectReference Include="..\SourceKit.Generators.Builder.Annotations\SourceKit.Generators.Builder.Annotations.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="$(OutputPath)\SourceKit.Generators.Builder.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
 
         <None Include="$(PkgFluentChaining)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(PkgHumanizer_Core)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
@@ -92,7 +89,4 @@
         <None Include="$(PkgMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="bin\"/>
-    </ItemGroup>
 </Project>

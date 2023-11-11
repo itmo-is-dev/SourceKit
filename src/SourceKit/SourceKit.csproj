@@ -9,7 +9,32 @@
 
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
     </PropertyGroup>
+
+    <PropertyGroup>
+        <PackageId>SourceKit</PackageId>
+        <Title>SourceKit</Title>
+        <Authors>ronimizy</Authors>
+        <Description>Source generator extensions</Description>
+        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <Version>1.1.$(PatchVersion)</Version>
+        <PackageReleaseNotes>
+            Fixed global namespace generation
+        </PackageReleaseNotes>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="README.md" Pack="true" PackagePath="\"/>
+        <None Include="..\..\LICENSE.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all" />
@@ -20,6 +45,10 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
 
 </Project>
