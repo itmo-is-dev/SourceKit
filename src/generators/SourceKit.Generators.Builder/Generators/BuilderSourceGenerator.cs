@@ -83,12 +83,13 @@ public class BuilderSourceGenerator : ISourceGenerator
 
     public void Execute(GeneratorExecutionContext context)
     {
-        context.CancellationToken.ThrowIfCancellationRequested();
-
         if (context.SyntaxContextReceiver is not BuilderAttributeSyntaxContextReceiver receiver)
             return;
 
-        Parallel.ForEach(receiver.TypeSymbols, x => GenerateForType(context, x));
+        foreach (var typeSymbol in receiver.TypeSymbols)
+        {
+            GenerateForType(context, typeSymbol);
+        }
     }
 
     private void GenerateForType(GeneratorExecutionContext context, INamedTypeSymbol symbol)
