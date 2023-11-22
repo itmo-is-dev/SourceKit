@@ -27,7 +27,7 @@
     <PropertyGroup>
         <Version>1.1.$(PatchVersion)</Version>
         <PackageReleaseNotes>
-            Fixed global namespace generation
+            Added pragma warning diable for CS1591
         </PackageReleaseNotes>
     </PropertyGroup>
 
