@@ -25,7 +25,9 @@
 
     <PropertyGroup>
         <Version>1.0.$(PatchVersion)</Version>
-        <PackageReleaseNotes></PackageReleaseNotes>
+        <PackageReleaseNotes>
+            Disable analysis for generated files
+        </PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

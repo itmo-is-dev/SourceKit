@@ -29,7 +29,7 @@ public class NullableDisableNotAllowedAnalyzer : DiagnosticAnalyzer
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.RegisterSyntaxNodeAction(AnalyzeNullableDirectiveTrivia, SyntaxKind.NullableDirectiveTrivia);
     }
     
@@ -37,7 +37,7 @@ public class NullableDisableNotAllowedAnalyzer : DiagnosticAnalyzer
     {
         var nullableDirectiveTrivia = (NullableDirectiveTriviaSyntax)context.Node;
 
-        if (nullableDirectiveTrivia.SettingToken.Kind() == SyntaxKind.DisableKeyword)
+        if (nullableDirectiveTrivia.SettingToken.IsKind(SyntaxKind.DisableKeyword))
         {
             var diagnostic = Diagnostic.Create(Descriptor, nullableDirectiveTrivia.GetLocation());
             context.ReportDiagnostic(diagnostic);

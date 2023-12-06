@@ -28,18 +28,14 @@ public class NullForgivingOperatorNotAllowedAnalyzer : DiagnosticAnalyzer
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze |
-                                               GeneratedCodeAnalysisFlags.ReportDiagnostics);
-
-        context.RegisterSyntaxNodeAction(AnalyseNullForgivingOperator,
-            SyntaxKind.SuppressNullableWarningExpression);
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+        context.RegisterSyntaxNodeAction(AnalyseNullForgivingOperator, SyntaxKind.SuppressNullableWarningExpression);
     }
-
 
     private static void AnalyseNullForgivingOperator(SyntaxNodeAnalysisContext context)
     {
-        var suppressionOperator = (PostfixUnaryExpressionSyntax) context.Node;
-        
+        var suppressionOperator = (PostfixUnaryExpressionSyntax)context.Node;
+
         if (suppressionOperator.Ancestors().Any(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression)))
         {
             return;
