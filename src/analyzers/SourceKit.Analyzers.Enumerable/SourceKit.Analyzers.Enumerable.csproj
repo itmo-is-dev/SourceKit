@@ -25,9 +25,7 @@
 
     <PropertyGroup>
         <Version>1.0.$(PatchVersion)</Version>
-        <PackageReleaseNotes>
-            Added generic constraint support for OfType analyzer
-        </PackageReleaseNotes>
+        <PackageReleaseNotes>Disabled generated code analysis</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

@@ -25,7 +25,7 @@
 
     <PropertyGroup>
         <Version>1.0.$(PatchVersion)</Version>
-        <PackageReleaseNotes></PackageReleaseNotes>
+        <PackageReleaseNotes>Disabled generated code analysis</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>

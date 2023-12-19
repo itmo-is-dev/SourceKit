@@ -24,12 +24,12 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
         nameof(System.Linq.Enumerable.ToArray),
         nameof(System.Linq.Enumerable.ToDictionary),
         nameof(System.Linq.Enumerable.ToList),
-        nameof(System.Collections.Immutable.ImmutableArray.ToImmutableArray),
-        nameof(System.Collections.Immutable.ImmutableDictionary.ToImmutableDictionary),
-        nameof(System.Collections.Immutable.ImmutableList.ToImmutableList),
-        nameof(System.Collections.Immutable.ImmutableHashSet.ToImmutableHashSet),
-        nameof(System.Collections.Immutable.ImmutableSortedDictionary.ToImmutableSortedDictionary),
-        nameof(System.Collections.Immutable.ImmutableSortedSet.ToImmutableSortedSet),
+        nameof(ImmutableArray.ToImmutableArray),
+        nameof(ImmutableDictionary.ToImmutableDictionary),
+        nameof(ImmutableList.ToImmutableList),
+        nameof(ImmutableHashSet.ToImmutableHashSet),
+        nameof(ImmutableSortedDictionary.ToImmutableSortedDictionary),
+        nameof(ImmutableSortedSet.ToImmutableSortedSet),
     };
 
     public static readonly DiagnosticDescriptor Descriptor = new(
@@ -46,7 +46,7 @@ public class DoNotEnumerateCollectionInLinqChain : DiagnosticAnalyzer
     public override void Initialize(AnalysisContext context)
     {
         context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
+        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
         context.RegisterSyntaxNodeAction(RegisterDiagnostic, SyntaxKind.InvocationExpression);
     }
 

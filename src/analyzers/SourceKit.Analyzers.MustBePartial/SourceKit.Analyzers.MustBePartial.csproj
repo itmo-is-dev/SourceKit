@@ -26,7 +26,7 @@
 
     <PropertyGroup>
         <Version>1.1.$(PatchVersion)</Version>
-        <PackageReleaseNotes>Added AnnotatedMustBePartialAttribute</PackageReleaseNotes>
+        <PackageReleaseNotes>Disabled generated code analysis</PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
