@@ -68,7 +68,8 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         return MethodDeclaration(IdentifierName(returnType), name)
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(parameter)
-            .AddBodyStatements(ExpressionStatement(invocation), returnStatement);
+            .AddBodyStatements(ExpressionStatement(invocation), returnStatement)
+            .AddAttributeLists(new InitializesPropertyAttributeBuilder(property.Symbol.Name));
     }
 
     private MemberDeclarationSyntax GenerateAddRangeMethod(
@@ -96,6 +97,7 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         return MethodDeclaration(IdentifierName(returnType), name)
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(parameter)
-            .AddBodyStatements(ExpressionStatement(invocation), returnStatement);
+            .AddBodyStatements(ExpressionStatement(invocation), returnStatement)
+            .AddAttributeLists(new InitializesPropertyAttributeBuilder(property.Name));
     }
 }

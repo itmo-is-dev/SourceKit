@@ -19,3 +19,19 @@ public partial record SomeQuery(IReadOnlyCollection<Guid> Ids, int Count);
 
 var query = SomeQuery.Build(x => x.WithCount(2).WithId(Guid.NewGuid());
 ```
+
+## Required properties
+
+You can annotate property with `[RequiredValue]` attribute to force compile time error 
+when it is not initialized withing `Build` method of model.
+
+```csharp
+[GenerateBuilder]
+public partial record SomeQuery(long[] Ids, [RequiredValue] int PageSize);
+```
+
+The following code will produce an error.
+
+```csharp
+var query = SomeQuery.Build(x => x.WithId(1));
+```

@@ -49,7 +49,8 @@ public class ValueMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
             yield return MethodDeclaration(IdentifierName(returnType), name)
                 .AddModifiers(Token(SyntaxKind.PublicKeyword))
                 .AddParameterListParameters(parameter)
-                .AddBodyStatements(ExpressionStatement(assignment), returnStatement);
+                .AddBodyStatements(ExpressionStatement(assignment), returnStatement)
+                .AddAttributeLists(new InitializesPropertyAttributeBuilder(property.Symbol.Name));
         }
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.CodeAnalysis;
 using SourceKit.Extensions;
-using SourceKit.Generators.Builder.Tools;
 
 namespace SourceKit.Generators.Builder.Receivers;
 

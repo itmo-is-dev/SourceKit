@@ -39,6 +39,7 @@ public class UsingBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
             .Append(UsingDirective(IdentifierName("System")))
             .Append(UsingDirective(IdentifierName("System.Linq")))
             .Append(UsingDirective(IdentifierName("System.Collections.Generic")))
+            .Append(UsingDirective(IdentifierName(Constants.AnnotationsNamespace)))
             .Concat(propertyUsingDirectives)
             .Distinct(Comparer)
             .OrderBy(x => x.Name.ToString())

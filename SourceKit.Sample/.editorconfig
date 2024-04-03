@@ -7,4 +7,5 @@ dotnet_diagnostic.SK1301.severity = warning
 dotnet_diagnostic.SK1300.severity = warning
 dotnet_diagnostic.SK1500.severity = warning
 dotnet_diagnostic.SK2000.severity = warning
+dotnet_diagnostic.SK2100.severity = warning
 
