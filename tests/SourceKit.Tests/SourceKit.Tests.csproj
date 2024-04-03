@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Google.Protobuf"/>
         <PackageReference Include="Ben.Demystifier"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit"/>
@@ -40,6 +41,7 @@
         <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers.Enumerable\SourceKit.Analyzers.Enumerable.csproj"/>
         <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers.Nullable\SourceKit.Analyzers.Nullable.csproj"/>
         <ProjectReference Include="..\..\src\generators\SourceKit.Generators.Builder\SourceKit.Generators.Builder.csproj"/>
+        <ProjectReference Include="..\..\src\generators\SourceKit.Generators.Grpc\SourceKit.Generators.Grpc.csproj"/>
         <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj"/>
     </ItemGroup>
 

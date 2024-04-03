@@ -50,6 +50,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\dotnet-build.yml = .github\workflows\dotnet-build.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceKit.Generators.Grpc", "src\generators\SourceKit.Generators.Grpc\SourceKit.Generators.Grpc.csproj", "{303F2F11-39B3-488A-8A93-8C7FEBDED5A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{68973D47-37E1-492E-8F62-E94B002349BB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceKit.Generators.Grpc.Samples", "samples\SourceKit.Generators.Grpc.Samples\SourceKit.Generators.Grpc.Samples.csproj", "{40A67635-FA4B-4D71-AB8B-13BEDDE17E77}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +80,8 @@ Global
 		{7A4C3CA4-A821-4BBF-9D33-C3B506684E1A} = {4B7FE6F2-BF92-4698-A01F-4C1E111B62CF}
 		{E2B94853-6782-4711-AF6F-7B619FC8CC82} = {4B7FE6F2-BF92-4698-A01F-4C1E111B62CF}
 		{36BD473E-7C74-4E53-872A-9F6D4E822C70} = {1744B931-41D0-4099-902C-FEE41B009A09}
+		{303F2F11-39B3-488A-8A93-8C7FEBDED5A5} = {7A8B3DC6-F194-45F6-8C23-151806809BE1}
+		{40A67635-FA4B-4D71-AB8B-13BEDDE17E77} = {68973D47-37E1-492E-8F62-E94B002349BB}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{637C01C1-3A3C-4FC6-9874-6CFBA4319A79}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -136,5 +144,13 @@ Global
 		{E2B94853-6782-4711-AF6F-7B619FC8CC82}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2B94853-6782-4711-AF6F-7B619FC8CC82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2B94853-6782-4711-AF6F-7B619FC8CC82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{303F2F11-39B3-488A-8A93-8C7FEBDED5A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{303F2F11-39B3-488A-8A93-8C7FEBDED5A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{303F2F11-39B3-488A-8A93-8C7FEBDED5A5}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{303F2F11-39B3-488A-8A93-8C7FEBDED5A5}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{40A67635-FA4B-4D71-AB8B-13BEDDE17E77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A67635-FA4B-4D71-AB8B-13BEDDE17E77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A67635-FA4B-4D71-AB8B-13BEDDE17E77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A67635-FA4B-4D71-AB8B-13BEDDE17E77}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

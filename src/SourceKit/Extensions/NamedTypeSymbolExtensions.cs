@@ -7,7 +7,7 @@ namespace SourceKit.Extensions;
 
 public static class NamedTypeSymbolExtensions
 {
-    public static SimpleNameSyntax ToNameSyntax(this INamespaceOrTypeSymbol symbol, bool fullyQualified = false)
+    public static TypeSyntax ToNameSyntax(this INamespaceOrTypeSymbol symbol, bool fullyQualified = false)
     {
         IReadOnlyCollection<IdentifierNameSyntax> typeParameters = symbol switch
         {
@@ -17,9 +17,32 @@ public static class NamedTypeSymbolExtensions
 
         var name = fullyQualified ? symbol.GetFullyQualifiedName() : symbol.Name;
 
-        return typeParameters.Count is 0
+        TypeSyntax type = typeParameters.Count is 0
             ? IdentifierName(name)
             : GenericName(Identifier(name), TypeArgumentList(SeparatedList<TypeSyntax>(typeParameters)));
+
+        if (symbol is not INamedTypeSymbol namedSymbol)
+            return type;
+
+        var shouldAnnotateReferenceType = namedSymbol is
+        {
+            IsReferenceType: true,
+            NullableAnnotation: NullableAnnotation.Annotated,
+        };
+
+        var shouldAnnotateValueType = namedSymbol is
+        {
+            IsValueType: true,
+            ConstructedFrom.SpecialType: not SpecialType.System_Nullable_T,
+            NullableAnnotation: NullableAnnotation.Annotated,
+        };
+
+        if (shouldAnnotateReferenceType || shouldAnnotateValueType)
+        {
+            type = NullableType(type);
+        }
+
+        return type;
     }
 
     public static IEnumerable<INamedTypeSymbol> GetBaseTypes(this INamedTypeSymbol symbol)

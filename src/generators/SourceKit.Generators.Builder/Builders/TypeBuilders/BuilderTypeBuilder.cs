@@ -1,11 +1,7 @@
-using System.Collections;
 using FluentChaining;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
-using SourceKit.Generators.Builder.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Builder.Builders.TypeBuilders;

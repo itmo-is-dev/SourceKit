@@ -1,0 +1,21 @@
+syntax = "proto3";
+option csharp_namespace = "Playground";
+
+import "google/protobuf/wrappers.proto";
+
+message ProtoModel {
+  google.protobuf.StringValue page_token = 1;
+  repeated string values = 2;
+  int32 page_size = 3;
+  repeated int32 int_values = 4;
+
+  oneof value {
+    int32 int_oneof_value = 5;
+    string string_oneof_value = 6;
+  }
+
+  string not_null_string_value = 7;
+  google.protobuf.Int32Value null_int_value = 8;
+  google.protobuf.StringValue null_string_value = 9;
+  map<int32, string> map_value = 10;
+}
