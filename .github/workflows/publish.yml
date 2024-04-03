@@ -85,6 +85,7 @@ jobs:
           mv src/analyzers/SourceKit.Analyzers.Collections/bin/Release/*.nupkg .packages/
           mv src/generators/SourceKit.Generators.Builder/bin/Release/*.nupkg .packages/
           mv src/generators/SourceKit.Generators.Builder.Annotations/bin/Release/*.nupkg .packages/
+          mv src/generators/SourceKit.Generators.Grpc/bin/Release/*.nupkg .packages/
   
   publish:
     name: publish
