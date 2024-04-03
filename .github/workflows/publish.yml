@@ -53,9 +53,11 @@ jobs:
           dotnet sln SourceKit.sln remove tests/SourceKit.Tests/SourceKit.Tests.csproj
           dotnet sln SourceKit.sln remove tests/SourceKit.Reflect.Tests/SourceKit.Reflect.Tests.csproj
           dotnet sln SourceKit.sln remove SourceKit.Sample/SourceKit.Sample.csproj
+          dotnet sln SourceKit.sln remove samples/SourceKit.Generators.Grpc.Samples/SourceKit.Generators.Grpc.Samples.csproj
           rm -rf SourceKit.Sample
           rm -rf tests/SourceKit.Tests
           rm -rf tests/SourceKit.Reflect.Tests
+          rm -rf samples/SourceKit.Generators.Grpc.Samples
           rm NuGet.config -f
 
       - name: restore
