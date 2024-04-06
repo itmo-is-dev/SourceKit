@@ -11,7 +11,7 @@ public abstract record BuilderProperty
 
     public IPropertySymbol Symbol { get; }
 
-    public record Value(IPropertySymbol Symbol, ITypeSymbol Type) : BuilderProperty(Symbol);
+    public record Value(IPropertySymbol Symbol, ITypeSymbol Type, LiteralValue LiteralValue) : BuilderProperty(Symbol);
 
     public record Collection(
         IPropertySymbol Symbol,

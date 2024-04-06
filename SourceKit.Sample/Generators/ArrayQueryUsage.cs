@@ -14,7 +14,7 @@ public class ArrayQueryUsage
 }
 
 [GenerateBuilder]
-public record ArrayQuery1(Guid[] Ids, [RequiredValue] string Value, string NotRequiredValue)
+public record ArrayQuery1(Guid[] Ids, [RequiredValue] string Value, string NotRequiredValue = "aboba")
 {
     public static ArrayQuery1 Build(Func<Builder, Builder> action)
     {

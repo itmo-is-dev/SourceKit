@@ -25,9 +25,9 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.1.$(PatchVersion)</Version>
+        <Version>1.2.$(PatchVersion)</Version>
         <PackageReleaseNotes>
-            Added RequiredValue attribute
+            Added default values support 
         </PackageReleaseNotes>
     </PropertyGroup>
 

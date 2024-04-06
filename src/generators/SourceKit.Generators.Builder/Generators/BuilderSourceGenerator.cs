@@ -103,7 +103,7 @@ public class BuilderSourceGenerator : ISourceGenerator
                 .OfType<IPropertySymbol>()
                 .Where(x => x.IsImplicitlyDeclared is false)
                 .Where(x => x.IsAutoProperty())
-                .Select(x => MapToBuilderProperty(x, context.Compilation))
+                .Select(x => MapToBuilderProperty(symbol, x, context.Compilation))
                 .ToArray();
 
             var fileCommand = new FileBuildingCommand(
@@ -128,34 +128,47 @@ public class BuilderSourceGenerator : ISourceGenerator
         }
     }
 
-    private BuilderProperty MapToBuilderProperty(IPropertySymbol propertySymbol, Compilation compilation)
+    private BuilderProperty MapToBuilderProperty(
+        INamedTypeSymbol type,
+        IPropertySymbol propertySymbol,
+        Compilation compilation)
     {
-        var type = propertySymbol.Type;
+        var propertyType = propertySymbol.Type;
         var enumerableType = compilation.GetTypeSymbol<IEnumerable>();
 
-        if (type is not IArrayTypeSymbol && type.IsAssignableTo(enumerableType) is false)
-            return new BuilderProperty.Value(propertySymbol, type);
+        var defaultValue = type.Constructors
+            .SelectMany(x => x.Parameters)
+            .Where(x => x.Name.Equals(propertySymbol.Name))
+            .Where(x => x.HasExplicitDefaultValue)
+            .Select(x => x.ExplicitDefaultValue)
+            .WhereNotNull()
+            .SingleOrDefault();
+
+        var literalValue = new LiteralValue(defaultValue);
+
+        if (propertyType is not IArrayTypeSymbol && propertyType.IsAssignableTo(enumerableType) is false)
+            return new BuilderProperty.Value(propertySymbol, propertyType, literalValue);
 
         var stringType = compilation.GetTypeSymbol<string>();
 
-        if (type.Equals(stringType, SymbolEqualityComparer.Default))
-            return new BuilderProperty.Value(propertySymbol, type);
+        if (propertyType.Equals(stringType, SymbolEqualityComparer.Default))
+            return new BuilderProperty.Value(propertySymbol, propertyType, literalValue);
 
-        var elementType = type.GetEnumerableTypeArgument(compilation);
+        var elementType = propertyType.GetEnumerableTypeArgument(compilation);
 
-        if (type is IArrayTypeSymbol)
-            return new BuilderProperty.Collection(propertySymbol, type, CollectionKind.Array, elementType);
+        if (propertyType is IArrayTypeSymbol)
+            return new BuilderProperty.Collection(propertySymbol, propertyType, CollectionKind.Array, elementType);
 
         var listType = compilation.GetTypeSymbol(typeof(List<>)).Construct(elementType);
 
-        if (type.Equals(listType, SymbolEqualityComparer.Default))
-            return new BuilderProperty.Collection(propertySymbol, type, CollectionKind.List, elementType);
+        if (propertyType.Equals(listType, SymbolEqualityComparer.Default))
+            return new BuilderProperty.Collection(propertySymbol, propertyType, CollectionKind.List, elementType);
 
         var setType = compilation.GetTypeSymbol(typeof(HashSet<>)).Construct(elementType);
 
-        if (type.Equals(setType, SymbolEqualityComparer.Default))
-            return new BuilderProperty.Collection(propertySymbol, type, CollectionKind.HashSet, elementType);
+        if (propertyType.Equals(setType, SymbolEqualityComparer.Default))
+            return new BuilderProperty.Collection(propertySymbol, propertyType, CollectionKind.HashSet, elementType);
 
-        return new BuilderProperty.Collection(propertySymbol, type, CollectionKind.Array, elementType);
+        return new BuilderProperty.Collection(propertySymbol, propertyType, CollectionKind.Array, elementType);
     }
 }

@@ -31,7 +31,7 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
         return next(request, context);
     }
 
-    private IEnumerable<StatementSyntax> ResolveStatements(BuilderTypeBuildingCommand request)
+    private static IEnumerable<StatementSyntax> ResolveStatements(BuilderTypeBuildingCommand request)
     {
         return request.Properties.Select(p => p switch
         {
@@ -45,7 +45,7 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
         });
     }
 
-    private StatementSyntax ResolveEnumerableStatement(
+    private static StatementSyntax ResolveEnumerableStatement(
         BuilderProperty.Collection property,
         Compilation compilation)
     {
@@ -62,25 +62,13 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
             ObjectCreationExpression(typeSyntax).WithArgumentList(ArgumentList())));
     }
 
-    private StatementSyntax ResolveStatement(
+    private static StatementSyntax ResolveStatement(
         BuilderProperty.Value property,
         Compilation compilation)
     {
-        var stringType = compilation.GetTypeSymbol<string>();
-
-        ExpressionSyntax value;
-
-        if (property.Type.Equals(stringType, SymbolEqualityComparer.IncludeNullability))
-        {
-            value = MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                PredefinedType(Token(SyntaxKind.StringKeyword)),
-                IdentifierName("Empty"));
-        }
-        else
-        {
-            value = LiteralExpression(SyntaxKind.DefaultLiteralExpression, Token(SyntaxKind.DefaultKeyword));
-        }
+        var value = property.LiteralValue.TryGetLiteralExpression(out var literal)
+            ? literal
+            : ResolveDefaultValue(property.Type, compilation);
 
         var fieldName = property.Symbol.Name.ToUnderscoreCamelCase();
 
@@ -88,5 +76,20 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
             SyntaxKind.SimpleAssignmentExpression,
             IdentifierName(fieldName),
             value));
+    }
+
+    private static ExpressionSyntax ResolveDefaultValue(ITypeSymbol type, Compilation compilation)
+    {
+        var stringType = compilation.GetTypeSymbol<string>();
+
+        if (type.Equals(stringType, SymbolEqualityComparer.IncludeNullability))
+        {
+            return MemberAccessExpression(
+                SyntaxKind.SimpleMemberAccessExpression,
+                PredefinedType(Token(SyntaxKind.StringKeyword)),
+                IdentifierName("Empty"));
+        }
+
+        return LiteralExpression(SyntaxKind.DefaultLiteralExpression, Token(SyntaxKind.DefaultKeyword));
     }
 }

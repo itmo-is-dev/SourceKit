@@ -13,12 +13,14 @@ You can use `SomeType.Build()` static method to shorthand create type instance u
 
 ```csharp
 [GenerateBuilder]
-public partial record SomeQuery(IReadOnlyCollection<Guid> Ids, int Count);
+public partial record SomeQuery(IReadOnlyCollection<Guid> Ids, int Count = 10);
 
 ...
 
 var query = SomeQuery.Build(x => x.WithCount(2).WithId(Guid.NewGuid());
 ```
+
+> Default values for record properties are supported
 
 ## Required properties
 
