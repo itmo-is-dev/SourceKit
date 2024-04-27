@@ -13,7 +13,7 @@ namespace SourceKit.Tests.Generators;
 public class RequiredValueAnalyzerTests
 {
     [Fact]
-    public async Task A()
+    public async Task RequiredValue_ShouldProduceError_WhenRequiredValueNotDefined()
     {
         var usageFile = await SourceFile.LoadAsync("SourceKit.Sample/Generators/ArrayQueryUsage.cs");
 
@@ -33,6 +33,27 @@ public class RequiredValueAnalyzerTests
                 ReferenceAssemblies = ReferenceAssemblies.Net.Net60,
             },
             ExpectedDiagnostics = { diagnostic },
+        };
+
+        await test.RunAsync();
+    }
+
+    [Fact]
+    public async Task RequiredValue_ShouldProduceNoError_WhenRequiredValueDefined()
+    {
+        var usageFile = await SourceFile.LoadAsync("SourceKit.Sample/Generators/ValidArrayQueryUsage.cs");
+
+        var test = new CSharpAnalyzerTest<RequiredValueAnalyzer, XUnitVerifier>
+        {
+            TestState =
+            {
+                Sources = { usageFile },
+                AdditionalReferences =
+                {
+                    typeof(GenerateBuilderAttribute).Assembly,
+                },
+                ReferenceAssemblies = ReferenceAssemblies.Net.Net60,
+            },
         };
 
         await test.RunAsync();

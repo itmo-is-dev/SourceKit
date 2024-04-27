@@ -36,8 +36,8 @@
         <PackageVersion Include="SourceKit.Analyzers.MustBePartial.Annotations" Version="1.1.$(PatchVersion)"/>
         <PackageVersion Include="SourceKit.Analyzers.Properties" Version="1.0.$(PatchVersion)"/>
         <PackageVersion Include="SourceKit.Analyzers.MemberAccessibility" Version="1.0.$(PatchVersion)"/>
-        <PackageVersion Include="SourceKit.Generators.Builder" Version="1.1.$(PatchVersion)"/>
-        <PackageVersion Include="SourceKit.Generators.Builder.Annonataions" Version="1.1.$(PatchVersion)"/>
+        <PackageVersion Include="SourceKit.Generators.Builder" Version="1.2.$(PatchVersion)"/>
+        <PackageVersion Include="SourceKit.Generators.Builder.Annonataions" Version="1.2.$(PatchVersion)"/>
         <PackageVersion Include="SourceKit.Generators.Grpc" Version="1.0.$(PatchVersion)"/>
         <PackageVersion Include="xunit" Version="2.4.2"/>
         <PackageVersion Include="Xunit.DependencyInjection.Demystifier" Version="8.0.1"/>

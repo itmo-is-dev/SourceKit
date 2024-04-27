@@ -82,7 +82,7 @@ public class RequiredValueAnalyzer : DiagnosticAnalyzer
             .Where(x => x.GetAttributes().HasAttribute(requiredValueAttribute))
             .Select(x => x.Name);
 
-        IEnumerable<IInvocationOperation> descendantInvocations = modelTypeMembers
+        IEnumerable<IInvocationOperation> descendantInvocations = operation.Descendants()
             .OfType<IInvocationOperation>();
 
         IEnumerable<string> initializedPropertyNames = GetInitializedPropertyNames(descendantInvocations);
