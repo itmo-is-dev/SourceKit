@@ -42,24 +42,36 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
             
-#      - name: move nuget config
-#        if: steps.cache-tests.outputs.cache-hit != 'true'
-#        run: |
-#          mkdir .tmp-nuget-config
-#          mv NuGet.config .tmp-nuget-config
-#
-#      - name: build sources
-#        if: steps.cache-tests.outputs.cache-hit != 'true'
-#        run: |
-#          for csproj in $(find src | grep csproj$)
-#          do
-#            dotnet build -c Release "$csproj"
-#          done
-#
-#      - name: move nuget config back
-#        run: |
-#          mv .tmp-nuget-config/NuGet.config .
-#          rm -rf .tmp-nuget-config
+      - name: move nuget config
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        run: |
+          mkdir .tmp-nuget-config
+          mv NuGet.config .tmp-nuget-config
+
+      - name: build sources
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        run: |
+          for csproj in $(find src | grep csproj$)
+          do
+            dotnet build -c Release "$csproj"
+          done
+
+      - name: move nuget config back
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        run: |
+          mv .tmp-nuget-config/NuGet.config .
+          rm -rf .tmp-nuget-config
+          
+      - name: validate packages
+        if: steps.cache-tests.outputs.cache-hit != 'true'
+        run: |
+          if [ ! -d bin/packages ]
+          then 
+            echo packages dir not created
+            exit 1
+          fi
+          
+          ls bin/packages
       
       - name: Remove .Reflect tests
         if: steps.cache-tests.outpust.cache-hit != 'true'
