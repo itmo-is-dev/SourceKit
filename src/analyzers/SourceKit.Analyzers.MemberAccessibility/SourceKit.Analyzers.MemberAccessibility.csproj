@@ -2,14 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <LangVersion>11</LangVersion>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
 
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
+        <SourceKitMovePackage>false</SourceKitMovePackage>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -33,7 +32,6 @@
         <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
-
     <ItemGroup>
         <ProjectReference Include="..\..\SourceKit\SourceKit.csproj"/>
     </ItemGroup>
@@ -46,5 +44,10 @@
 
     <ItemGroup>
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="AnalyzerReleases.Shipped.md" Visible="flase"/>
+        <AdditionalFiles Include="AnalyzerReleases.Unshipped.md" Visble="false"/>
     </ItemGroup>
 </Project>

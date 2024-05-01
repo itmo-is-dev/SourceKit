@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="xunit"/>
+        <PackageReference Include="xunit.runner.visualstudio"/>
+        <PackageReference Include="coverlet.collector"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing.XUnit"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.CodeFix.Testing.XUnit"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing.XUnit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers.Collections\SourceKit.Analyzers.Collections.csproj" />
+        <ProjectReference Include="..\SourceKit.Tests.Common\SourceKit.Tests.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\..\samples\analyzers\SourceKit.Analyzers.Collections.Samples\**\*.cs"
+                 Exclude="..\..\samples\analyzers\SourceKit.Analyzers.Collections.Samples\obj\**"
+                 LinkBase="SourceKit.Analyzers.Collections.Samples\"
+                 CopyToOutputDirectory="Always"/>
+    </ItemGroup>
+
+</Project>

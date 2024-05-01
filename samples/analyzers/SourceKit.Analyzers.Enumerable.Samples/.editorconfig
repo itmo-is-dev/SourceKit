@@ -1,0 +1,6 @@
+[*.cs]
+
+dotnet_diagnostic.CA2021.severity = none
+
+dotnet_diagnostic.SK1300.severity = suggestion
+dotnet_diagnostic.SK1301.severity = suggestion

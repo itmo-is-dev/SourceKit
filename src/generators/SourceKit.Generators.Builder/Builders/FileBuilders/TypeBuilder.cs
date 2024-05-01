@@ -47,7 +47,7 @@ public class TypeBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
 
         request = request with
         {
-            CompilationUnit = request.CompilationUnit.AddMembers(namespaceDeclaration)
+            CompilationUnit = request.CompilationUnit.AddMembers(namespaceDeclaration),
         };
 
         return next(request, context);

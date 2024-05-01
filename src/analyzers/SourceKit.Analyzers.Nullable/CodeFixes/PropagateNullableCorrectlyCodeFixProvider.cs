@@ -90,7 +90,7 @@ public class PropagateNullableCorrectlyCodeFixProvider : CodeFixProvider
             SyntaxKind.InvocationExpression => true,
             SyntaxKind.SimpleMemberAccessExpression => true,
             SyntaxKind.PointerMemberAccessExpression => true,
-            _ => false
+            _ => false,
         };
     }
 }

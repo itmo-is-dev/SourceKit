@@ -2,7 +2,7 @@ using FluentAssertions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Reflect.Extensions;
 using SourceKit.Reflect.Reflectors;
-using SourceKit.Sample;
+using SourceKit.Reflect.Samples;
 using SourceKit.Tests.Common;
 using Xunit;
 

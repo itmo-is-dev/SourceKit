@@ -13,7 +13,7 @@ public class DeclarationCouldBeConvertedToPropertyAnalyzer : DiagnosticAnalyzer
     public const string DiagnosticId = "SK1400";
     public const string Title = nameof(DeclarationCouldBeConvertedToPropertyAnalyzer);
 
-    public const string Format = """Field '{0}' could be converted to property.""";
+    public const string Format = """Field '{0}' could be converted to property""";
 
     public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
         DiagnosticId,

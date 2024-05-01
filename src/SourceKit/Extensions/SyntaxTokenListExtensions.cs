@@ -14,7 +14,7 @@ public static class SyntaxTokenListExtensions
             [SyntaxKind.ProtectedKeyword] => Accessibility.Protected,
             [SyntaxKind.InternalKeyword] => Accessibility.Internal,
             [SyntaxKind.PublicKeyword] => Accessibility.Public,
-            _ => Accessibility.NotApplicable
+            _ => Accessibility.NotApplicable,
         };
     }
 }
