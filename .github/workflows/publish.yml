@@ -52,6 +52,14 @@ jobs:
         run: |
           dotnet sln SourceKit.sln remove tests/SourceKit.Reflect.Tests/SourceKit.Reflect.Tests.csproj
           rm -rf tests/SourceKit.Reflect.Tests
+          
+          for proj in $(find samples | grep csproj$)
+          do
+            proj_dir=$(dirname "$proj")
+          
+            dotnet sln SourceKit.sln remove "$proj"
+            rm -rf "$proj_dir"
+          done
 
       - name: restore
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
