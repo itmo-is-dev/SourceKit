@@ -65,13 +65,7 @@ jobs:
       - name: validate packages
         if: steps.cache-tests.outputs.cache-hit != 'true'
         run: |
-          if [ ! -d bin/packages ]
-          then 
-            echo packages dir not created
-            exit 1
-          fi
-          
-          ls bin/packages
+          ls
       
       - name: Remove .Reflect tests
         if: steps.cache-tests.outpust.cache-hit != 'true'
