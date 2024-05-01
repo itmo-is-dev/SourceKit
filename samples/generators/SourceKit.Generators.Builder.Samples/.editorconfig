@@ -1,0 +1,5 @@
+[*.cs]
+
+
+dotnet_diagnostic.SK2100.severity = suggestion
+

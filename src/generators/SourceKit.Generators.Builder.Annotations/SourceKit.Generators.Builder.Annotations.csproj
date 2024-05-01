@@ -2,12 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
     </PropertyGroup>
 
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <SourceKitMovePackage>true</SourceKitMovePackage>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -24,16 +23,20 @@
 
     <PropertyGroup>
         <Version>1.1.$(PatchVersion)</Version>
-        <PackageReleaseNotes>Added GenerateBuilder attribute</PackageReleaseNotes>
+        <PackageReleaseNotes>
+            Added GenerateBuilder attribute
+        </PackageReleaseNotes>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\README.md" Pack="true" PackagePath="\" />
-        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\" />
+        <None Include="..\..\..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj" PrivateAssets="contentfiles;build"/>
+        <ProjectReference
+                Include="..\..\analyzers\SourceKit.Analyzers.MustBePartial\SourceKit.Analyzers.MustBePartial.csproj"
+                PrivateAssets="contentfiles;build"/>
     </ItemGroup>
 
 </Project>

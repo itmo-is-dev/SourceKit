@@ -2,14 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <LangVersion>11</LangVersion>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
 
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
+        <SourceKitMovePackage>true</SourceKitMovePackage>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -65,12 +64,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="PolySharp">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>
-                runtime; build; native; contentfiles; analyzers; buildtransitive
-            </IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="PolySharp" PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>

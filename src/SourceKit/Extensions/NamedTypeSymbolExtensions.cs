@@ -107,7 +107,7 @@ public static class NamedTypeSymbolExtensions
 
             TypeKind.Interface => InterfaceDeclaration(symbol.Name),
 
-            _ => throw new ArgumentOutOfRangeException()
+            _ => throw new ArgumentOutOfRangeException(),
         };
     }
 }

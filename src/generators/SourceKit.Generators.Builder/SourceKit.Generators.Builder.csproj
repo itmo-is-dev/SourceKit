@@ -2,14 +2,13 @@
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <LangVersion>11</LangVersion>
+        <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     </PropertyGroup>
 
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
+        <SourceKitMovePackage>true</SourceKitMovePackage>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -27,7 +26,7 @@
     <PropertyGroup>
         <Version>1.2.$(PatchVersion)</Version>
         <PackageReleaseNotes>
-            Added default values support 
+            Added default values support
         </PackageReleaseNotes>
     </PropertyGroup>
 
@@ -37,9 +36,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -65,12 +70,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="PolySharp">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>
-                runtime; build; native; contentfiles; analyzers; buildtransitive
-            </IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="PolySharp" PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>

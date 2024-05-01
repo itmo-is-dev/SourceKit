@@ -14,9 +14,9 @@ public static class TypeSymbolExtensions
 
     public static bool IsAssignableTo(this ITypeSymbol source, ITypeSymbol destination)
     {
-        return Equals(source, destination)
-            || source is INamedTypeSymbol namedSource
-            && namedSource.GetBaseTypesAndInterfaces().Contains(destination, SymbolEqualityComparer.Default);
+        return source.Equals(destination, SymbolEqualityComparer.IncludeNullability)
+               || source is INamedTypeSymbol namedSource
+               && namedSource.GetBaseTypesAndInterfaces().Contains(destination, SymbolEqualityComparer.Default);
     }
 
     public static bool IsAssignableFrom(this ITypeSymbol destination, INamedTypeSymbol source)
@@ -31,10 +31,10 @@ public static class TypeSymbolExtensions
         var symbols = type.FindAssignableTypesConstructedFrom(baseType);
 
         return symbols
-            .FirstOrDefault(current => 
+            .FirstOrDefault(current =>
                 current.ConstructedFrom.Equals(baseType, SymbolEqualityComparer.Default));
     }
-    
+
     public static IEnumerable<INamedTypeSymbol> FindAssignableTypesConstructedFrom(
         this ITypeSymbol type,
         INamedTypeSymbol baseType)
@@ -45,7 +45,7 @@ public static class TypeSymbolExtensions
         IEnumerable<INamedTypeSymbol> baseTypes = namedTypeSymbol.GetBaseTypesAndInterfaces();
 
         return baseTypes
-            .Where(current => 
+            .Where(current =>
                 current.ConstructedFrom.Equals(baseType, SymbolEqualityComparer.Default));
     }
 

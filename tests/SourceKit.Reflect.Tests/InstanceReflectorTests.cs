@@ -1,8 +1,8 @@
+using System.Drawing;
 using FluentAssertions;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Reflect.Reflectors;
-using SourceKit.Sample.Models;
 using SourceKit.Tests.Common;
 using Xunit;
 

@@ -50,15 +50,16 @@ jobs:
       - name: exclude redundant projects and files
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
         run: |
-          dotnet sln SourceKit.sln remove tests/SourceKit.Tests/SourceKit.Tests.csproj
           dotnet sln SourceKit.sln remove tests/SourceKit.Reflect.Tests/SourceKit.Reflect.Tests.csproj
-          dotnet sln SourceKit.sln remove SourceKit.Sample/SourceKit.Sample.csproj
-          dotnet sln SourceKit.sln remove samples/SourceKit.Generators.Grpc.Samples/SourceKit.Generators.Grpc.Samples.csproj
-          rm -rf SourceKit.Sample
-          rm -rf tests/SourceKit.Tests
           rm -rf tests/SourceKit.Reflect.Tests
-          rm -rf samples/SourceKit.Generators.Grpc.Samples
-          rm NuGet.config -f
+          
+          for proj in $(find samples | grep csproj$)
+          do
+            proj_dir=$(dirname "$proj")
+          
+            dotnet sln SourceKit.sln remove "$proj"
+            rm -rf "$proj_dir"
+          done
 
       - name: restore
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
@@ -74,18 +75,7 @@ jobs:
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
         run: |
           rm -rf .packages
-          mkdir .packages
-          mv src/SourceKit/bin/Release/*.nupkg .packages/
-          mv src/analyzers/SourceKit.Analyzers.MustBePartial/bin/Release/*.nupkg .packages/
-          mv src/analyzers/SourceKit.Analyzers.MustBePartial.Annotations/bin/Release/*.nupkg .packages/
-          mv src/analyzers/SourceKit.Analyzers.MemberAccessibility/bin/Release/*.nupkg .packages/
-          mv src/analyzers/SourceKit.Analyzers.Nullable/bin/Release/*.nupkg .packages/
-          mv src/analyzers/SourceKit.Analyzers.Enumerable/bin/Release/*.nupkg .packages/
-          mv src/analyzers/SourceKit.Analyzers.Properties/bin/Release/*.nupkg .packages/
-          mv src/analyzers/SourceKit.Analyzers.Collections/bin/Release/*.nupkg .packages/
-          mv src/generators/SourceKit.Generators.Builder/bin/Release/*.nupkg .packages/
-          mv src/generators/SourceKit.Generators.Builder.Annotations/bin/Release/*.nupkg .packages/
-          mv src/generators/SourceKit.Generators.Grpc/bin/Release/*.nupkg .packages/
+          cp bin/packages .packages
   
   publish:
     name: publish

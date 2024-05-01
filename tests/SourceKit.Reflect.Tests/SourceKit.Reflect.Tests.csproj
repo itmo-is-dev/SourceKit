@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
@@ -26,7 +26,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\SourceKit.Sample\SourceKit.Sample.csproj"/>
+        <ProjectReference Include="..\..\samples\SourceKit.Reflect.Samples\SourceKit.Reflect.Samples.csproj" />
         <ProjectReference Include="..\SourceKit.Tests.Common\SourceKit.Tests.Common.csproj"/>
         <ProjectReference Include="..\..\src\SourceKit.Reflect\SourceKit.Reflect.csproj" SetConfiguration="Configuration=Release"/>
         <ProjectReference Include="..\..\src\SourceKit\SourceKit.csproj" SetConfiguration="Configuration=Release"/>

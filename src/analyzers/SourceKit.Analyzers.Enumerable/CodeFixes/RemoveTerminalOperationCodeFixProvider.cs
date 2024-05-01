@@ -14,7 +14,7 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
     public const string Title = "Remove {0}";
     
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(DoNotEnumerateCollectionInLinqChain.DiagnosticId);
+        ImmutableArray.Create(DoNotEnumerateCollectionInLinqChainAnalyzer.DiagnosticId);
     
     public override FixAllProvider GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;
