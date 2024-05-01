@@ -75,7 +75,7 @@ jobs:
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
         run: |
           rm -rf .packages
-          cp bin/packages .packages
+          cp -r bin/packages .packages
   
   publish:
     name: publish
