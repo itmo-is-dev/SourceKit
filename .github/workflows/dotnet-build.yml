@@ -53,7 +53,7 @@ jobs:
         run: |
           for csproj in $(find src | grep csproj$)
           do
-            dotnet build -c Release "$csproj"
+            dotnet build -c Release "$csproj" /p:SolutionDir=$(pwd)
           done
 
       - name: move nuget config back
@@ -62,11 +62,6 @@ jobs:
           mv .tmp-nuget-config/NuGet.config .
           rm -rf .tmp-nuget-config
           
-      - name: validate packages
-        if: steps.cache-tests.outputs.cache-hit != 'true'
-        run: |
-          ls
-      
       - name: Remove .Reflect tests
         if: steps.cache-tests.outpust.cache-hit != 'true'
         run: |
