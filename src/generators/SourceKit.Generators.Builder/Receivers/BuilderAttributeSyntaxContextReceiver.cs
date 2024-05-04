@@ -17,20 +17,20 @@ public class BuilderAttributeSyntaxContextReceiver : ISyntaxContextReceiver
 
     public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
     {
-        var attributeType = context.SemanticModel.Compilation
+        INamedTypeSymbol? attributeType = context.SemanticModel.Compilation
             .GetTypeByMetadataName(Constants.GenerateBuilderAttributeFullyQualifiedName);
 
         if (attributeType is null)
             return;
 
-        var symbolInfo = context.SemanticModel.GetDeclaredSymbol(context.Node);
-        
+        ISymbol? symbolInfo = context.SemanticModel.GetDeclaredSymbol(context.Node);
+
         if (symbolInfo is not INamedTypeSymbol namedTypeSymbol)
             return;
 
         if (namedTypeSymbol.HasAttribute(attributeType) is false)
             return;
-        
+
         if (namedTypeSymbol.IsPartial() is false)
             return;
 

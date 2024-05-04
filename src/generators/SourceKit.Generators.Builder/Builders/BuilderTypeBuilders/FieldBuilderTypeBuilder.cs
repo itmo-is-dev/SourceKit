@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
-using SourceKit.Generators.Builder.Extensions;
 using SourceKit.Generators.Builder.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -30,7 +29,7 @@ public class FieldBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, TypeDec
         return next(request, context);
     }
 
-    private MemberDeclarationSyntax ResolveDeclaration(
+    private static MemberDeclarationSyntax ResolveDeclaration(
         BuilderProperty property,
         Compilation compilation)
     {
@@ -42,29 +41,29 @@ public class FieldBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, TypeDec
         };
     }
 
-    private MemberDeclarationSyntax ResolveEnumerable(
+    private static MemberDeclarationSyntax ResolveEnumerable(
         BuilderProperty.Collection property,
         Compilation compilation)
     {
-        var listType = compilation.GetTypeSymbol(typeof(List<>));
+        INamedTypeSymbol listType = compilation.GetTypeSymbol(typeof(List<>));
 
-        var constructedListType = listType.Construct(property.ElementType);
-        var typeSyntax = constructedListType.ToNameSyntax();
+        INamedTypeSymbol constructedListType = listType.Construct(property.ElementType);
+        TypeSyntax typeSyntax = constructedListType.ToNameSyntax();
 
-        var name = property.Symbol.Name.ToUnderscoreCamelCase();
-        var variableDeclaration = VariableDeclaration(typeSyntax, SingletonSeparatedList(VariableDeclarator(name)));
+        VariableDeclarationSyntax variableDeclaration = VariableDeclaration(
+            typeSyntax,
+            SingletonSeparatedList(VariableDeclarator(property.FieldName)));
+
 
         return FieldDeclaration(variableDeclaration)
             .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword));
     }
 
-    private MemberDeclarationSyntax ResolveValue(BuilderProperty.Value property)
+    private static MemberDeclarationSyntax ResolveValue(BuilderProperty.Value property)
     {
-        var name = property.Symbol.Name.ToUnderscoreCamelCase();
-
-        var variableDeclaration = VariableDeclaration(
+        VariableDeclarationSyntax variableDeclaration = VariableDeclaration(
             property.Type.ToNameSyntax(),
-            SingletonSeparatedList(VariableDeclarator(name)));
+            SingletonSeparatedList(VariableDeclarator(property.FieldName)));
 
         return FieldDeclaration(variableDeclaration).AddModifiers(Token(SyntaxKind.PrivateKeyword));
     }

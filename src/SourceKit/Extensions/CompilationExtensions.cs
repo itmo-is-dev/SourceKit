@@ -6,7 +6,8 @@ public static class CompilationExtensions
 {
     public static INamedTypeSymbol GetTypeSymbol<T>(this Compilation compilation)
     {
-        var type = typeof(T);
+        Type type = typeof(T);
+
         return compilation.GetTypeByMetadataName(type.FullName ?? string.Empty)
                ?? throw new ArgumentException($"Type {type} is not part of compilation");
     }
@@ -15,5 +16,11 @@ public static class CompilationExtensions
     {
         return compilation.GetTypeByMetadataName(type.FullName ?? string.Empty)
                ?? throw new ArgumentException($"Type {type} is not part of compilation");
+    }
+
+    public static INamedTypeSymbol GetTypeSymbol(this Compilation compilation, string typeName)
+    {
+        return compilation.GetTypeByMetadataName(typeName)
+               ?? throw new ArgumentException($"Type {typeName} is not part of compilation");
     }
 }

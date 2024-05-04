@@ -1,4 +1,5 @@
 using FluentChaining;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Generators.Builder.Commands;
@@ -20,7 +21,11 @@ public class BuilderTypeBuilder : ILink<TypeBuildingCommand, TypeDeclarationSynt
         SynchronousContext context,
         LinkDelegate<TypeBuildingCommand, SynchronousContext, TypeDeclarationSyntax> next)
     {
-        var modifiers = TokenList(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.SealedKeyword));
+        SyntaxTokenList modifiers = TokenList(
+            Token(SyntaxKind.PublicKeyword),
+            Token(SyntaxKind.SealedKeyword),
+            Token(SyntaxKind.PartialKeyword));
+
         TypeDeclarationSyntax builderDeclaration = ClassDeclaration("Builder").WithModifiers(modifiers);
 
         var command = new BuilderTypeBuildingCommand(

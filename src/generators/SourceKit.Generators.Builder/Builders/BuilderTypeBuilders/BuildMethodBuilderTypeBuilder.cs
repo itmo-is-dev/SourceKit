@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
-using SourceKit.Generators.Builder.Extensions;
 using SourceKit.Generators.Builder.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -17,13 +16,13 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
         SynchronousContext context,
         LinkDelegate<BuilderTypeBuildingCommand, SynchronousContext, TypeDeclarationSyntax> next)
     {
-        var invocation = request.TypeSymbol.IsRecord
+        ExpressionSyntax invocation = request.TypeSymbol.IsRecord
             ? GenerateRecordInvocation(request)
-            : GenerateInvocation(request);
+            : throw new NotSupportedException("Non record types are not supported");
 
-        var returnType = IdentifierName(request.TypeSymbol.Name);
+        IdentifierNameSyntax returnType = IdentifierName(request.TypeSymbol.Name);
 
-        var method = MethodDeclaration(returnType, "Build")
+        MethodDeclarationSyntax method = MethodDeclaration(returnType, "Build")
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddBodyStatements(ReturnStatement(invocation));
 
@@ -45,11 +44,6 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
         return ObjectCreationExpression(IdentifierName(request.TypeSymbol.Name)).AddArgumentListArguments(arguments);
     }
 
-    private ExpressionSyntax GenerateInvocation(BuilderTypeBuildingCommand request)
-    {
-        throw new NotSupportedException("Non record types are not supported");
-    }
-
     private ExpressionSyntax ResolveArgument(BuilderProperty property, Compilation compilation)
     {
         return property switch
@@ -62,18 +56,22 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
 
     private ExpressionSyntax ResolveCollectionArgument(BuilderProperty.Collection property, Compilation compilation)
     {
-        var comparableType = compilation.GetTypeSymbol<IComparable>();
-        var genericComparableType = compilation.GetTypeSymbol(typeof(IComparable<>)).Construct(property.ElementType);
+        INamedTypeSymbol comparableType = compilation.GetTypeSymbol<IComparable>();
 
-        ExpressionSyntax expression = IdentifierName(property.Symbol.Name.ToUnderscoreCamelCase());
+        INamedTypeSymbol genericComparableType = compilation
+            .GetTypeSymbol(typeof(IComparable<>))
+            .Construct(property.ElementType);
+
+        ExpressionSyntax expression = IdentifierName(property.FieldName);
 
         if (property.ElementType.IsAssignableTo(comparableType)
             || property.ElementType.IsAssignableTo(genericComparableType))
         {
-            expression = InvocationExpression(MemberAccessExpression(
-                SyntaxKind.SimpleMemberAccessExpression,
-                expression,
-                IdentifierName("Distinct")));
+            expression = InvocationExpression(
+                MemberAccessExpression(
+                    SyntaxKind.SimpleMemberAccessExpression,
+                    expression,
+                    IdentifierName("Distinct")));
         }
 
         return property.Kind switch
@@ -85,12 +83,12 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
         };
     }
 
-    private ExpressionSyntax ResolveValueArgument(BuilderProperty.Value value)
+    private static ExpressionSyntax ResolveValueArgument(BuilderProperty.Value value)
     {
-        return IdentifierName(value.Symbol.Name.ToUnderscoreCamelCase());
+        return IdentifierName(value.FieldName);
     }
 
-    private InvocationExpressionSyntax InvokeMethod(ExpressionSyntax expression, SimpleNameSyntax name)
+    private static InvocationExpressionSyntax InvokeMethod(ExpressionSyntax expression, SimpleNameSyntax name)
     {
         return InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expression, name));
     }

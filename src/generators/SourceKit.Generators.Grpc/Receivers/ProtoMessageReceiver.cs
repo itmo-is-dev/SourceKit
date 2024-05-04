@@ -22,13 +22,13 @@ public class ProtoMessageReceiver : ISyntaxContextReceiver
 
     public void OnVisitSyntaxNode(GeneratorSyntaxContext context)
     {
-        var messageInterfaceSymbol = context.SemanticModel.Compilation
+        INamedTypeSymbol? messageInterfaceSymbol = context.SemanticModel.Compilation
             .GetTypeByMetadataName(Constants.ProtobufMessageInterfaceFullyQualifiedName);
 
         if (messageInterfaceSymbol is null)
             return;
 
-        var symbolInfo = context.SemanticModel.GetDeclaredSymbol(context.Node);
+        ISymbol? symbolInfo = context.SemanticModel.GetDeclaredSymbol(context.Node);
 
         if (symbolInfo is not INamedTypeSymbol symbol)
             return;
@@ -55,15 +55,15 @@ public class ProtoMessageReceiver : ISyntaxContextReceiver
     {
         const string fieldNumberPostfix = "FieldNumber";
 
-        var compilation = context.SemanticModel.Compilation;
+        Compilation compilation = context.SemanticModel.Compilation;
 
-        var repeatedFieldType = compilation.GetTypeByMetadataName(Constants.ProtobufRepeatedFieldFullyQualifiedName);
-        var mapFieldType = compilation.GetTypeByMetadataName(Constants.ProtobufMapFieldFullyQualifiedName);
+        INamedTypeSymbol? repeatedFieldType = compilation.GetTypeByMetadataName(Constants.ProtobufRepeatedFieldFullyQualifiedName);
+        INamedTypeSymbol? mapFieldType = compilation.GetTypeByMetadataName(Constants.ProtobufMapFieldFullyQualifiedName);
 
         if (repeatedFieldType is null || mapFieldType is null)
             yield break;
 
-        var intSymbol = compilation.GetTypeSymbol<int>();
+        INamedTypeSymbol intSymbol = compilation.GetTypeSymbol<int>();
 
         ImmutableArray<ISymbol> members = messageSymbol.GetMembers();
 
@@ -80,23 +80,23 @@ public class ProtoMessageReceiver : ISyntaxContextReceiver
             .Select(x => x.Name)
             .ToImmutableHashSet();
 
-        foreach (var ordinalField in ordinalFields)
+        foreach (IFieldSymbol? ordinalField in ordinalFields)
         {
             if (ordinalField.ConstantValue is not int ordinal)
                 continue;
 
-            var propertyName = ordinalField.Name[..^fieldNumberPostfix.Length];
-            var property = members.OfType<IPropertySymbol>().SingleOrDefault(x => x.Name.Equals(propertyName));
+            string propertyName = ordinalField.Name[..^fieldNumberPostfix.Length];
+            IPropertySymbol? property = members.OfType<IPropertySymbol>().SingleOrDefault(x => x.Name.Equals(propertyName));
 
             if (property is not { Type: INamedTypeSymbol propertyType })
                 continue;
 
-            var isOneOf = oneOfCases.Contains(propertyName);
-            var hasNullCheck = HasNullCheck(property, context);
+            bool isOneOf = oneOfCases.Contains(propertyName);
+            bool? hasNullCheck = HasNullCheck(property, context);
 
-            var shouldAnnotateReferenceType = propertyType.IsReferenceType && (hasNullCheck is false || isOneOf);
+            bool shouldAnnotateReferenceType = propertyType.IsReferenceType && (hasNullCheck is false || isOneOf);
 
-            var shouldAnnotateValueType =
+            bool shouldAnnotateValueType =
                 propertyType is { IsValueType: true, ConstructedFrom.SpecialType: not SpecialType.System_Nullable_T }
                 && isOneOf;
 
@@ -138,7 +138,7 @@ public class ProtoMessageReceiver : ISyntaxContextReceiver
 
         var propertyNode = location.SourceTree?.GetRoot().FindNode(location.SourceSpan) as PropertyDeclarationSyntax;
 
-        var setterNode = propertyNode?.AccessorList?.Accessors
+        AccessorDeclarationSyntax? setterNode = propertyNode?.AccessorList?.Accessors
             .SingleOrDefault(x => x.Keyword.IsKind(SyntaxKind.SetKeyword));
 
         if (setterNode is not { Body: not null })

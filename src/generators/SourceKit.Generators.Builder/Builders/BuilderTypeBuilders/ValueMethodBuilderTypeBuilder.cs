@@ -1,9 +1,9 @@
 using FluentChaining;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
-using SourceKit.Generators.Builder.Extensions;
 using SourceKit.Generators.Builder.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -28,22 +28,22 @@ public class ValueMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
 
     private IEnumerable<MemberDeclarationSyntax> GenerateMethods(BuilderTypeBuildingCommand request)
     {
-        IEnumerable<BuilderProperty.Value> valueProperties = request.Properties.OfType<BuilderProperty.Value>();
+        IEnumerable<BuilderProperty.Value> valueProperties = request.Properties
+            .OfType<BuilderProperty.Value>();
 
-        foreach (var property in valueProperties)
+        foreach (BuilderProperty.Value property in valueProperties)
         {
             const string parameterName = "value";
 
             var name = $"With{property.Symbol.Name}";
-            var returnType = request.BuilderSyntax.Identifier;
-            var fieldName = property.Symbol.Name.ToUnderscoreCamelCase();
+            SyntaxToken returnType = request.BuilderSyntax.Identifier;
 
-            var parameter = Parameter(Identifier(parameterName)).WithType(property.Type.ToNameSyntax());
-            var returnStatement = ReturnStatement(ThisExpression());
+            ParameterSyntax parameter = Parameter(Identifier(parameterName)).WithType(property.Type.ToNameSyntax());
+            ReturnStatementSyntax returnStatement = ReturnStatement(ThisExpression());
 
-            var assignment = AssignmentExpression(
+            AssignmentExpressionSyntax assignment = AssignmentExpression(
                 SyntaxKind.SimpleAssignmentExpression,
-                IdentifierName(fieldName),
+                IdentifierName(property.FieldName),
                 IdentifierName(parameterName));
 
             yield return MethodDeclaration(IdentifierName(returnType), name)

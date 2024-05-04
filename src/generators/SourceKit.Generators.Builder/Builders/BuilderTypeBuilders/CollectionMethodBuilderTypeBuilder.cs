@@ -5,7 +5,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Generators.Builder.Commands;
-using SourceKit.Generators.Builder.Extensions;
 using SourceKit.Generators.Builder.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -33,14 +32,14 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         IEnumerable<BuilderProperty.Collection> collectionProperties = request.Properties
             .OfType<BuilderProperty.Collection>();
 
-        var genericEnumerableType = request.Context.Compilation.GetTypeSymbol(typeof(IEnumerable<>));
+        INamedTypeSymbol genericEnumerableType = request.Context.Compilation.GetTypeSymbol(typeof(IEnumerable<>));
 
-        foreach (var property in collectionProperties)
+        foreach (BuilderProperty.Collection property in collectionProperties)
         {
-            var constructedFrom = genericEnumerableType.Construct(property.ElementType);
+            INamedTypeSymbol constructedFrom = genericEnumerableType.Construct(property.ElementType);
 
             yield return GenerateAddSingleMethod(request.BuilderSyntax, property);
-            yield return GenerateAddRangeMethod(request.BuilderSyntax, property.Symbol, constructedFrom);
+            yield return GenerateAddRangeMethod(request.BuilderSyntax, property, constructedFrom);
         }
     }
 
@@ -51,19 +50,18 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         const string parameterName = "element";
 
         var name = $"With{property.Symbol.Name.Singularize()}";
-        var returnType = builder.Identifier;
-        var fieldName = property.Symbol.Name.ToUnderscoreCamelCase();
+        SyntaxToken returnType = builder.Identifier;
 
-        var parameter = Parameter(Identifier(parameterName)).WithType(property.ElementType.ToNameSyntax());
+        ParameterSyntax parameter = Parameter(Identifier(parameterName)).WithType(property.ElementType.ToNameSyntax());
 
-        var addMethod = MemberAccessExpression(
+        MemberAccessExpressionSyntax addMethod = MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
-            IdentifierName(fieldName),
+            IdentifierName(property.FieldName),
             IdentifierName("Add"));
 
-        var argument = Argument(IdentifierName(parameterName));
-        var invocation = InvocationExpression(addMethod).AddArgumentListArguments(argument);
-        var returnStatement = ReturnStatement(ThisExpression());
+        ArgumentSyntax argument = Argument(IdentifierName(parameterName));
+        InvocationExpressionSyntax invocation = InvocationExpression(addMethod).AddArgumentListArguments(argument);
+        ReturnStatementSyntax returnStatement = ReturnStatement(ThisExpression());
 
         return MethodDeclaration(IdentifierName(returnType), name)
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
@@ -74,30 +72,29 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
 
     private MemberDeclarationSyntax GenerateAddRangeMethod(
         TypeDeclarationSyntax builder,
-        IPropertySymbol property,
+        BuilderProperty.Collection property,
         INamedTypeSymbol enumerableType)
     {
         const string parameterName = "elements";
 
-        var name = $"With{property.Name.Pluralize()}";
-        var returnType = builder.Identifier;
-        var fieldName = property.Name.ToUnderscoreCamelCase();
+        var name = $"With{property.Symbol.Name.Pluralize()}";
+        SyntaxToken returnType = builder.Identifier;
 
-        var parameter = Parameter(Identifier(parameterName)).WithType(enumerableType.ToNameSyntax());
+        ParameterSyntax parameter = Parameter(Identifier(parameterName)).WithType(enumerableType.ToNameSyntax());
 
-        var addRangeMethod = MemberAccessExpression(
+        MemberAccessExpressionSyntax addRangeMethod = MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
-            IdentifierName(fieldName),
+            IdentifierName(property.FieldName),
             IdentifierName("AddRange"));
 
-        var argument = Argument(IdentifierName(parameterName));
-        var invocation = InvocationExpression(addRangeMethod).AddArgumentListArguments(argument);
-        var returnStatement = ReturnStatement(ThisExpression());
+        ArgumentSyntax argument = Argument(IdentifierName(parameterName));
+        InvocationExpressionSyntax invocation = InvocationExpression(addRangeMethod).AddArgumentListArguments(argument);
+        ReturnStatementSyntax returnStatement = ReturnStatement(ThisExpression());
 
         return MethodDeclaration(IdentifierName(returnType), name)
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(parameter)
             .AddBodyStatements(ExpressionStatement(invocation), returnStatement)
-            .AddAttributeLists(new InitializesPropertyAttributeBuilder(property.Name));
+            .AddAttributeLists(new InitializesPropertyAttributeBuilder(property.Symbol.Name));
     }
 }
