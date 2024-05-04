@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
@@ -10,7 +11,7 @@ public abstract class GeneratorTestBase<TGenerator>
     where TGenerator : ISourceGenerator, new()
 {
     protected GeneratorTestBuilder GeneratorTest => new();
-    
+
     protected sealed class GeneratorTestBuilder
     {
         private readonly List<SourceFile> _sources = [];
@@ -47,6 +48,21 @@ public abstract class GeneratorTestBase<TGenerator>
             var test = new CSharpSourceGeneratorTest<TGenerator, XUnitVerifier>
             {
                 ReferenceAssemblies = _referenceAssemblies,
+                SolutionTransforms =
+                {
+                    (solution, projectId) =>
+                    {
+                        Project project = solution.GetProject(projectId)!;
+
+                        if (project.CompilationOptions is not CSharpCompilationOptions options)
+                            return solution;
+
+                        project = project.WithCompilationOptions(
+                            options.WithNullableContextOptions(NullableContextOptions.Enable));
+
+                        return project.Solution;
+                    },
+                },
             };
 
             foreach (SourceFile source in _sources)

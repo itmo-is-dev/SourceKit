@@ -15,7 +15,7 @@ public static class NamedTypeSymbolExtensions
             _ => Array.Empty<IdentifierNameSyntax>(),
         };
 
-        var name = fullyQualified ? symbol.GetFullyQualifiedName() : symbol.Name;
+        string name = fullyQualified ? symbol.GetFullyQualifiedName() : symbol.Name;
 
         TypeSyntax type = typeParameters.Count is 0
             ? IdentifierName(name)
@@ -24,13 +24,13 @@ public static class NamedTypeSymbolExtensions
         if (symbol is not INamedTypeSymbol namedSymbol)
             return type;
 
-        var shouldAnnotateReferenceType = namedSymbol is
+        bool shouldAnnotateReferenceType = namedSymbol is
         {
             IsReferenceType: true,
             NullableAnnotation: NullableAnnotation.Annotated,
         };
 
-        var shouldAnnotateValueType = namedSymbol is
+        bool shouldAnnotateValueType = namedSymbol is
         {
             IsValueType: true,
             ConstructedFrom.SpecialType: not SpecialType.System_Nullable_T,

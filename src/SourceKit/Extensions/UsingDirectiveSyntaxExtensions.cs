@@ -11,8 +11,8 @@ public static class UsingDirectiveSyntaxExtensions
         this UsingDirectiveSyntax syntax,
         SyntaxTrivia trivia)
     {
-        var triviaList = TriviaList(syntax.UsingKeyword.LeadingTrivia.Append(trivia));
-        var token = Token(triviaList, SyntaxKind.UsingKeyword, syntax.UsingKeyword.TrailingTrivia);
+        SyntaxTriviaList triviaList = TriviaList(syntax.UsingKeyword.LeadingTrivia.Append(trivia));
+        SyntaxToken token = Token(triviaList, SyntaxKind.UsingKeyword, syntax.UsingKeyword.TrailingTrivia);
 
         return syntax.WithUsingKeyword(token);
     }

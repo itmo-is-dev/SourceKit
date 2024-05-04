@@ -1,21 +1,32 @@
 using Microsoft.CodeAnalysis;
+using SourceKit.Generators.Builder.Extensions;
 
 namespace SourceKit.Generators.Builder.Models;
 
 public abstract record BuilderProperty
 {
-    private BuilderProperty(IPropertySymbol symbol)
+    public record Value(
+        IPropertySymbol Symbol,
+        ITypeSymbol Type,
+        LiteralValue LiteralValue,
+        bool IsBuilderConstructorParameter) : BuilderProperty(Symbol, IsBuilderConstructorParameter);
+
+    public record Collection(
+        IPropertySymbol Symbol,
+        CollectionKind Kind,
+        ITypeSymbol ElementType,
+        bool IsBuilderConstructorParameter) : BuilderProperty(Symbol, IsBuilderConstructorParameter);
+
+    private BuilderProperty(IPropertySymbol symbol, bool isBuilderConstructorParameter)
     {
         Symbol = symbol;
+        IsBuilderConstructorParameter = isBuilderConstructorParameter;
+        FieldName = symbol.Name.ToUnderscoreCamelCase();
     }
 
     public IPropertySymbol Symbol { get; }
 
-    public record Value(IPropertySymbol Symbol, ITypeSymbol Type, LiteralValue LiteralValue) : BuilderProperty(Symbol);
+    public bool IsBuilderConstructorParameter { get; }
 
-    public record Collection(
-        IPropertySymbol Symbol,
-        ITypeSymbol Type,
-        CollectionKind Kind,
-        ITypeSymbol ElementType) : BuilderProperty(Symbol);
+    public string FieldName { get; }
 }
