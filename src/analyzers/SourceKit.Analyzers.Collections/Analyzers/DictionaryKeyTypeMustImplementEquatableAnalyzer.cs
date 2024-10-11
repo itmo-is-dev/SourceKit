@@ -23,8 +23,7 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
         DiagnosticSeverity.Error,
         true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(Descriptor);
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [Descriptor];
 
     public override void Initialize(AnalysisContext context)
     {
@@ -37,46 +36,51 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
     {
         var node = (GenericNameSyntax)context.Node;
 
-        if (node.Identifier.Text != "Dictionary")
+        if (context.SemanticModel.GetDeclaredSymbol(node) is not INamedTypeSymbol symbol)
             return;
 
-        var dictionaryTypeSymbol = GetSymbolFromContext(context, node) as ITypeSymbol;
+        if (TryGetDictionaryKeySymbol(symbol, typeof(Dictionary<,>), context, out INamedTypeSymbol? keySymbol) is false
+            & TryGetDictionaryKeySymbol(symbol, typeof(IReadOnlyDictionary<,>), context, out keySymbol) is false
+            & TryGetDictionaryKeySymbol(symbol, typeof(IDictionary<,>), context, out keySymbol) is false)
+        {
+            return;
+        }
 
-        if (dictionaryTypeSymbol is null)
+        if (keySymbol is null || keySymbol.MetadataName is "TKey")
             return;
 
-        var keyTypeSymbol = dictionaryTypeSymbol is INamedTypeSymbol namedTypeSymbol
-            ? namedTypeSymbol.TypeArguments.FirstOrDefault()
-            : null;
-
-        if (keyTypeSymbol is null || keyTypeSymbol.MetadataName == "TKey")
-            return;
-        
-        if (keyTypeSymbol.TypeKind is TypeKind.Enum)
+        if (keySymbol.TypeKind is TypeKind.Enum)
             return;
 
-        var interfaceNamedType = context.Compilation.GetTypeSymbol(typeof(IEquatable<>));
+        INamedTypeSymbol equatableSymbol = context.Compilation.GetTypeSymbol(typeof(IEquatable<>));
 
-        var equatableInterfaces = keyTypeSymbol.FindAssignableTypesConstructedFrom(interfaceNamedType);
+        INamedTypeSymbol madeEquatableSymbol = equatableSymbol
+            .Construct(keySymbol.WithNullableAnnotation(NullableAnnotation.None));
 
-        var isThereRightEquatableInterface =
-            equatableInterfaces
-                .Select(s => s.TypeArguments.First())
-                .Any(s => keyTypeSymbol.IsAssignableTo(s));
+        IEnumerable<INamedTypeSymbol> foundEquatableSymbols = keySymbol
+            .FindAssignableTypesConstructedFrom(equatableSymbol);
 
-        if (isThereRightEquatableInterface)
+        bool hasCorrectEquatableImplementation = foundEquatableSymbols
+            .Select(x => x.TypeArguments.First())
+            .Any(x => madeEquatableSymbol.Equals(x, SymbolEqualityComparer.Default));
+
+        if (hasCorrectEquatableImplementation is false)
             return;
 
         var diag = Diagnostic.Create(Descriptor, node.GetLocation());
         context.ReportDiagnostic(diag);
     }
 
-    private static ISymbol? GetSymbolFromContext(SyntaxNodeAnalysisContext context, SyntaxNode node)
+    private static bool TryGetDictionaryKeySymbol(
+        INamedTypeSymbol nameSymbol,
+        Type dictionaryType,
+        SyntaxNodeAnalysisContext context,
+        out INamedTypeSymbol? keySymbol)
     {
-        var model = context.SemanticModel;
-        var symbolInfo = model.GetSymbolInfo(node);
-        var symbol = symbolInfo.Symbol;
+        INamedTypeSymbol dictionarySymbol = context.Compilation.GetTypeSymbol(dictionaryType);
+        INamedTypeSymbol? implementationSymbol = nameSymbol.FindAssignableTypeConstructedFrom(dictionarySymbol);
 
-        return symbol;
+        keySymbol = implementationSymbol?.TypeArguments.FirstOrDefault() as INamedTypeSymbol;
+        return keySymbol is not null;
     }
 }

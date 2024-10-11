@@ -27,6 +27,18 @@ public class CollectionsTests : AnalyzerTestBase<DictionaryKeyTypeMustImplementE
     }
 
     [Fact]
+    public async Task DictionaryKeyType_ShouldNotReportDiagnostic_WhenKeyIsString()
+    {
+        SourceFile sourceFile = await SourceFile.LoadAsync(
+            "SourceKit.Analyzers.Collections.Samples/Dictionary/DictionaryStringString.cs");
+
+        await AnalyzerTest
+            .WithSource(sourceFile)
+            .Build()
+            .RunAsync(); 
+    }
+
+    [Fact]
     public async Task DictionaryCustomKeyType_ShouldReportDiagnostic_WhenTypeImplementsOtherEquatable()
     {
         SourceFile sourceFile = await SourceFile.LoadAsync(

@@ -115,7 +115,7 @@ public class BuilderSourceGenerator : ISourceGenerator
             CompilationUnitSyntax compilationUnit = _chain.Process(fileCommand);
             string fileName = GetFileName(symbol.Name);
 
-            context.AddSource(fileName, compilationUnit.NormalizeWhitespace().ToFullString().Replace("\r\n", "\n"));
+            context.AddSource(fileName, compilationUnit.NormalizeWhitespace(eol: "\n").ToFullString());
         }
         catch (Exception e)
         {
