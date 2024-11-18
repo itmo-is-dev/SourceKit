@@ -1,4 +1,5 @@
 using FluentChaining;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
@@ -23,7 +24,8 @@ public class TypeBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
     {
         var modifiers = TokenList
         (
-            request.Symbol.DeclaredAccessibility
+            request.Symbol
+                .DeclaredAccessibility
                 .ToSyntaxTokenList()
                 .Append(Token(SyntaxKind.PartialKeyword))
         );
@@ -44,6 +46,11 @@ public class TypeBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
 
         declaration = _chain.Process(command);
         namespaceDeclaration = namespaceDeclaration.AddMembers(declaration);
+
+        namespaceDeclaration = namespaceDeclaration.WithNamespaceKeyword(Token(
+            TriviaList(Trivia(NullableDirectiveTrivia(Token(SyntaxKind.EnableKeyword), true))),
+            SyntaxKind.NamespaceKeyword,
+            SyntaxTriviaList.Empty));
 
         request = request with
         {
