@@ -63,14 +63,14 @@ public class ProtoMessageConstructorGenerator : ISourceGenerator
 
     public void Initialize(GeneratorInitializationContext context)
     {
-        context.RegisterForSyntaxNotifications(() => new ProtoMessageReceiver());
+        context.RegisterForSyntaxNotifications(() => new ProtoMessageConstructorReceiver());
     }
 
     public void Execute(GeneratorExecutionContext context)
     {
         context.CancellationToken.ThrowIfCancellationRequested();
 
-        if (context.SyntaxContextReceiver is not ProtoMessageReceiver receiver)
+        if (context.SyntaxContextReceiver is not ProtoMessageConstructorReceiver receiver)
             return;
 
         foreach (var message in receiver.Messages)

@@ -9,11 +9,11 @@ using SourceKit.Generators.Grpc.Models;
 
 namespace SourceKit.Generators.Grpc.Receivers;
 
-public class ProtoMessageReceiver : ISyntaxContextReceiver
+public class ProtoMessageConstructorReceiver : ISyntaxContextReceiver
 {
     private readonly List<ProtoMessage> _messages;
 
-    public ProtoMessageReceiver()
+    public ProtoMessageConstructorReceiver()
     {
         _messages = new List<ProtoMessage>();
     }
