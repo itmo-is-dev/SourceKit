@@ -38,15 +38,6 @@ jobs:
           key: ${{ steps.create-cache-keys.outputs.cache-key }}
           restore-keys: ${{ steps.create-cache-keys.outputs.cache-key }}
 
-      - name: Cache nuget packages
-        uses: actions/cache@v3
-        if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('**/*.Packages.props', '**/*.csproj') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
-
       - name: exclude redundant projects and files
         if: ${{ steps.cache-packages.outputs.cache-hit != 'true' }}
         run: |
