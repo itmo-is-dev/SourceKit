@@ -85,7 +85,7 @@ public class ProtoMessageConstructorGenerator : ISourceGenerator
         {
             var command = new FileBuildingCommand(context, CompilationUnit(), message);
             var compilationUnit = _chain.Process(command);
-            var fileName = GetFileName(message.Type.Name);
+            var fileName = GetFileName(message.Type.GetFullyQualifiedName());
 
             var source = compilationUnit.NormalizeWhitespace(eol: "\n", elasticTrivia: true).ToFullString();
             context.AddSource(fileName, source);
