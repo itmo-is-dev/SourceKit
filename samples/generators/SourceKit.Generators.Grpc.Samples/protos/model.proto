@@ -18,4 +18,15 @@ message ProtoModel {
   google.protobuf.Int32Value null_int_value = 8;
   google.protobuf.StringValue null_string_value = 9;
   map<int32, string> map_value = 10;
+
+  InnerMessage m = 11;
+
+  message InnerMessage {
+    InnerEnum enum = 1;
+  }
+
+  enum InnerEnum {
+    UNSPECIFIED = 0;
+    ABOBA_1 = 1;
+  }
 }

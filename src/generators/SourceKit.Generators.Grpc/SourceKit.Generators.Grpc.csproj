@@ -26,7 +26,7 @@
     <PropertyGroup>
         <Version>1.0.$(PatchVersion)</Version>
         <PackageReleaseNotes>
-            Added proto model constructor generator
+            Fixed nested type constructor generation
         </PackageReleaseNotes>
     </PropertyGroup>
 

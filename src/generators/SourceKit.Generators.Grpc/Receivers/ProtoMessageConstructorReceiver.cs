@@ -32,16 +32,41 @@ public class ProtoMessageConstructorReceiver : ISyntaxContextReceiver
 
         if (symbolInfo is not INamedTypeSymbol symbol)
             return;
-
-        if (symbol.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default) is false)
+        
+        if (symbol.ContainingType is not null)
             return;
+
+        ProtoMessage? message = OnVisitNamedTypeSymbol(symbol, messageInterfaceSymbol, context);
+
+        if (message is not null)
+            _messages.Add(message);
+    }
+
+    private ProtoMessage? OnVisitNamedTypeSymbol(
+        INamedTypeSymbol symbol,
+        INamedTypeSymbol messageInterfaceSymbol,
+        GeneratorSyntaxContext context)
+    {
+        if (symbol.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default) is false)
+            return null;
 
         try
         {
             ProtoProperty[] properties = ParseProperties(symbol, context).ToArray();
 
-            var message = new ProtoMessage(symbol, properties);
-            _messages.Add(message);
+            INamedTypeSymbol? typesSymbol = symbol
+                .GetMembers()
+                .OfType<INamedTypeSymbol>()
+                .SingleOrDefault(x => x.Name == "Types" && x.IsStatic);
+
+            ProtoMessage[]? nestedMessages = typesSymbol?
+                .GetMembers()
+                .OfType<INamedTypeSymbol>()
+                .Select(s => OnVisitNamedTypeSymbol(s, messageInterfaceSymbol, context))
+                .WhereNotNull()
+                .ToArray();
+
+            return new ProtoMessage(symbol, properties, nestedMessages ?? []);
         }
         catch (Exception e)
         {
@@ -57,8 +82,10 @@ public class ProtoMessageConstructorReceiver : ISyntaxContextReceiver
 
         Compilation compilation = context.SemanticModel.Compilation;
 
-        INamedTypeSymbol? repeatedFieldType = compilation.GetTypeByMetadataName(Constants.ProtobufRepeatedFieldFullyQualifiedName);
-        INamedTypeSymbol? mapFieldType = compilation.GetTypeByMetadataName(Constants.ProtobufMapFieldFullyQualifiedName);
+        INamedTypeSymbol? repeatedFieldType =
+            compilation.GetTypeByMetadataName(Constants.ProtobufRepeatedFieldFullyQualifiedName);
+        INamedTypeSymbol? mapFieldType =
+            compilation.GetTypeByMetadataName(Constants.ProtobufMapFieldFullyQualifiedName);
 
         if (repeatedFieldType is null || mapFieldType is null)
             yield break;
@@ -73,7 +100,7 @@ public class ProtoMessageConstructorReceiver : ISyntaxContextReceiver
             .Where(x => x.Type.Equals(intSymbol, SymbolEqualityComparer.Default))
             .Where(x => x.Name.EndsWith(fieldNumberPostfix));
 
-        ImmutableHashSet<string> oneOfCases = messageSymbol
+        var oneOfCases = messageSymbol
             .GetTypeMembers()
             .Where(x => x.TypeKind is TypeKind.Enum)
             .SelectMany(x => x.GetMembers())
@@ -86,7 +113,10 @@ public class ProtoMessageConstructorReceiver : ISyntaxContextReceiver
                 continue;
 
             string propertyName = ordinalField.Name[..^fieldNumberPostfix.Length];
-            IPropertySymbol? property = members.OfType<IPropertySymbol>().SingleOrDefault(x => x.Name.Equals(propertyName));
+
+            IPropertySymbol? property = members
+                .OfType<IPropertySymbol>()
+                .SingleOrDefault(x => x.Name.Equals(propertyName));
 
             if (property is not { Type: INamedTypeSymbol propertyType })
                 continue;

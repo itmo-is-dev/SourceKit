@@ -87,7 +87,7 @@ public class ProtoMessageConstructorGenerator : ISourceGenerator
             var compilationUnit = _chain.Process(command);
             var fileName = GetFileName(message.Type.Name);
 
-            var source = compilationUnit.NormalizeWhitespace().ToFullString().Replace("\r\n", "\n");
+            var source = compilationUnit.NormalizeWhitespace(eol: "\n", elasticTrivia: true).ToFullString();
             context.AddSource(fileName, source);
         }
         catch (Exception e)

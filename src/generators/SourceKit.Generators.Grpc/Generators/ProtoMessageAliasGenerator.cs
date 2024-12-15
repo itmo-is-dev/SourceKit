@@ -19,7 +19,7 @@ public class ProtoMessageAliasGenerator : ISourceGenerator
     {
         if (context.SyntaxContextReceiver is not ProtoMessageAliasReceiver receiver)
             return;
-        
+
         UsingDirectiveSyntax[] directives = receiver.Symbols.Select(GenerateAlias).ToArray();
 
         CompilationUnitSyntax unit = CompilationUnit().AddUsings(directives).NormalizeWhitespace(eol: "\n");

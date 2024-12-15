@@ -1,5 +1,6 @@
 using FluentChaining;
 using Humanizer;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
@@ -44,7 +45,7 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
             if (property is RepeatableProtoProperty repeatableProperty)
             {
                 var typeArguments = TypeArgumentList(
-                    SingletonSeparatedList(repeatableProperty.ElementType.ToNameSyntax()));
+                    SingletonSeparatedList(repeatableProperty.ElementType.ToNameSyntax(fullyQualified: true)));
 
                 typeName = GenericName(Identifier("IEnumerable"), typeArguments);
             }
@@ -52,8 +53,8 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
             {
                 var typeArguments = TypeArgumentList(SeparatedList(new[]
                 {
-                    mapProperty.Key.ToNameSyntax(),
-                    mapProperty.Value.ToNameSyntax(),
+                    mapProperty.Key.ToNameSyntax(fullyQualified: true),
+                    mapProperty.Value.ToNameSyntax(fullyQualified: true),
                 }));
 
                 var keyValuePair = GenericName(Identifier("KeyValuePair"), typeArguments);
@@ -64,16 +65,18 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
             }
             else if (property is ValueProtoProperty valueProperty)
             {
-                typeName = valueProperty.Type.ToNameSyntax();
+                typeName = valueProperty.Type.ToNameSyntax(fullyQualified: true);
             }
             else
             {
                 continue;
             }
 
-            var parameterName = property.Name.Camelize();
+            string? parameterName = property.Name.Camelize();
 
-            yield return Parameter(Identifier(parameterName)).WithType(typeName);
+            yield return Parameter(Identifier(parameterName).EscapeKeyword())
+                .WithType(typeName)
+                .WithLeadingTrivia(ElasticCarriageReturnLineFeed);
         }
     }
 
@@ -98,7 +101,7 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
                 _ => ExpressionStatement(AssignmentExpression(
                     SyntaxKind.SimpleAssignmentExpression,
                     IdentifierName(property.Name),
-                    IdentifierName(parameterName))),
+                    IdentifierName(parameterName).EscapeKeyword())),
             };
         }
     }
@@ -110,7 +113,7 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
             IdentifierName("Add"));
 
         var invocation = InvocationExpression(memberAccess)
-            .AddArgumentListArguments(Argument(IdentifierName(parameterName)));
+            .AddArgumentListArguments(Argument(IdentifierName(parameterName).EscapeKeyword()));
 
         return ExpressionStatement(invocation);
     }
@@ -155,7 +158,7 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
         return ForEachStatement(
             keyValuePair,
             Identifier(itemName),
-            IdentifierName(parameterName),
+            IdentifierName(parameterName).EscapeKeyword(),
             body);
     }
 
@@ -164,17 +167,19 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
         ProtoProperty property,
         string parameterName)
     {
-        var condition = IsPatternExpression(
-            IdentifierName(parameterName),
+        IdentifierNameSyntax parameterNameSyntax = IdentifierName(parameterName).EscapeKeyword();
+
+        IsPatternExpressionSyntax condition = IsPatternExpression(
+            parameterNameSyntax,
             UnaryPattern(ConstantPattern(LiteralExpression(SyntaxKind.NullLiteralExpression))));
 
         ExpressionSyntax value = oneOfProperty.Type.IsValueType
             ? MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression,
-                IdentifierName(parameterName),
+                parameterNameSyntax,
                 IdentifierName("Value"))
             : IdentifierName(parameterName);
 
-        var statement = ExpressionStatement(AssignmentExpression(
+        ExpressionStatementSyntax statement = ExpressionStatement(AssignmentExpression(
             SyntaxKind.SimpleAssignmentExpression,
             IdentifierName(property.Name),
             value));

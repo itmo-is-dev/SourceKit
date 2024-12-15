@@ -4,8 +4,7 @@ using Playground;
 
 Console.WriteLine("Hello, World!");
 
-
-var model = new ProtoModel(
+var model = new ProtoProtoModel(
     pageToken: "",
     values: new[] { "" },
     pageSize: 0,
@@ -15,4 +14,7 @@ var model = new ProtoModel(
     notNullStringValue: "",
     nullIntValue: null,
     nullStringValue: null,
-    mapValue: new Dictionary<int, string> { [1] = "1" });
+    mapValue: new Dictionary<int, string> { [1] = "1" },
+    m: new ProtoProtoModel.Types.InnerMessage(@enum: ProtoProtoModel.Types.InnerEnum.Aboba1));
+
+Console.WriteLine(model);
