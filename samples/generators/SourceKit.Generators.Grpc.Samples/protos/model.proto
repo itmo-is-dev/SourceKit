@@ -30,3 +30,6 @@ message ProtoModel {
     ABOBA_1 = 1;
   }
 }
+
+message EmptyMessage {
+}

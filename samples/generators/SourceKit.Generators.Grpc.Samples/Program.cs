@@ -17,4 +17,6 @@ var model = new ProtoProtoModel(
     mapValue: new Dictionary<int, string> { [1] = "1" },
     m: new ProtoProtoModel.Types.InnerMessage(@enum: ProtoProtoModel.Types.InnerEnum.Aboba1));
 
+var emptyModel = new ProtoEmptyMessage();
+
 Console.WriteLine(model);
