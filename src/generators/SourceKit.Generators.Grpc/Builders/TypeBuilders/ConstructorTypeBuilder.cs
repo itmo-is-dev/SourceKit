@@ -17,12 +17,14 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
         SynchronousContext context,
         LinkDelegate<TypeBuildingCommand, SynchronousContext, TypeDeclarationSyntax> next)
     {
-        if (request.Message.Properties is [])
+        ParameterSyntax[] parameters = MapParameters(request).ToArray();
+
+        if (parameters is [])
             return next(request, context);
 
-        var constructor = ConstructorDeclaration(Identifier(request.Message.Type.Name))
+        ConstructorDeclarationSyntax constructor = ConstructorDeclaration(Identifier(request.Message.Type.Name))
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
-            .AddParameterListParameters(MapParameters(request).ToArray())
+            .AddParameterListParameters(parameters)
             .AddBodyStatements(MapAssignments(request).ToArray());
 
         request = request with
