@@ -24,6 +24,7 @@ public class ProtoMessageAliasGenerator : ISourceGenerator
             .GroupBy(x => x.Name, (k, values) => (k, values: values.ToArray()))
             .Where(x => x.values.Length is 1)
             .Select(x => x.values.Single())
+            .OrderBy(x => x.Name)
             .Select(GenerateAlias)
             .ToArray();
 
