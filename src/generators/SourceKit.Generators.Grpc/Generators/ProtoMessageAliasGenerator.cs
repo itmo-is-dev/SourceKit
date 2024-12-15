@@ -20,7 +20,12 @@ public class ProtoMessageAliasGenerator : ISourceGenerator
         if (context.SyntaxContextReceiver is not ProtoMessageAliasReceiver receiver)
             return;
 
-        UsingDirectiveSyntax[] directives = receiver.Symbols.Select(GenerateAlias).ToArray();
+        UsingDirectiveSyntax[] directives = receiver.Symbols
+            .GroupBy(x => x.Name, (k, values) => (k, values: values.ToArray()))
+            .Where(x => x.values.Length is 1)
+            .Select(x => x.values.Single())
+            .Select(GenerateAlias)
+            .ToArray();
 
         CompilationUnitSyntax unit = CompilationUnit().AddUsings(directives).NormalizeWhitespace(eol: "\n");
         string text = unit.ToFullString();
@@ -28,7 +33,7 @@ public class ProtoMessageAliasGenerator : ISourceGenerator
         context.AddSource("SourceKit.Generators.Builder.ProtoAlias.cs", text);
     }
 
-    private UsingDirectiveSyntax GenerateAlias(INamedTypeSymbol symbol)
+    private static UsingDirectiveSyntax GenerateAlias(INamedTypeSymbol symbol)
     {
         return UsingDirective(IdentifierName(symbol.GetFullyQualifiedName()))
             .WithGlobalKeyword(Token(SyntaxKind.GlobalKeyword))
