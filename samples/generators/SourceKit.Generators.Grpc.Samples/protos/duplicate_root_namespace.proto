@@ -3,4 +3,9 @@ option csharp_namespace = "SourceKit.Sample.SourceKit.Models";
 
 message DuplicateRootNamespace {
   int32 value = 1;
+  DuplicateRootNamespace2 two = 2;
+}
+
+message DuplicateRootNamespace2 {
+  int32 value = 1;
 }

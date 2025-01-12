@@ -50,7 +50,7 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
             if (property is RepeatableProtoProperty repeatableProperty)
             {
                 var typeArguments = TypeArgumentList(
-                    SingletonSeparatedList(repeatableProperty.ElementType.ToNameSyntax(fullyQualified: true)));
+                    SingletonSeparatedList(repeatableProperty.ElementType.ToNameSyntax(includeGlobal: true)));
 
                 typeName = GenericName(Identifier("IEnumerable"), typeArguments);
             }
@@ -58,8 +58,8 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
             {
                 var typeArguments = TypeArgumentList(SeparatedList(new[]
                 {
-                    mapProperty.Key.ToNameSyntax(fullyQualified: true),
-                    mapProperty.Value.ToNameSyntax(fullyQualified: true),
+                    mapProperty.Key.ToNameSyntax(includeGlobal: true),
+                    mapProperty.Value.ToNameSyntax(includeGlobal: true),
                 }));
 
                 var keyValuePair = GenericName(Identifier("KeyValuePair"), typeArguments);
@@ -70,7 +70,7 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
             }
             else if (property is ValueProtoProperty valueProperty)
             {
-                typeName = valueProperty.Type.ToNameSyntax(fullyQualified: true);
+                typeName = valueProperty.Type.ToNameSyntax(includeGlobal: true);
             }
             else
             {
@@ -132,8 +132,8 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
 
         var typeArguments = TypeArgumentList(SeparatedList<TypeSyntax>(new[]
         {
-            mapProperty.Key.ToTypeArgumentSyntax(),
-            mapProperty.Value.ToTypeArgumentSyntax(),
+            mapProperty.Key.ToTypeArgumentSyntax(includeGlobal: true),
+            mapProperty.Value.ToTypeArgumentSyntax(includeGlobal: true),
         }));
 
         var keyValuePair = GenericName(Identifier("KeyValuePair"), typeArguments);

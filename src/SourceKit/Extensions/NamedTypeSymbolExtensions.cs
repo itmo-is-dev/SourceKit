@@ -8,15 +8,17 @@ namespace SourceKit.Extensions;
 
 public static class NamedTypeSymbolExtensions
 {
-    private static SymbolDisplayFormat ConfigureDisplayFormat(SymbolDisplayFormat format) => format
-        .WithGlobalNamespaceStyle(SymbolDisplayGlobalNamespaceStyle.Omitted)
+    private static SymbolDisplayFormat ConfigureDisplayFormat(SymbolDisplayFormat format, bool includeGlobal) => format
+        .WithGlobalNamespaceStyle(includeGlobal
+            ? SymbolDisplayGlobalNamespaceStyle.Included
+            : SymbolDisplayGlobalNamespaceStyle.Omitted)
         .WithGenericsOptions(SymbolDisplayGenericsOptions.None);
 
-    private static readonly SymbolDisplayFormat FullyQualifiedSymbolFormat =
-        ConfigureDisplayFormat(SymbolDisplayFormat.FullyQualifiedFormat);
+    private static SymbolDisplayFormat FullyQualifiedSymbolFormat(bool includeGlobal)
+        => ConfigureDisplayFormat(SymbolDisplayFormat.FullyQualifiedFormat, includeGlobal);
 
-    private static readonly SymbolDisplayFormat ShortSymbolFormat =
-        ConfigureDisplayFormat(SymbolDisplayFormat.MinimallyQualifiedFormat);
+    private static SymbolDisplayFormat ShortSymbolFormat(bool includeGlobal)
+        => ConfigureDisplayFormat(SymbolDisplayFormat.MinimallyQualifiedFormat, includeGlobal);
 
     private static bool TryGetTypeArgumentSyntax(
         this INamespaceOrTypeSymbol symbol,
@@ -39,15 +41,18 @@ public static class NamedTypeSymbolExtensions
         return false;
     }
 
-    public static string GetFullyQualifiedName(this INamespaceOrTypeSymbol symbol)
-        => symbol.ToDisplayString(FullyQualifiedSymbolFormat);
+    public static string GetFullyQualifiedName(this INamespaceOrTypeSymbol symbol, bool includeGlobal = false)
+        => symbol.ToDisplayString(FullyQualifiedSymbolFormat(includeGlobal));
 
-    public static string GetShortName(this INamespaceOrTypeSymbol symbol)
-        => symbol.ToDisplayString(ShortSymbolFormat);
+    public static string GetShortName(this INamespaceOrTypeSymbol symbol, bool includeGlobal = false)
+        => symbol.ToDisplayString(ShortSymbolFormat(includeGlobal));
 
-    public static TypeSyntax ToNameSyntax(this INamespaceOrTypeSymbol symbol, bool fullyQualified = true)
+    public static TypeSyntax ToNameSyntax(
+        this INamespaceOrTypeSymbol symbol,
+        bool fullyQualified = true,
+        bool includeGlobal = false)
     {
-        string name = fullyQualified ? symbol.GetFullyQualifiedName() : symbol.GetShortName();
+        string name = fullyQualified ? symbol.GetFullyQualifiedName(includeGlobal) : symbol.GetShortName(includeGlobal);
 
         TypeSyntax type = TryGetTypeArgumentSyntax(symbol, fullyQualified, out TypeArgumentListSyntax? typeArguments)
             ? GenericName(Identifier(name), typeArguments)
@@ -77,7 +82,7 @@ public static class NamedTypeSymbolExtensions
     public static IEnumerable<INamedTypeSymbol> GetBaseTypes(this INamedTypeSymbol symbol)
     {
         return symbol.BaseType is null
-            ? Enumerable.Empty<INamedTypeSymbol>()
+            ? []
             : Enumerable.Repeat(symbol.BaseType, 1).Concat(symbol.BaseType.GetBaseTypes());
     }
 

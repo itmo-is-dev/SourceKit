@@ -6,11 +6,15 @@ namespace SourceKit.Extensions;
 
 public static class TypeSymbolExtensions
 {
-    public static IEnumerable<IdentifierNameSyntax> ToTypeArgumentSyntax(this IEnumerable<ITypeSymbol> symbols)
-        => symbols.Select(ToTypeArgumentSyntax);
+    public static IEnumerable<IdentifierNameSyntax> ToTypeArgumentSyntax(
+        this IEnumerable<ITypeSymbol> symbols,
+        bool includeGlobal = false)
+    {
+        return symbols.Select(x => x.ToTypeArgumentSyntax(includeGlobal));
+    }
 
-    public static IdentifierNameSyntax ToTypeArgumentSyntax(this ITypeSymbol symbol)
-        => IdentifierName(symbol.GetFullyQualifiedName());
+    public static IdentifierNameSyntax ToTypeArgumentSyntax(this ITypeSymbol symbol, bool includeGlobal = false)
+        => IdentifierName(symbol.GetFullyQualifiedName(includeGlobal));
 
     public static bool IsAssignableTo(this ITypeSymbol source, ITypeSymbol destination)
     {
