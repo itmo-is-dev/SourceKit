@@ -1,0 +1,6 @@
+syntax = "proto3";
+option csharp_namespace = "SourceKit.Sample.SourceKit.Models";
+
+message DuplicateRootNamespace {
+  int32 value = 1;
+}

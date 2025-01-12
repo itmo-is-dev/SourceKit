@@ -30,18 +30,10 @@ public class UsingBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
     {
         CompilationUnitSyntax unit = next(request, context);
 
-#pragma warning disable RS1024
-        IEnumerable<UsingDirectiveSyntax> propertyUsingDirectives = ExtractNamespaces(request.Message.Properties)
-            .Distinct()
-            .Select(x => x.GetFullyQualifiedName())
-            .Select(x => UsingDirective(IdentifierName(x)));
-#pragma warning restore RS1024
-
         UsingDirectiveSyntax[] usingDirectives = unit.Usings
             .Append(UsingDirective(IdentifierName("System")))
             .Append(UsingDirective(IdentifierName("System.Linq")))
             .Append(UsingDirective(IdentifierName("System.Collections.Generic")))
-            .Concat(propertyUsingDirectives)
             .Distinct(Comparer)
             .Where(x => x.Name is not null)
             .OrderBy(x => x.Name?.ToString())

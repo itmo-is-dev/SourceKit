@@ -1,7 +1,8 @@
 syntax = "proto3";
-option csharp_namespace = "Playground";
+option csharp_namespace = "SourceKit.Generators.Grpc.Samples.Grpc";
 
 import "google/protobuf/wrappers.proto";
+import "duplicate_root_namespace.proto";
 
 message ProtoModel {
   google.protobuf.StringValue page_token = 1;
@@ -20,7 +21,7 @@ message ProtoModel {
   map<int32, string> map_value = 10;
 
   InnerMessage m = 11;
-
+  
   message InnerMessage {
     InnerEnum enum = 1;
   }
