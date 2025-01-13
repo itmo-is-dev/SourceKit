@@ -38,7 +38,9 @@ public class ValueMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
             var name = $"With{property.Symbol.Name}";
             SyntaxToken returnType = request.BuilderSyntax.Identifier;
 
-            ParameterSyntax parameter = Parameter(Identifier(parameterName)).WithType(property.Type.ToNameSyntax());
+            ParameterSyntax parameter = Parameter(Identifier(parameterName))
+                .WithType(property.Type.ToNameSyntax(includeGlobal: true));
+
             ReturnStatementSyntax returnStatement = ReturnStatement(ThisExpression());
 
             AssignmentExpressionSyntax assignment = AssignmentExpression(

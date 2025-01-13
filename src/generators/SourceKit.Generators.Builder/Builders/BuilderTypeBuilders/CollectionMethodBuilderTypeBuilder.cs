@@ -52,7 +52,8 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         var name = $"With{property.Symbol.Name.Singularize()}";
         SyntaxToken returnType = builder.Identifier;
 
-        ParameterSyntax parameter = Parameter(Identifier(parameterName)).WithType(property.ElementType.ToNameSyntax());
+        ParameterSyntax parameter = Parameter(Identifier(parameterName))
+            .WithType(property.ElementType.ToNameSyntax(includeGlobal: true));
 
         MemberAccessExpressionSyntax addMethod = MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,
@@ -80,7 +81,8 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         var name = $"With{property.Symbol.Name.Pluralize()}";
         SyntaxToken returnType = builder.Identifier;
 
-        ParameterSyntax parameter = Parameter(Identifier(parameterName)).WithType(enumerableType.ToNameSyntax());
+        ParameterSyntax parameter = Parameter(Identifier(parameterName))
+            .WithType(enumerableType.ToNameSyntax(includeGlobal: true));
 
         MemberAccessExpressionSyntax addRangeMethod = MemberAccessExpression(
             SyntaxKind.SimpleMemberAccessExpression,

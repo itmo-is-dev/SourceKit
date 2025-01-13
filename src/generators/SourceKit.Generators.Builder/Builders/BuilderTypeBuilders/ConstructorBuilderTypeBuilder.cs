@@ -51,7 +51,7 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
     private static ParameterSyntax ResolveEnumerableParameter(BuilderProperty.Collection collection)
     {
         GenericNameSyntax parameterType = GenericName("IEnumerable")
-            .AddTypeArgumentListArguments(collection.ElementType.ToNameSyntax());
+            .AddTypeArgumentListArguments(collection.ElementType.ToNameSyntax(includeGlobal: true));
 
         return Parameter(Identifier(collection.Symbol.Name)).WithType(parameterType);
     }
@@ -59,7 +59,7 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
     private static ParameterSyntax ResolveValueParameter(BuilderProperty.Value value)
     {
         ParameterSyntax parameter = Parameter(Identifier(value.Symbol.Name))
-            .WithType(value.Symbol.Type.ToNameSyntax());
+            .WithType(value.Symbol.Type.ToNameSyntax(includeGlobal: true));
 
         if (value.LiteralValue.TryGetLiteralExpression(out ExpressionSyntax? literal))
         {
@@ -91,7 +91,7 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
         INamedTypeSymbol listType = compilation.GetTypeSymbol(typeof(List<>));
 
         INamedTypeSymbol constructedListType = listType.Construct(property.ElementType);
-        TypeSyntax typeSyntax = constructedListType.ToNameSyntax();
+        TypeSyntax typeSyntax = constructedListType.ToNameSyntax(includeGlobal: true);
 
         ArgumentListSyntax arguments = property.IsBuilderConstructorParameter
             ? ArgumentList().AddArguments(Argument(IdentifierName(property.Symbol.Name)))

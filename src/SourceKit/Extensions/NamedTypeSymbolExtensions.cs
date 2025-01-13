@@ -23,6 +23,7 @@ public static class NamedTypeSymbolExtensions
     private static bool TryGetTypeArgumentSyntax(
         this INamespaceOrTypeSymbol symbol,
         bool fullyQualified,
+        bool includeGlobal,
         [NotNullWhen(true)] out TypeArgumentListSyntax? syntax)
     {
         bool isNullableValueType = symbol is INamedTypeSymbol
@@ -33,7 +34,9 @@ public static class NamedTypeSymbolExtensions
         if (symbol is INamedTypeSymbol { TypeArguments: { Length: not 0 } typeArguments }
             && isNullableValueType is false)
         {
-            syntax = TypeArgumentList(SeparatedList(typeArguments.Select(x => x.ToNameSyntax(fullyQualified))));
+            syntax = TypeArgumentList(
+                SeparatedList(typeArguments.Select(x => x.ToNameSyntax(fullyQualified, includeGlobal))));
+
             return true;
         }
 
@@ -54,7 +57,11 @@ public static class NamedTypeSymbolExtensions
     {
         string name = fullyQualified ? symbol.GetFullyQualifiedName(includeGlobal) : symbol.GetShortName(includeGlobal);
 
-        TypeSyntax type = TryGetTypeArgumentSyntax(symbol, fullyQualified, out TypeArgumentListSyntax? typeArguments)
+        TypeSyntax type = TryGetTypeArgumentSyntax(
+            symbol,
+            fullyQualified,
+            includeGlobal,
+            out TypeArgumentListSyntax? typeArguments)
             ? GenericName(Identifier(name), typeArguments)
             : IdentifierName(name);
 
