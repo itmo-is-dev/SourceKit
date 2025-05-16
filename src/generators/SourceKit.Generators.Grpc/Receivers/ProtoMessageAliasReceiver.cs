@@ -13,7 +13,10 @@ public class ProtoMessageAliasReceiver : ISyntaxContextReceiver
         INamedTypeSymbol? messageInterfaceSymbol = context.SemanticModel.Compilation
             .GetTypeByMetadataName(Constants.ProtobufMessageInterfaceFullyQualifiedName);
 
-        if (messageInterfaceSymbol is null)
+        INamedTypeSymbol? enumAttributeSymbol = context.SemanticModel.Compilation
+            .GetTypeByMetadataName(Constants.ProtobufOriginalNameAttributeFullyQualifiedName);
+
+        if (messageInterfaceSymbol is null || enumAttributeSymbol is null)
             return;
 
         ISymbol? symbolInfo = context.SemanticModel.GetDeclaredSymbol(context.Node);
@@ -21,12 +24,30 @@ public class ProtoMessageAliasReceiver : ISyntaxContextReceiver
         if (symbolInfo is not INamedTypeSymbol symbol)
             return;
 
-        if (symbol.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default) is false)
+        if (IsProtoClass(symbol) || IsProtoEnum(symbol))
             return;
 
         if (symbol.ContainingType is not null)
             return;
 
         _symbols.Add(symbol);
+
+        bool IsProtoClass(INamedTypeSymbol type)
+        {
+            return type.TypeKind is TypeKind.Class
+                   && type.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default) is false;
+        }
+
+        bool IsProtoEnum(INamedTypeSymbol type)
+        {
+            if (type.TypeKind is not TypeKind.Enum)
+                return false;
+
+            return type
+                .GetMembers()
+                .All(member => member.GetAttributes()
+                    .Any(attr => attr
+                        .AttributeClass?.Equals(enumAttributeSymbol, SymbolEqualityComparer.Default) is true));
+        }
     }
 }
