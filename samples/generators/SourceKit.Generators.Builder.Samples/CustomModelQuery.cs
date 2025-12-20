@@ -4,4 +4,4 @@ using SourceKit.Generators.Builder.Samples.Models;
 namespace SourceKit.Generators.Builder.Samples;
 
 [GenerateBuilder]
-public partial record CustomModelQuery(Point[] Point);
+public partial record CustomModelQuery(Point[] Point, ReferenceTypeModel Model);

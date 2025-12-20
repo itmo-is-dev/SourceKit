@@ -85,7 +85,29 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
 
     private static ExpressionSyntax ResolveValueArgument(BuilderProperty.Value value)
     {
-        return IdentifierName(value.FieldName);
+        IdentifierNameSyntax identifier = IdentifierName(value.FieldName);
+
+        if (value.Type.IsReferenceType is false || value.Type.IsNullableReferenceType())
+            return identifier;
+
+        InvocationExpressionSyntax nameofExpression = InvocationExpression(
+                IdentifierName(
+                    Identifier(
+                        TriviaList(),
+                        SyntaxKind.NameOfKeyword,
+                        "nameof",
+                        "nameof",
+                        TriviaList())))
+            .AddArgumentListArguments(Argument(identifier));
+
+        ObjectCreationExpressionSyntax exception = ObjectCreationExpression(
+                IdentifierName("System.ArgumentNullException"))
+            .AddArgumentListArguments(Argument(nameofExpression));
+
+        return BinaryExpression(
+            SyntaxKind.CoalesceExpression,
+            identifier,
+            ThrowExpression(exception));
     }
 
     private static InvocationExpressionSyntax InvokeMethod(ExpressionSyntax expression, SimpleNameSyntax name)

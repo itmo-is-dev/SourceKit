@@ -60,8 +60,15 @@ public class FieldBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, TypeDec
 
     private static MemberDeclarationSyntax ResolveValue(BuilderProperty.Value property)
     {
+        TypeSyntax nameSyntax = property.Type.ToNameSyntax(includeGlobal: true);
+
+        if (property.Type.IsReferenceType && property.Type.IsNullableReferenceType() is false)
+        {
+            nameSyntax = NullableType(nameSyntax);
+        }
+
         VariableDeclarationSyntax variableDeclaration = VariableDeclaration(
-            property.Type.ToNameSyntax(includeGlobal: true),
+            nameSyntax,
             SingletonSeparatedList(VariableDeclarator(property.FieldName)));
 
         return FieldDeclaration(variableDeclaration).AddModifiers(Token(SyntaxKind.PrivateKeyword));

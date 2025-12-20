@@ -71,17 +71,16 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
 
     private static IEnumerable<StatementSyntax> ResolveStatements(BuilderTypeBuildingCommand request)
     {
-        return request.Properties.Select(
-            p => p switch
-            {
-                BuilderProperty.Collection collection
-                    => ResolveEnumerableStatement(collection, request.Context.Compilation),
+        return request.Properties.Select(p => p switch
+        {
+            BuilderProperty.Collection collection
+                => ResolveEnumerableStatement(collection, request.Context.Compilation),
 
-                BuilderProperty.Value value
-                    => ResolveValueStatement(value, request.Context.Compilation),
+            BuilderProperty.Value value
+                => ResolveValueStatement(value, request.Context.Compilation),
 
-                _ => throw new ArgumentOutOfRangeException(nameof(p)),
-            });
+            _ => throw new ArgumentOutOfRangeException(nameof(p)),
+        });
     }
 
     private static StatementSyntax ResolveEnumerableStatement(

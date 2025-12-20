@@ -65,11 +65,7 @@ public static class NamedTypeSymbolExtensions
             ? GenericName(Identifier(name), typeArguments)
             : IdentifierName(name);
 
-        bool shouldAnnotateReferenceType = symbol is INamedTypeSymbol
-        {
-            IsReferenceType: true,
-            NullableAnnotation: NullableAnnotation.Annotated,
-        };
+        bool shouldAnnotateReferenceType = IsNullableReferenceType(symbol);
 
         bool shouldAnnotateValueType = symbol is INamedTypeSymbol
         {
@@ -84,6 +80,15 @@ public static class NamedTypeSymbolExtensions
         }
 
         return type;
+    }
+
+    public static bool IsNullableReferenceType(this INamespaceOrTypeSymbol symbol)
+    {
+        return symbol is INamedTypeSymbol
+        {
+            IsReferenceType: true,
+            NullableAnnotation: NullableAnnotation.Annotated,
+        };
     }
 
     public static IEnumerable<INamedTypeSymbol> GetBaseTypes(this INamedTypeSymbol symbol)
