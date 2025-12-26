@@ -7,12 +7,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace SourceKit.Analyzers.MemberAccessibility.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-public class FieldCannotBePublicAnalyzer : DiagnosticAnalyzer
+public class FieldCannotHaveMultipleVariablesAnalyzer : DiagnosticAnalyzer
 {
-    public const string DiagnosticId = "SK1101";
-    public const string Title = nameof(FieldCannotBePublicAnalyzer);
+    public const string DiagnosticId = "SK1102";
+    public const string Title = nameof(FieldCannotHaveMultipleVariablesAnalyzer);
 
-    public const string Format = """Field '{0} {1}' cannot be public""";
+    public const string Format = """Each field must have separate declaration""";
 
     public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(DiagnosticId,
         Title,
@@ -29,25 +29,24 @@ public class FieldCannotBePublicAnalyzer : DiagnosticAnalyzer
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
 
-        context.RegisterCompilationStartAction(compilationContext => compilationContext
-            .RegisterSyntaxNodeAction(AnalyzeField, SyntaxKind.FieldDeclaration));
+        context.RegisterCompilationStartAction(compilationContext =>
+        {
+            compilationContext.RegisterSyntaxNodeAction(AnalyzeField, SyntaxKind.FieldDeclaration);
+        });
     }
 
     private void AnalyzeField(SyntaxNodeAnalysisContext context)
     {
         var fieldSyntax = (FieldDeclarationSyntax)context.Node;
 
-        if (fieldSyntax.Modifiers.All(x => x.Kind() is not SyntaxKind.PublicKeyword))
+        if (fieldSyntax.Declaration.Variables.Count <= 1)
         {
             return;
         }
 
-        foreach (VariableDeclaratorSyntax variable in fieldSyntax.Declaration.Variables)
-        {
-            Location location = variable.GetLocation();
-            var diagnostic = Diagnostic.Create(Descriptor, location, fieldSyntax.Declaration.Type, variable.Identifier.Text);
+        Location location = fieldSyntax.GetLocation();
+        var diagnostic = Diagnostic.Create(Descriptor, location);
 
-            context.ReportDiagnostic(diagnostic);
-        }
+        context.ReportDiagnostic(diagnostic);
     }
 }
