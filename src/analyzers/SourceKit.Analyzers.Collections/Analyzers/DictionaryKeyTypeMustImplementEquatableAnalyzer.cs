@@ -36,7 +36,7 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
     {
         var node = (GenericNameSyntax)context.Node;
 
-        if (context.SemanticModel.GetDeclaredSymbol(node) is not INamedTypeSymbol symbol)
+        if (context.SemanticModel.GetSymbolInfo(node).Symbol is not INamedTypeSymbol symbol)
             return;
 
         if (TryGetDictionaryKeySymbol(symbol, typeof(Dictionary<,>), context, out INamedTypeSymbol? keySymbol) is false
@@ -54,17 +54,14 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
 
         INamedTypeSymbol equatableSymbol = context.Compilation.GetTypeSymbol(typeof(IEquatable<>));
 
-        INamedTypeSymbol madeEquatableSymbol = equatableSymbol
-            .Construct(keySymbol.WithNullableAnnotation(NullableAnnotation.None));
-
         IEnumerable<INamedTypeSymbol> foundEquatableSymbols = keySymbol
             .FindAssignableTypesConstructedFrom(equatableSymbol);
 
         bool hasCorrectEquatableImplementation = foundEquatableSymbols
             .Select(x => x.TypeArguments.First())
-            .Any(x => madeEquatableSymbol.Equals(x, SymbolEqualityComparer.Default));
+            .Any(x => keySymbol.Equals(x, SymbolEqualityComparer.Default) || keySymbol.IsAssignableTo(x));
 
-        if (hasCorrectEquatableImplementation is false)
+        if (hasCorrectEquatableImplementation)
             return;
 
         var diag = Diagnostic.Create(Descriptor, node.GetLocation());
