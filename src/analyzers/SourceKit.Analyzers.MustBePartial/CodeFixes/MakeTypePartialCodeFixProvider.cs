@@ -39,7 +39,8 @@ public class MakeTypePartialCodeFixProvider : CodeFixProvider
             return;
 
         var action = CodeAction.Create(
-            Title,
+            title: Title,
+            priority: CodeActionPriority.High,
             equivalenceKey: nameof(Title),
             createChangedDocument: _ =>
             {

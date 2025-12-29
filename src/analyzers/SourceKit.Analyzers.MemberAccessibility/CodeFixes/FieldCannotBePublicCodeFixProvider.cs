@@ -37,13 +37,17 @@ public class FieldCannotBePublicCodeFixProvider : CodeFixProvider
         if (root?.FindNode(diagnostic.Location.SourceSpan) is not { Parent.Parent: FieldDeclarationSyntax fieldSyntax })
             return;
 
-        var action = CodeAction.Create(Title,
+        var action = CodeAction.Create(
+            title: Title,
+            priority: CodeActionPriority.High,
             equivalenceKey: nameof(FieldCannotBePublicCodeFixProvider),
             createChangedDocument: _ =>
             {
-                SyntaxToken privateModifier = fieldSyntax.Modifiers.First(x => x.Kind() is SyntaxKind.PublicKeyword);
+                SyntaxToken privateModifier = fieldSyntax.Modifiers.First(x => x.IsKind(SyntaxKind.PublicKeyword));
 
-                SyntaxTokenList fixedModifiers = fieldSyntax.Modifiers.Replace(privateModifier, Token(SyntaxKind.PrivateKeyword));
+                SyntaxTokenList fixedModifiers = fieldSyntax.Modifiers
+                    .Replace(privateModifier, Token(SyntaxKind.PrivateKeyword));
+
                 FieldDeclarationSyntax fixedSyntax = fieldSyntax.WithModifiers(fixedModifiers);
 
                 SyntaxNode newRoot = root.ReplaceNode(fieldSyntax, fixedSyntax);

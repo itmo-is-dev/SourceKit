@@ -36,18 +36,20 @@ public class FieldCannotHaveMultipleVariablesCodeFixProvider : CodeFixProvider
         if (root?.FindNode(diagnostic.Location.SourceSpan) is not FieldDeclarationSyntax fieldSyntax)
             return;
 
-        var action = CodeAction.Create(Title,
+        var action = CodeAction.Create(
+            title: Title,
+            priority: CodeActionPriority.High,
             equivalenceKey: nameof(FieldCannotHaveMultipleVariablesCodeFixProvider),
             createChangedDocument: _ =>
             {
                 IEnumerable<FieldDeclarationSyntax> fixedFields = fieldSyntax.Declaration.Variables.Select(x =>
                 {
-                    VariableDeclarationSyntax declaration = fieldSyntax.Declaration.WithVariables(
-                        SingletonSeparatedList(x));
+                    VariableDeclarationSyntax declaration = fieldSyntax.Declaration
+                        .WithVariables(SingletonSeparatedList(x));
 
                     return fieldSyntax.WithDeclaration(declaration);
                 });
-                
+
                 SyntaxNode newRoot = root.ReplaceNode(fieldSyntax, fixedFields);
 
                 Document document = context.Document.WithSyntaxRoot(newRoot);

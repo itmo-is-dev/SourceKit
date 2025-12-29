@@ -14,7 +14,8 @@ public class FieldCannotBePublicAnalyzer : DiagnosticAnalyzer
 
     public const string Format = """Field '{0} {1}' cannot be public""";
 
-    public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(DiagnosticId,
+    public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+        DiagnosticId,
         Title,
         Format,
         "Design",
@@ -28,16 +29,14 @@ public class FieldCannotBePublicAnalyzer : DiagnosticAnalyzer
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-
-        context.RegisterCompilationStartAction(compilationContext => compilationContext
-            .RegisterSyntaxNodeAction(AnalyzeField, SyntaxKind.FieldDeclaration));
+        context.RegisterSyntaxNodeAction(AnalyzeField, SyntaxKind.FieldDeclaration);
     }
 
     private void AnalyzeField(SyntaxNodeAnalysisContext context)
     {
         var fieldSyntax = (FieldDeclarationSyntax)context.Node;
 
-        if (fieldSyntax.Modifiers.All(x => x.Kind() is not SyntaxKind.PublicKeyword))
+        if (fieldSyntax.Modifiers.All(x => x.IsKind(SyntaxKind.PublicKeyword) is false))
         {
             return;
         }

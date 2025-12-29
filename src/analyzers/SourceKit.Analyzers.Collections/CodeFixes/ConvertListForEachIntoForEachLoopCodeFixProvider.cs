@@ -42,8 +42,9 @@ public class ConvertListForEachIntoForEachLoopCodeFixProvider : CodeFixProvider
 
         context.RegisterCodeFix(
             CodeAction.Create(
-                equivalenceKey: ListForEachNotAllowedAnalyzer.DiagnosticId,
                 title: Title,
+                priority: CodeActionPriority.High,
+                equivalenceKey: ListForEachNotAllowedAnalyzer.DiagnosticId,
                 createChangedDocument: cancellationToken =>
                     ConvertListForEachIntoLoop(context.Document, invocationExpression, cancellationToken)),
             diagnostic);

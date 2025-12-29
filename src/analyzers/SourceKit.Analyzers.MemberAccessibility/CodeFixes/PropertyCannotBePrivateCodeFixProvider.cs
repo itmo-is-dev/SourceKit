@@ -37,18 +37,22 @@ public class PropertyCannotBePrivateCodeFixProvider : CodeFixProvider
         if (root?.FindNode(diagnostic.Location.SourceSpan) is not PropertyDeclarationSyntax propertySyntax)
             return;
 
-        var action = CodeAction.Create(Title,
+        var action = CodeAction.Create(
+            title: Title,
+            priority: CodeActionPriority.High,
             equivalenceKey: nameof(PropertyCannotBePrivateCodeFixProvider),
             createChangedDocument: _ =>
             {
-                var privateModifier = propertySyntax.Modifiers.First(x => x.Kind() is SyntaxKind.PrivateKeyword);
+                SyntaxToken privateModifier = propertySyntax.Modifiers.First(x => x.IsKind(SyntaxKind.PrivateKeyword));
 
-                var fixedModifiers = propertySyntax.Modifiers.Replace(privateModifier, Token(SyntaxKind.PublicKeyword));
-                var fixedSyntax = propertySyntax.WithModifiers(fixedModifiers);
+                SyntaxTokenList fixedModifiers = propertySyntax.Modifiers
+                    .Replace(privateModifier, Token(SyntaxKind.PublicKeyword));
 
-                var newRoot = root.ReplaceNode(propertySyntax, fixedSyntax);
+                PropertyDeclarationSyntax fixedSyntax = propertySyntax.WithModifiers(fixedModifiers);
 
-                var document = context.Document.WithSyntaxRoot(newRoot);
+                SyntaxNode newRoot = root.ReplaceNode(propertySyntax, fixedSyntax);
+
+                Document document = context.Document.WithSyntaxRoot(newRoot);
 
                 return Task.FromResult(document);
             });

@@ -28,18 +28,14 @@ public class PropertyCannotBePrivateAnalyzer : DiagnosticAnalyzer
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-
-        context.RegisterCompilationStartAction(compilationContext =>
-        {
-            compilationContext.RegisterSyntaxNodeAction(AnalyzeProperty, SyntaxKind.PropertyDeclaration);
-        });
+        context.RegisterSyntaxNodeAction(AnalyzeProperty, SyntaxKind.PropertyDeclaration);
     }
 
     private void AnalyzeProperty(SyntaxNodeAnalysisContext context)
     {
         var propertySyntax = (PropertyDeclarationSyntax)context.Node;
 
-        if (propertySyntax.Modifiers.All(x => x.Kind() is not SyntaxKind.PrivateKeyword))
+        if (propertySyntax.Modifiers.All(x => x.IsKind(SyntaxKind.PrivateKeyword) is false))
         {
             return;
         }

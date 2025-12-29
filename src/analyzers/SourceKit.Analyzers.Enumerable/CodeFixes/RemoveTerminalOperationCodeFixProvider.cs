@@ -34,6 +34,7 @@ public class RemoveTerminalOperationCodeFixProvider : CodeFixProvider
 
         var codeFixAction = CodeAction.Create(
             title: title,
+            priority: CodeActionPriority.High,
             createChangedSolution: c => RemoveToList(context.Document, node, c),
             equivalenceKey: title);
         

@@ -28,11 +28,7 @@ public class FieldCannotHaveMultipleVariablesAnalyzer : DiagnosticAnalyzer
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-
-        context.RegisterCompilationStartAction(compilationContext =>
-        {
-            compilationContext.RegisterSyntaxNodeAction(AnalyzeField, SyntaxKind.FieldDeclaration);
-        });
+        context.RegisterSyntaxNodeAction(AnalyzeField, SyntaxKind.FieldDeclaration);
     }
 
     private void AnalyzeField(SyntaxNodeAnalysisContext context)
