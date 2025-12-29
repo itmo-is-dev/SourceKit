@@ -28,6 +28,7 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<BuilderSourceGenera
             using System.Collections.Generic;
             using System.Linq;
 
+            #nullable enable
             namespace SourceKit.Generators.Builder.Samples
             {
                 public partial record SomeQuery
@@ -39,39 +40,39 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<BuilderSourceGenera
 
                     public sealed partial class Builder
                     {
-                        private readonly List<System.Guid> _ids;
-                        private Int32 _count;
-                        private Nullable<System.Int32> _orderById;
+                        private readonly global::System.Collections.Generic.List<global::System.Guid> _ids;
+                        private int _count;
+                        private int? _orderById;
                         public Builder()
                         {
-                            _ids = new List<System.Guid>();
+                            _ids = new global::System.Collections.Generic.List<global::System.Guid>();
                             _count = default;
                             _orderById = default;
                         }
 
                         [InitializesPropertyAttribute(nameof(Ids))]
-                        public Builder WithId(Guid element)
+                        public Builder WithId(global::System.Guid element)
                         {
                             _ids.Add(element);
                             return this;
                         }
 
                         [InitializesPropertyAttribute(nameof(Ids))]
-                        public Builder WithIds(IEnumerable<System.Guid> elements)
+                        public Builder WithIds(global::System.Collections.Generic.IEnumerable<global::System.Guid> elements)
                         {
                             _ids.AddRange(elements);
                             return this;
                         }
 
                         [InitializesPropertyAttribute(nameof(Count))]
-                        public Builder WithCount(Int32 value)
+                        public Builder WithCount(int value)
                         {
                             _count = value;
                             return this;
                         }
 
                         [InitializesPropertyAttribute(nameof(OrderById))]
-                        public Builder WithOrderById(Nullable<System.Int32> value)
+                        public Builder WithOrderById(int? value)
                         {
                             _orderById = value;
                             return this;
@@ -114,6 +115,7 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<BuilderSourceGenera
             using System.Collections.Generic;
             using System.Linq;
 
+            #nullable enable
             namespace SourceKit.Generators.Builder.Samples
             {
                 public partial record ArrayQuery
@@ -125,21 +127,21 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<BuilderSourceGenera
 
                     public sealed partial class Builder
                     {
-                        private readonly List<System.Guid> _ids;
+                        private readonly global::System.Collections.Generic.List<global::System.Guid> _ids;
                         public Builder()
                         {
-                            _ids = new List<System.Guid>();
+                            _ids = new global::System.Collections.Generic.List<global::System.Guid>();
                         }
 
                         [InitializesPropertyAttribute(nameof(Ids))]
-                        public Builder WithId(Guid element)
+                        public Builder WithId(global::System.Guid element)
                         {
                             _ids.Add(element);
                             return this;
                         }
 
                         [InitializesPropertyAttribute(nameof(Ids))]
-                        public Builder WithIds(IEnumerable<System.Guid> elements)
+                        public Builder WithIds(global::System.Collections.Generic.IEnumerable<global::System.Guid> elements)
                         {
                             _ids.AddRange(elements);
                             return this;
@@ -182,6 +184,7 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<BuilderSourceGenera
             using System.Collections.Generic;
             using System.Linq;
 
+            #nullable enable
             namespace SourceKit.Generators.Builder.Samples
             {
                 public partial record ArrayQuery
@@ -193,21 +196,21 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<BuilderSourceGenera
 
                     public sealed partial class Builder
                     {
-                        private readonly List<System.Guid> _ids;
+                        private readonly global::System.Collections.Generic.List<global::System.Guid> _ids;
                         public Builder()
                         {
-                            _ids = new List<System.Guid>();
+                            _ids = new global::System.Collections.Generic.List<global::System.Guid>();
                         }
 
                         [InitializesPropertyAttribute(nameof(Ids))]
-                        public Builder WithId(Guid element)
+                        public Builder WithId(global::System.Guid element)
                         {
                             _ids.Add(element);
                             return this;
                         }
 
                         [InitializesPropertyAttribute(nameof(Ids))]
-                        public Builder WithIds(IEnumerable<System.Guid> elements)
+                        public Builder WithIds(global::System.Collections.Generic.IEnumerable<global::System.Guid> elements)
                         {
                             _ids.AddRange(elements);
                             return this;
@@ -251,34 +254,35 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<BuilderSourceGenera
             using System.Collections.Generic;
             using System.Linq;
             
+            #nullable enable
             namespace SourceKit.Generators.Builder.Samples.BuilderConstructorParameter
             {
                 public partial record IntegerConstructorParameterQuery
                 {
-                    public static IntegerConstructorParameterQuery Build(Nullable<System.Int32> Id, Func<Builder, Builder> action)
+                    public static IntegerConstructorParameterQuery Build(int? Id, Func<Builder, Builder> action)
                     {
                         return action(new Builder(Id)).Build();
                     }
             
                     public sealed partial class Builder
                     {
-                        private Nullable<System.Int32> _id;
-                        private String _value;
-                        public Builder(Nullable<System.Int32> Id)
+                        private int? _id;
+                        private string? _value;
+                        public Builder(int? Id)
                         {
                             _id = Id;
                             _value = string.Empty;
                         }
             
                         [InitializesPropertyAttribute(nameof(Id))]
-                        public Builder WithId(Nullable<System.Int32> value)
+                        public Builder WithId(int? value)
                         {
                             _id = value;
                             return this;
                         }
             
                         [InitializesPropertyAttribute(nameof(Value))]
-                        public Builder WithValue(String value)
+                        public Builder WithValue(string value)
                         {
                             _value = value;
                             return this;
@@ -286,7 +290,7 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<BuilderSourceGenera
             
                         public IntegerConstructorParameterQuery Build()
                         {
-                            return new IntegerConstructorParameterQuery(_id, _value);
+                            return new IntegerConstructorParameterQuery(_id, _value ?? throw new System.ArgumentNullException(nameof(_value)));
                         }
                     }
                 }
