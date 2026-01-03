@@ -7,12 +7,12 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace SourceKit.Analyzers.MemberAccessibility.Analyzers;
 
 [DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-public class PropertyCannotBePrivateAnalyzer : DiagnosticAnalyzer
+public class FieldCannotHaveMultipleVariablesAnalyzer : DiagnosticAnalyzer
 {
-    public const string DiagnosticId = "SK1100";
-    public const string Title = nameof(PropertyCannotBePrivateAnalyzer);
+    public const string DiagnosticId = "SK1102";
+    public const string Title = nameof(FieldCannotHaveMultipleVariablesAnalyzer);
 
-    public const string Format = """Property '{0} {1}' cannot be private""";
+    public const string Format = """Each field must have separate declaration""";
 
     public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(DiagnosticId,
         Title,
@@ -28,20 +28,20 @@ public class PropertyCannotBePrivateAnalyzer : DiagnosticAnalyzer
     {
         context.EnableConcurrentExecution();
         context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.RegisterSyntaxNodeAction(AnalyzeProperty, SyntaxKind.PropertyDeclaration);
+        context.RegisterSyntaxNodeAction(AnalyzeField, SyntaxKind.FieldDeclaration);
     }
 
-    private void AnalyzeProperty(SyntaxNodeAnalysisContext context)
+    private void AnalyzeField(SyntaxNodeAnalysisContext context)
     {
-        var propertySyntax = (PropertyDeclarationSyntax)context.Node;
+        var fieldSyntax = (FieldDeclarationSyntax)context.Node;
 
-        if (propertySyntax.Modifiers.All(x => x.IsKind(SyntaxKind.PrivateKeyword) is false))
+        if (fieldSyntax.Declaration.Variables.Count <= 1)
         {
             return;
         }
-        
-        Location location = propertySyntax.GetLocation();
-        var diagnostic = Diagnostic.Create(Descriptor, location, propertySyntax.Type,  propertySyntax.Identifier.Text);
+
+        Location location = fieldSyntax.GetLocation();
+        var diagnostic = Diagnostic.Create(Descriptor, location);
 
         context.ReportDiagnostic(diagnostic);
     }

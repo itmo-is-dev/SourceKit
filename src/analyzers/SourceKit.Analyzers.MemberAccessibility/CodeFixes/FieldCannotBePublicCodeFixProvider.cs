@@ -4,18 +4,18 @@ using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SourceKit.Analyzers.MustBePartial.Analyzers;
+using SourceKit.Analyzers.MemberAccessibility.Analyzers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace SourceKit.Analyzers.MustBePartial.CodeFixes;
+namespace SourceKit.Analyzers.MemberAccessibility.CodeFixes;
 
-[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MakeTypePartialCodeFixProvider))]
-public class MakeTypePartialCodeFixProvider : CodeFixProvider
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(FieldCannotBePublicCodeFixProvider))]
+public class FieldCannotBePublicCodeFixProvider : CodeFixProvider
 {
-    public const string Title = "Make type partial";
+    public const string Title = "Make field private";
 
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(TypeMustBePartialAnalyzer.DiagnosticId);
+        ImmutableArray.Create(FieldCannotBePublicAnalyzer.DiagnosticId);
 
     public override FixAllProvider GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;
@@ -25,7 +25,6 @@ public class MakeTypePartialCodeFixProvider : CodeFixProvider
         context.CancellationToken.ThrowIfCancellationRequested();
 
         IEnumerable<Task> derivativesMustBePartialDiagnostics = context.Diagnostics
-            .Where(x => x.Id.Equals(TypeMustBePartialAnalyzer.DiagnosticId))
             .Select(x => ProvideDerivativesMustBePartial(context, x));
 
         await Task.WhenAll(derivativesMustBePartialDiagnostics);
@@ -35,19 +34,25 @@ public class MakeTypePartialCodeFixProvider : CodeFixProvider
     {
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
 
-        if (root?.FindNode(diagnostic.Location.SourceSpan) is not TypeDeclarationSyntax syntax)
+        if (root?.FindNode(diagnostic.Location.SourceSpan) is not { Parent.Parent: FieldDeclarationSyntax fieldSyntax })
             return;
 
         var action = CodeAction.Create(
             title: Title,
             priority: CodeActionPriority.High,
-            equivalenceKey: nameof(Title),
+            equivalenceKey: nameof(FieldCannotBePublicCodeFixProvider),
             createChangedDocument: _ =>
             {
-                var newSyntax = syntax.AddModifiers(Token(SyntaxKind.PartialKeyword));
-                var newRoot = root.ReplaceNode(syntax, newSyntax);
+                SyntaxToken privateModifier = fieldSyntax.Modifiers.First(x => x.IsKind(SyntaxKind.PublicKeyword));
 
-                var document = context.Document.WithSyntaxRoot(newRoot);
+                SyntaxTokenList fixedModifiers = fieldSyntax.Modifiers
+                    .Replace(privateModifier, Token(SyntaxKind.PrivateKeyword));
+
+                FieldDeclarationSyntax fixedSyntax = fieldSyntax.WithModifiers(fixedModifiers);
+
+                SyntaxNode newRoot = root.ReplaceNode(fieldSyntax, fixedSyntax);
+
+                Document document = context.Document.WithSyntaxRoot(newRoot);
 
                 return Task.FromResult(document);
             });

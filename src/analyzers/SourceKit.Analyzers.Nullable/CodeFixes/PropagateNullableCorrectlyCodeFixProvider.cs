@@ -66,6 +66,7 @@ public class PropagateNullableCorrectlyCodeFixProvider : CodeFixProvider
         context.RegisterCodeFix(
             CodeAction.Create(
                 title: Title,
+                priority: CodeActionPriority.High,
                 createChangedDocument: c =>
                 {
                     var changedDocument = editor.GetChangedDocument();

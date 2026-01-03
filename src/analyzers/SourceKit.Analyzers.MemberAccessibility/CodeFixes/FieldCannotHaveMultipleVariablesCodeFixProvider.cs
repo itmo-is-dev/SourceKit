@@ -2,20 +2,19 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using SourceKit.Analyzers.MustBePartial.Analyzers;
+using SourceKit.Analyzers.MemberAccessibility.Analyzers;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
-namespace SourceKit.Analyzers.MustBePartial.CodeFixes;
+namespace SourceKit.Analyzers.MemberAccessibility.CodeFixes;
 
-[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(MakeTypePartialCodeFixProvider))]
-public class MakeTypePartialCodeFixProvider : CodeFixProvider
+[ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(PropertyCannotBePrivateCodeFixProvider))]
+public class FieldCannotHaveMultipleVariablesCodeFixProvider : CodeFixProvider
 {
-    public const string Title = "Make type partial";
+    public const string Title = "Separate field declarations";
 
     public override ImmutableArray<string> FixableDiagnosticIds { get; } =
-        ImmutableArray.Create(TypeMustBePartialAnalyzer.DiagnosticId);
+        ImmutableArray.Create(FieldCannotHaveMultipleVariablesAnalyzer.DiagnosticId);
 
     public override FixAllProvider GetFixAllProvider()
         => WellKnownFixAllProviders.BatchFixer;
@@ -25,7 +24,6 @@ public class MakeTypePartialCodeFixProvider : CodeFixProvider
         context.CancellationToken.ThrowIfCancellationRequested();
 
         IEnumerable<Task> derivativesMustBePartialDiagnostics = context.Diagnostics
-            .Where(x => x.Id.Equals(TypeMustBePartialAnalyzer.DiagnosticId))
             .Select(x => ProvideDerivativesMustBePartial(context, x));
 
         await Task.WhenAll(derivativesMustBePartialDiagnostics);
@@ -35,19 +33,26 @@ public class MakeTypePartialCodeFixProvider : CodeFixProvider
     {
         var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
 
-        if (root?.FindNode(diagnostic.Location.SourceSpan) is not TypeDeclarationSyntax syntax)
+        if (root?.FindNode(diagnostic.Location.SourceSpan) is not FieldDeclarationSyntax fieldSyntax)
             return;
 
         var action = CodeAction.Create(
             title: Title,
             priority: CodeActionPriority.High,
-            equivalenceKey: nameof(Title),
+            equivalenceKey: nameof(FieldCannotHaveMultipleVariablesCodeFixProvider),
             createChangedDocument: _ =>
             {
-                var newSyntax = syntax.AddModifiers(Token(SyntaxKind.PartialKeyword));
-                var newRoot = root.ReplaceNode(syntax, newSyntax);
+                IEnumerable<FieldDeclarationSyntax> fixedFields = fieldSyntax.Declaration.Variables.Select(x =>
+                {
+                    VariableDeclarationSyntax declaration = fieldSyntax.Declaration
+                        .WithVariables(SingletonSeparatedList(x));
 
-                var document = context.Document.WithSyntaxRoot(newRoot);
+                    return fieldSyntax.WithDeclaration(declaration);
+                });
+
+                SyntaxNode newRoot = root.ReplaceNode(fieldSyntax, fixedFields);
+
+                Document document = context.Document.WithSyntaxRoot(newRoot);
 
                 return Task.FromResult(document);
             });

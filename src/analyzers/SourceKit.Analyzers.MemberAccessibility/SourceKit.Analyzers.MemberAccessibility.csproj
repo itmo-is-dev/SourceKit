@@ -8,7 +8,7 @@
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        <SourceKitMovePackage>false</SourceKitMovePackage>
+        <SourceKitMovePackage>true</SourceKitMovePackage>
     </PropertyGroup>
 
     <PropertyGroup>

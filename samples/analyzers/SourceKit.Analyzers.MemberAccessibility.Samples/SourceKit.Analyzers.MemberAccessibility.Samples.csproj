@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>disable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SourceKit.Analyzers.MemberAccessibility"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="MultipleFieldsCase.Fixed.cs">
+        <DependentUpon>MultipleFieldsCase.cs</DependentUpon>
+      </Compile>
+      <Compile Update="PrivatePropertyCase.Fixed.cs">
+        <DependentUpon>PrivatePropertyCase.cs</DependentUpon>
+      </Compile>
+      <Compile Update="PublicFieldTestCase.Fixed.cs">
+        <DependentUpon>PublicFieldTestCase.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
+
+</Project>
