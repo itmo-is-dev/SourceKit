@@ -24,7 +24,7 @@ public class ProtoMessageAliasReceiver : ISyntaxContextReceiver
         if (symbolInfo is not INamedTypeSymbol symbol)
             return;
 
-        if (IsProtoClass(symbol) || IsProtoEnum(symbol))
+        if (IsProtoClass(symbol) is false && IsProtoEnum(symbol) is false)
             return;
 
         if (symbol.ContainingType is not null)
@@ -35,7 +35,7 @@ public class ProtoMessageAliasReceiver : ISyntaxContextReceiver
         bool IsProtoClass(INamedTypeSymbol type)
         {
             return type.TypeKind is TypeKind.Class
-                   && type.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default) is false;
+                   && type.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default);
         }
 
         bool IsProtoEnum(INamedTypeSymbol type)
