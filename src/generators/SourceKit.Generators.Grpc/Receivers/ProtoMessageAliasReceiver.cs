@@ -45,9 +45,16 @@ public class ProtoMessageAliasReceiver : ISyntaxContextReceiver
 
             return type
                 .GetMembers()
-                .All(member => member.GetAttributes()
-                    .Any(attr => attr
-                        .AttributeClass?.Equals(enumAttributeSymbol, SymbolEqualityComparer.Default) is true));
+                .OfType<IFieldSymbol>()
+                .All(member => member
+                    .GetAttributes()
+                    .Any(attr =>
+                    {
+                        if (attr.AttributeClass is null)
+                            return false;
+
+                        return attr.AttributeClass.Equals(enumAttributeSymbol, SymbolEqualityComparer.Default);
+                    }));
         }
     }
 }
