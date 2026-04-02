@@ -37,7 +37,7 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
 
     private static IEnumerable<ParameterSyntax> MapParameters(TypeBuildingCommand command)
     {
-        var repeatedFieldType = command.Context.Compilation
+        var repeatedFieldType = command.Compilation
             .GetTypeByMetadataName(Constants.ProtobufRepeatedFieldFullyQualifiedName);
 
         if (repeatedFieldType is null)
@@ -87,7 +87,7 @@ public class ConstructorTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
 
     private static IEnumerable<StatementSyntax> MapAssignments(TypeBuildingCommand command)
     {
-        var repeatedFieldType = command.Context.Compilation
+        var repeatedFieldType = command.Compilation
             .GetTypeByMetadataName(Constants.ProtobufRepeatedFieldFullyQualifiedName);
 
         if (repeatedFieldType is null)

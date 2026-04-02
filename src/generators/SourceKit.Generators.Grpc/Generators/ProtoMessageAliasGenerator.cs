@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
+using SourceKit.Generators.Grpc.Extensions;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Grpc.Generators;
@@ -13,7 +14,7 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         IncrementalValuesProvider<INamedTypeSymbol> allTypes = context.CompilationProvider
-            .SelectMany(static (compilation, ct) => EnumerateNestedTypesAndSelf(compilation.GlobalNamespace, ct));
+            .SelectMany(static (compilation, ct) => compilation.EnumerateAllAvailableTypes(ct));
 
         allTypes = allTypes
             .Where(type => type.ContainingNamespace.ToDisplayString().StartsWith("Google") is false);
@@ -84,36 +85,6 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
 
                 context.AddSource("SourceKit.Generators.Builder.ProtoAlias.cs", text);
             });
-    }
-
-    private static IEnumerable<INamedTypeSymbol> EnumerateNestedTypesAndSelf(
-        INamespaceOrTypeSymbol symbol,
-        CancellationToken cancellationToken)
-    {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        if (symbol is INamedTypeSymbol namedTypeSymbol)
-        {
-            return namedTypeSymbol
-                .GetTypeMembers()
-                .SelectMany(type => EnumerateNestedTypesAndSelf(type, cancellationToken))
-                .Prepend(namedTypeSymbol);
-        }
-
-        if (symbol is INamespaceSymbol namespaceSymbol)
-        {
-            IEnumerable<INamedTypeSymbol> directTypes = namespaceSymbol
-                .GetTypeMembers()
-                .SelectMany(type => EnumerateNestedTypesAndSelf(type, cancellationToken));
-
-            IEnumerable<INamedTypeSymbol> nestedNamespaceTypes = namespaceSymbol
-                .GetNamespaceMembers()
-                .SelectMany(ns => EnumerateNestedTypesAndSelf(ns, cancellationToken));
-
-            return directTypes.Concat(nestedNamespaceTypes);
-        }
-
-        return [];
     }
 
     private static UsingDirectiveSyntax GenerateAlias(INamedTypeSymbol symbol)

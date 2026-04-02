@@ -5,6 +5,6 @@ using SourceKit.Generators.Grpc.Models;
 namespace SourceKit.Generators.Grpc.Commands;
 
 public readonly record struct FileBuildingCommand(
-    GeneratorExecutionContext Context,
+    Compilation Compilation,
     CompilationUnitSyntax CompilationUnit,
     ProtoMessage Message);

@@ -30,8 +30,8 @@ public class TypeFileBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
         IdentifierNameSyntax namespaceIdentifier = IdentifierName(namespaceString);
         NamespaceDeclarationSyntax namespaceDeclaration = NamespaceDeclaration(namespaceIdentifier);
 
-        TypeDeclarationSyntax declaration = GenerateMessageType(request.Message, request.Context);
-        declaration = ProcessNestedTypes(declaration, request.Message, request.Context);
+        TypeDeclarationSyntax declaration = GenerateMessageType(request.Message, request.Compilation);
+        declaration = ProcessNestedTypes(declaration, request.Message, request.Compilation);
 
         namespaceDeclaration = namespaceDeclaration.AddMembers(declaration);
 
@@ -48,7 +48,7 @@ public class TypeFileBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
         return next(request, context);
     }
 
-    private TypeDeclarationSyntax GenerateMessageType(ProtoMessage message, GeneratorExecutionContext context)
+    private TypeDeclarationSyntax GenerateMessageType(ProtoMessage message, Compilation compilation)
     {
         SyntaxTokenList modifiers = TokenList
         (
@@ -58,15 +58,15 @@ public class TypeFileBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
         );
 
         TypeDeclarationSyntax nestedDeclaration = message.Type.ToSyntax().WithModifiers(modifiers);
-        var command = new TypeBuildingCommand(message, nestedDeclaration, context);
+        var command = new TypeBuildingCommand(message, nestedDeclaration, compilation);
 
         return _typeChain.Process(command);
     }
 
     private TypeDeclarationSyntax ProcessNestedTypes(
         TypeDeclarationSyntax declaration,
-        ProtoMessage message,
-        GeneratorExecutionContext context)
+        ProtoMessage message, 
+        Compilation compilation)
     {
         if (message.NestedMessages is [])
             return declaration;
@@ -79,8 +79,8 @@ public class TypeFileBuilder : ILink<FileBuildingCommand, CompilationUnitSyntax>
 
         foreach (ProtoMessage nestedMessage in message.NestedMessages)
         {
-            TypeDeclarationSyntax nestedDeclaration = GenerateMessageType(nestedMessage, context);
-            nestedDeclaration = ProcessNestedTypes(nestedDeclaration, nestedMessage, context);
+            TypeDeclarationSyntax nestedDeclaration = GenerateMessageType(nestedMessage, compilation);
+            nestedDeclaration = ProcessNestedTypes(nestedDeclaration, nestedMessage, compilation);
 
             typesDeclaration = typesDeclaration.AddMembers(nestedDeclaration);
         }

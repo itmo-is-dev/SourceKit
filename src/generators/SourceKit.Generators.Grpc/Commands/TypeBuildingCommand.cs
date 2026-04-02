@@ -6,5 +6,5 @@ namespace SourceKit.Generators.Grpc.Commands;
 
 public readonly record struct TypeBuildingCommand(
     ProtoMessage Message,
-    TypeDeclarationSyntax Syntax,
-    GeneratorExecutionContext Context);
+    TypeDeclarationSyntax Syntax, 
+    Compilation Compilation);
