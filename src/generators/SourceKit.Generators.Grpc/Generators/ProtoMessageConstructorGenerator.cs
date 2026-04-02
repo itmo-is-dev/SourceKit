@@ -61,7 +61,8 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
         IncrementalValuesProvider<INamedTypeSymbol> assemblyTypes = context.CompilationProvider
             .SelectMany(static (compilation, ct) => compilation
                 .EnumerateAllAvailableTypes(ct)
-                .Where(type => type.ContainingAssembly.Equals(compilation.Assembly, SymbolEqualityComparer.Default)));
+                .Where(type => type.ContainingAssembly.Equals(compilation.Assembly, SymbolEqualityComparer.Default))
+                .Where(type => type.ContainingType is null));
 
         IncrementalValueProvider<INamedTypeSymbol?> messageInterfaceSymbol = context.CompilationProvider
             .Select(static (compilation, _) => compilation
