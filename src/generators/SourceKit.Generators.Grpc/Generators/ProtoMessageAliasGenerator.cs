@@ -14,10 +14,8 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         IncrementalValuesProvider<INamedTypeSymbol> allTypes = context.CompilationProvider
-            .SelectMany(static (compilation, ct) => compilation.EnumerateAllAvailableTypes(ct));
-
-        allTypes = allTypes
-            .Where(type => type.ContainingNamespace.ToDisplayString().StartsWith("Google") is false);
+            .SelectMany(static (compilation, ct) => compilation.EnumerateAllAvailableTypes(ct))
+            .Where(IsApplicableType);
 
         IncrementalValueProvider<INamedTypeSymbol?> messageInterfaceSymbol = context.CompilationProvider
             .Select(static (compilation, _) => compilation.GetTypeByMetadataName(
@@ -83,7 +81,7 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
                 {text}
                 """;
 
-                context.AddSource("SourceKit.Generators.Builder.ProtoAlias.cs", text);
+                context.AddSource("SourceKit.Generators.Grpc.ProtoAlias.cs", text);
             });
     }
 
@@ -92,5 +90,16 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
         return UsingDirective(IdentifierName(symbol.GetFullyQualifiedName()))
             .WithGlobalKeyword(Token(SyntaxKind.GlobalKeyword))
             .WithAlias(NameEquals(IdentifierName($"Proto{symbol.Name}")));
+    }
+
+    private static bool IsApplicableType(INamedTypeSymbol type)
+    {
+        if (type.DeclaredAccessibility is not Accessibility.Public)
+            return false;
+
+        if (type.ContainingNamespace.ToDisplayString().StartsWith("Google"))
+            return false;
+
+        return true;
     }
 }

@@ -26,7 +26,7 @@
     <PropertyGroup>
         <Version>1.0.$(PatchVersion)</Version>
         <PackageReleaseNotes>
-            Fixed nested type constructor generation
+            Fixed alias generation for non-public types
         </PackageReleaseNotes>
     </PropertyGroup>
 
