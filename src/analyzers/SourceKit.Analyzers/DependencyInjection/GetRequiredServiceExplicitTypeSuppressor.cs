@@ -31,7 +31,7 @@ public sealed class GetRequiredServiceExplicitTypeSuppressor : DiagnosticSuppres
             if (node is not IdentifierNameSyntax identifier)
                 continue;
 
-            if (identifier.Identifier.IsKind(SyntaxKind.VarKeyword) is false)
+            if (identifier.Identifier.ValueText != "var")
                 continue;
 
             if (identifier.Parent is not VariableDeclarationSyntax variableDeclaration)
