@@ -1,20 +1,18 @@
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace SourceKit.Analyzers.Nullable;
 
-[DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class NullableDisableNotAllowedAnalyzer : DiagnosticAnalyzer
+[Generator]
+public class NullableDisableNotAllowedAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1201";
     public const string Title = nameof(NullableDisableNotAllowedAnalyzer);
 
     public const string Format = """#nullable disable is not allowed""";
 
-    public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
         Title,
         Format,
@@ -22,24 +20,22 @@ public class NullableDisableNotAllowedAnalyzer : DiagnosticAnalyzer
         DiagnosticSeverity.Error,
         true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(Descriptor);
-
-    public override void Initialize(AnalysisContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.RegisterSyntaxNodeAction(AnalyzeNullableDirectiveTrivia, SyntaxKind.NullableDirectiveTrivia);
-    }
-    
-    private static void AnalyzeNullableDirectiveTrivia(SyntaxNodeAnalysisContext context)
-    {
-        var nullableDirectiveTrivia = (NullableDirectiveTriviaSyntax)context.Node;
+        var syntaxProvider = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) => node is CompilationUnitSyntax,
+                static (context, _) => (CompilationUnitSyntax)context.Node)
+            .SelectMany((node, _) => node.DescendantTrivia())
+            .Where(static node => node.IsKind(SyntaxKind.NullableDirectiveTrivia))
+            .Where(static node => (node.GetStructure() as NullableDirectiveTriviaSyntax)!.SettingToken.IsKind(SyntaxKind.DisableKeyword));
 
-        if (nullableDirectiveTrivia.SettingToken.IsKind(SyntaxKind.DisableKeyword))
-        {
-            var diagnostic = Diagnostic.Create(Descriptor, nullableDirectiveTrivia.GetLocation());
-            context.ReportDiagnostic(diagnostic);
-        }
+        context.RegisterSourceOutput(
+            syntaxProvider,
+            static (context, node) =>
+            {
+                var diagnostic = Diagnostic.Create(Descriptor, node.GetLocation());
+                context.ReportDiagnostic(diagnostic);
+            });
     }
 }

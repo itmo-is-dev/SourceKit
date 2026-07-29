@@ -35,6 +35,24 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="Models\IncrementalValueProviderWrapper.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>IncrementalValueProviderWrapper.cs</LastGenOutput>
+        </None>
+        <Compile Update="Models\IncrementalValueProviderWrapper.cs" AutoGen="True" DesignTime="True">
+          <DependentUpon>IncrementalValueProviderWrapper.tt</DependentUpon>
+        </Compile>
+
+        <None Update="Extensions\ValueProviderExtensions.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>ValueProviderExtensions.cs</LastGenOutput>
+        </None>
+        <Compile Update="Extensions\ValueProviderExtensions.cs" AutoGen="True" DesignTime="True">
+          <DependentUpon>ValueProviderExtensions.tt</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
@@ -44,6 +62,5 @@
     <ItemGroup>
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
-
 
 </Project>

@@ -17,7 +17,7 @@ public class FieldBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, TypeDec
         LinkDelegate<BuilderTypeBuildingCommand, SynchronousContext, TypeDeclarationSyntax> next)
     {
         MemberDeclarationSyntax[] fields = request.Properties
-            .Select(x => ResolveDeclaration(x, request.Context.Compilation))
+            .Select(x => ResolveDeclaration(x, request.Compilation))
             .WhereNotNull()
             .ToArray();
 

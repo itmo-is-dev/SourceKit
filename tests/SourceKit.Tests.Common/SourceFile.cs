@@ -16,5 +16,5 @@ public readonly record struct SourceFile(string Name, string Content, Encoding? 
     }
 
     public static implicit operator (string, SourceText)(SourceFile sourceFile)
-        => (sourceFile.Name, SourceText.From(sourceFile.Content, sourceFile.Encoding ?? Encoding.UTF8));
+        => (sourceFile.Name, SourceText.From(sourceFile.Content, sourceFile.Encoding ?? Encoding.Default));
 }

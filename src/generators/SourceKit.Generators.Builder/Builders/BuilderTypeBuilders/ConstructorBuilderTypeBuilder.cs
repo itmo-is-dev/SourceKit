@@ -74,10 +74,10 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
         return request.Properties.Select(p => p switch
         {
             BuilderProperty.Collection collection
-                => ResolveEnumerableStatement(collection, request.Context.Compilation),
+                => ResolveEnumerableStatement(collection, request.Compilation),
 
             BuilderProperty.Value value
-                => ResolveValueStatement(value, request.Context.Compilation),
+                => ResolveValueStatement(value, request.Compilation),
 
             _ => throw new ArgumentOutOfRangeException(nameof(p)),
         });

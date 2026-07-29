@@ -5,7 +5,7 @@ using SourceKit.Generators.Builder.Models;
 namespace SourceKit.Generators.Builder.Commands;
 
 public record struct FileBuildingCommand(
-    GeneratorExecutionContext Context,
+    Compilation Compilation,
     CompilationUnitSyntax CompilationUnit,
     INamedTypeSymbol Symbol,
     IReadOnlyCollection<BuilderProperty> Properties);

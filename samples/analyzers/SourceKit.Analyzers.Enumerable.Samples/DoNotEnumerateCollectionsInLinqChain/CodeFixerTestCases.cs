@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+namespace SourceKit.Analyzers.Enumerable.Samples.DoNotEnumerateCollectionsInLinqChain;
+
 class CodeFixerTestCases
 {
     private class Comparer<T> : IEqualityComparer<T>
@@ -31,6 +33,6 @@ class CodeFixerTestCases
 
     static IEnumerable<int> GetItems()
     {
-        return Enumerable.Range(1, 10);
+        return System.Linq.Enumerable.Range(1, 10);
     }
 }

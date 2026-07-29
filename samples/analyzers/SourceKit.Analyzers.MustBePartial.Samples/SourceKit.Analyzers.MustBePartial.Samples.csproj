@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="SourceKit.Analyzers.MustBePartial"/>
+        <PackageReference Include="SourceKit.Analyzers"/>
     </ItemGroup>
 
 </Project>

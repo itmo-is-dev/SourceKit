@@ -1,17 +1,18 @@
 using System.Reflection;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
-using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
+using SourceKit.Tests.Common.Tools;
 
 namespace SourceKit.Tests.Common.TestBases;
 
-public abstract class CodeFixTestBase<TAnalyzer, TCodeFixProvider> : AnalyzerTestBase<TAnalyzer>
-    where TAnalyzer : DiagnosticAnalyzer, new()
+public abstract class CodeFixTestBase<TGenerator, TCodeFixProvider>
+    where TGenerator : IIncrementalGenerator, new()
     where TCodeFixProvider : CodeFixProvider, new()
 {
     protected CodeFixTestBuilder CodeFixTest => new();
+
+    protected DiagnosticResult Diagnostic(DiagnosticDescriptor descriptor) => new(descriptor);
 
     protected sealed class CodeFixTestBuilder
     {
@@ -58,9 +59,9 @@ public abstract class CodeFixTestBase<TAnalyzer, TCodeFixProvider> : AnalyzerTes
             return this;
         }
 
-        public CSharpCodeFixTest<TAnalyzer, TCodeFixProvider, XUnitVerifier> Build()
+        public CodeFixTest<DefaultVerifier> Build()
         {
-            var test = new CSharpCodeFixTest<TAnalyzer, TCodeFixProvider, XUnitVerifier>();
+            var test = new SourceGeneratorCodeFixTest<TGenerator, TCodeFixProvider>();
 
             foreach (SourceFile source in _sources)
                 test.TestState.Sources.Add(source);

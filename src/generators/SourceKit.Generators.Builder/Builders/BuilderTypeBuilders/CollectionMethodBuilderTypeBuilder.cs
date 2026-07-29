@@ -32,7 +32,7 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         IEnumerable<BuilderProperty.Collection> collectionProperties = request.Properties
             .OfType<BuilderProperty.Collection>();
 
-        INamedTypeSymbol genericEnumerableType = request.Context.Compilation.GetTypeSymbol(typeof(IEnumerable<>));
+        INamedTypeSymbol genericEnumerableType = request.Compilation.GetTypeSymbol(typeof(IEnumerable<>));
 
         foreach (BuilderProperty.Collection property in collectionProperties)
         {

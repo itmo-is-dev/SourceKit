@@ -3,6 +3,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+        <NoWarn>$(NoWarn);RS1038;</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -51,6 +52,9 @@
         <PackageReference Include="FluentChaining" GeneratePathProperty="true">
             <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" GeneratePathProperty="true">
+            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
+        </PackageReference>
 
         <PackageReference Include="Humanizer.Core" GeneratePathProperty="true">
             <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
@@ -82,6 +86,7 @@
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
 
         <None Include="$(PkgFluentChaining)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
+        <None Include="$(PkgMicrosoft_Bcl_AsyncInterfaces)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(PkgHumanizer_Core)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(PkgHumanizer_Core_uk)\lib\netstandard2.0\uk\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
 

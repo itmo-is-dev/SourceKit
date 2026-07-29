@@ -1,20 +1,19 @@
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Operations;
 using SourceKit.Extensions;
 
 namespace SourceKit.Analyzers.Enumerable;
 
-[DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class OfTypeMustUseDerivedTypeAnalyzer : DiagnosticAnalyzer
+[Generator]
+public class OfTypeMustUseDerivedTypeAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1300";
     public const string Title = nameof(OfTypeMustUseDerivedTypeAnalyzer);
 
     public const string Format = """Type {0} is not derived from type {1}""";
 
-    public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
         Title,
         Format,
@@ -22,62 +21,68 @@ public class OfTypeMustUseDerivedTypeAnalyzer : DiagnosticAnalyzer
         DiagnosticSeverity.Error,
         true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(Descriptor);
-
-    public override void Initialize(AnalysisContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.RegisterOperationAction(HandleOperation, OperationKind.Invocation);
-    }
+        var syntaxProvider = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) => node is InvocationExpressionSyntax,
+                static (InvocationExpressionSyntax, ITypeSymbol, ITypeSymbol)? (context, _) =>
+                {
+                    var operation = (IInvocationOperation)context.SemanticModel.GetOperation(context.Node)!;
 
-    private void HandleOperation(OperationAnalysisContext context)
-    {
-        var operation = (IInvocationOperation)context.Operation;
+                    if (operation.TargetMethod.Name is not "OfType")
+                        return null;
 
-        if (operation.TargetMethod.Name is not "OfType")
-            return;
+                    var enumerableStaticSymbol = context.SemanticModel.Compilation.GetTypeSymbol(typeof(System.Linq.Enumerable));
+                    var containingType = operation.TargetMethod.ContainingType;
 
-        var enumerableStaticSymbol = context.Compilation.GetTypeSymbol(typeof(System.Linq.Enumerable));
-        var containingType = operation.TargetMethod.ContainingType;
+                    if (containingType.Equals(enumerableStaticSymbol, SymbolEqualityComparer.Default) is false)
+                        return null;
 
-        if (containingType.Equals(enumerableStaticSymbol, SymbolEqualityComparer.Default) is false)
-            return;
+                    var argument = operation.Arguments.Single();
 
-        var argument = operation.Arguments.Single();
+                    var value = argument.Value is IConversionOperation conversion
+                        ? conversion.Operand
+                        : argument.Value;
 
-        var value = argument.Value is IConversionOperation conversion
-            ? conversion.Operand
-            : argument.Value;
+                    if (value.Type is not INamedTypeSymbol namedSourceType
+                        || operation.Type is not INamedTypeSymbol namedReturnType)
+                    {
+                        return null;
+                    }
 
-        if (value.Type is not INamedTypeSymbol namedSourceType
-            || operation.Type is not INamedTypeSymbol namedReturnType)
-        {
-            return;
-        }
+                    var sourceElementType = namedSourceType.TypeArguments.SingleOrDefault();
+                    var returnElementType = namedReturnType.TypeArguments.Single();
 
-        var sourceElementType = namedSourceType.TypeArguments.SingleOrDefault();
-        var returnElementType = namedReturnType.TypeArguments.Single();
+                    if (sourceElementType is null)
+                        return null;
 
-        if (sourceElementType is null)
-            return;
+                    if (returnElementType.IsAssignableTo(sourceElementType))
+                        return null;
 
-        if (returnElementType.IsAssignableTo(sourceElementType))
-            return;
+                    if (sourceElementType is ITypeParameterSymbol parameterSymbol &&
+                        parameterSymbol.ConstraintTypes.Any(c => returnElementType.IsAssignableTo(c)))
+                    {
+                        return null;
+                    }
 
-        if (sourceElementType is ITypeParameterSymbol parameterSymbol &&
-            parameterSymbol.ConstraintTypes.Any(c => returnElementType.IsAssignableTo(c)))
-        {
-            return;
-        }
+                    return ((InvocationExpressionSyntax)context.Node, returnElementType, sourceElementType);
+                })
+            .Where(node => node is not null);
 
-        var diagnostic = Diagnostic.Create(
-            Descriptor,
-            operation.Syntax.GetLocation(),
-            returnElementType.Name,
-            sourceElementType.Name);
+        context.RegisterSourceOutput(
+            syntaxProvider,
+            static (context, tuple) =>
+            {
+                var (node, returnElementType, sourceElementType) = tuple!.Value;
 
-        context.ReportDiagnostic(diagnostic);
+                var diagnostic = Diagnostic.Create(
+                    Descriptor,
+                    node.GetLocation(),
+                    returnElementType.Name,
+                    sourceElementType.Name);
+
+                context.ReportDiagnostic(diagnostic);
+            });
     }
 }

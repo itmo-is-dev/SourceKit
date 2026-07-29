@@ -1,4 +1,4 @@
-﻿namespace SourceKit.Sample.Analyzers.NullForgivingOperatorNotAllowed;
+﻿namespace SourceKit.Analyzers.Nullable.Samples.NullForgivingOperatorNotAllowed;
 
 public class JokeExample
 {

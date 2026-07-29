@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SourceKit.Sample.Analyzers.Enumerable;
+namespace SourceKit.Analyzers.Enumerable.Samples.OfTypeMustUseDerivedType;
 
 public class OfTypeSample
 {

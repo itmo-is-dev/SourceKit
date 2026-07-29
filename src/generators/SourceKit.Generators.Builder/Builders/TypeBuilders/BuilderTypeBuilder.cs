@@ -32,7 +32,7 @@ public class BuilderTypeBuilder : ILink<TypeBuildingCommand, TypeDeclarationSynt
             request.Symbol,
             builderDeclaration,
             request.Properties,
-            request.Context);
+            request.Compilation);
 
         builderDeclaration = _chain.Process(command);
 

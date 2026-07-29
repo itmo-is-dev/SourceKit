@@ -1,13 +1,9 @@
-using System.Collections.Immutable;
 using System.Reflection;
-using System.Runtime;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
-using Microsoft.CodeAnalysis.CSharp.Testing.XUnit;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Microsoft.CodeAnalysis.Text;
 
 namespace SourceKit.Tests.Common.TestBases;
@@ -23,7 +19,7 @@ public abstract class AnalyzerTestBase<TAnalyzer>
     {
         public DiagnosticResult Diagnostic(DiagnosticDescriptor descriptor)
         {
-            return AnalyzerVerifier<TAnalyzer>.Diagnostic(descriptor);
+            return CSharpAnalyzerVerifier<TAnalyzer, DefaultVerifier>.Diagnostic(descriptor);
         }
     }
 
@@ -32,7 +28,7 @@ public abstract class AnalyzerTestBase<TAnalyzer>
         private readonly List<SourceFile> _sources = [];
         private readonly List<Assembly> _additionalReferences = [];
         private readonly List<DiagnosticResult> _expectedDiagnostics = [];
-        private readonly List<ISourceGenerator> _sourceGenerators = [];
+        private readonly List<IIncrementalGenerator> _sourceGenerators = [];
         private readonly ReferenceAssemblies _referenceAssemblies = ReferenceAssemblies.Net.Net60;
 
         public AnalyzerTestBuilder WithSource(SourceFile file)
@@ -53,15 +49,15 @@ public abstract class AnalyzerTestBase<TAnalyzer>
             return this;
         }
 
-        public AnalyzerTestBuilder WithSourceGenerator(ISourceGenerator generator)
+        public AnalyzerTestBuilder WithSourceGenerator(IIncrementalGenerator generator)
         {
             _sourceGenerators.Add(generator);
             return this;
         }
 
-        public CSharpAnalyzerTest<TAnalyzer, XUnitVerifier> Build()
+        public CSharpAnalyzerTest<TAnalyzer, DefaultVerifier> Build()
         {
-            var test = new CSharpAnalyzerTest<TAnalyzer, XUnitVerifier>
+            var test = new CSharpAnalyzerTest<TAnalyzer, DefaultVerifier>
             {
                 ReferenceAssemblies = _referenceAssemblies,
             };
@@ -80,7 +76,7 @@ public abstract class AnalyzerTestBase<TAnalyzer>
             return test;
         }
 
-        private void AddGeneratedSources(CSharpAnalyzerTest<TAnalyzer, XUnitVerifier> test)
+        private void AddGeneratedSources(CSharpAnalyzerTest<TAnalyzer, DefaultVerifier> test)
         {
             if (_sourceGenerators is [])
                 return;
@@ -124,7 +120,7 @@ public abstract class AnalyzerTestBase<TAnalyzer>
             if (compilation is null)
                 throw new InvalidOperationException("Failed to get compilation");
 
-            GeneratorDriver driver = CSharpGeneratorDriver.Create(_sourceGenerators);
+            GeneratorDriver driver = CSharpGeneratorDriver.Create(_sourceGenerators.ToArray());
 
             driver = driver.RunGeneratorsAndUpdateCompilation(
                 compilation,

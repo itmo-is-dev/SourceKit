@@ -8,4 +8,4 @@ public record struct BuilderTypeBuildingCommand(
     INamedTypeSymbol TypeSymbol,
     TypeDeclarationSyntax BuilderSyntax,
     IReadOnlyCollection<BuilderProperty> Properties,
-    GeneratorExecutionContext Context);
+    Compilation Compilation);

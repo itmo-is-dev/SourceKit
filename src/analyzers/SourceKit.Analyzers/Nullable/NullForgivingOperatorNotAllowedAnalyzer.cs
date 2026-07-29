@@ -1,20 +1,18 @@
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace SourceKit.Analyzers.Nullable;
 
-[DiagnosticAnalyzer(LanguageNames.CSharp, LanguageNames.VisualBasic)]
-public class NullForgivingOperatorNotAllowedAnalyzer : DiagnosticAnalyzer
+[Generator]
+public class NullForgivingOperatorNotAllowedAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1200";
     public const string Title = nameof(NullForgivingOperatorNotAllowedAnalyzer);
 
     public const string Format = """Null forgiving operator is not allowed""";
 
-    public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
         Title,
         Format,
@@ -22,27 +20,15 @@ public class NullForgivingOperatorNotAllowedAnalyzer : DiagnosticAnalyzer
         DiagnosticSeverity.Error,
         true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(Descriptor);
-
-    public override void Initialize(AnalysisContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.RegisterSyntaxNodeAction(AnalyseNullForgivingOperator, SyntaxKind.SuppressNullableWarningExpression);
-    }
+        var syntaxProvider = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) => node is PostfixUnaryExpressionSyntax syntax && syntax.Ancestors().Any(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression)) is false,
+                static (context, _) => (PostfixUnaryExpressionSyntax)context.Node);
 
-    private static void AnalyseNullForgivingOperator(SyntaxNodeAnalysisContext context)
-    {
-        var suppressionOperator = (PostfixUnaryExpressionSyntax)context.Node;
-
-        if (suppressionOperator.Ancestors().Any(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression)))
-        {
-            return;
-        }
-
-        var diagnostic = Diagnostic.Create(Descriptor, suppressionOperator.GetLocation(), suppressionOperator);
-
-        context.ReportDiagnostic(diagnostic);
+        context.RegisterSourceOutput(
+            syntaxProvider,
+            static (context, node) => { context.ReportDiagnostic(Diagnostic.Create(Descriptor, node.GetLocation(), node)); });
     }
 }

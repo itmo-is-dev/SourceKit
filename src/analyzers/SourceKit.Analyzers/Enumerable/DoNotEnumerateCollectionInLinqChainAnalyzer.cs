@@ -1,14 +1,13 @@
 using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
 using SourceKit.Extensions;
 
 namespace SourceKit.Analyzers.Enumerable;
 
-[DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class DoNotEnumerateCollectionInLinqChainAnalyzer : DiagnosticAnalyzer
+[Generator]
+public class DoNotEnumerateCollectionInLinqChainAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1301";
     public const string Title = nameof(DoNotEnumerateCollectionInLinqChainAnalyzer);
@@ -31,7 +30,7 @@ public class DoNotEnumerateCollectionInLinqChainAnalyzer : DiagnosticAnalyzer
         nameof(ImmutableSortedSet.ToImmutableSortedSet),
     };
 
-    public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
         Title,
         Format,
@@ -39,63 +38,52 @@ public class DoNotEnumerateCollectionInLinqChainAnalyzer : DiagnosticAnalyzer
         DiagnosticSeverity.Error,
         true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(Descriptor);
-
-    public override void Initialize(AnalysisContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.RegisterSyntaxNodeAction(RegisterDiagnostic, SyntaxKind.InvocationExpression);
+        IncrementalValueProvider<INamedTypeSymbol> enumerableTypeProvider = context.CompilationProvider
+            .Select(static compilation => compilation.GetTypeSymbol(typeof(System.Linq.Enumerable)));
+
+        var syntaxProvider = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) =>
+                    node is InvocationExpressionSyntax
+                    {
+                        Expression: MemberAccessExpressionSyntax
+                        {
+                            Expression: InvocationExpressionSyntax
+                            {
+                                Expression: MemberAccessExpressionSyntax terminalMemberAccess,
+                            },
+                        },
+                    }
+                    && TerminationMethods.Contains(terminalMemberAccess.Name.Identifier.Text),
+                static (context, _) => ((InvocationExpressionSyntax)context.Node, context.SemanticModel))
+            .Combine(enumerableTypeProvider)
+            .WithComparer(static (invocation, _, _) => invocation)
+            .Select(static (invocation, semanticModel, enumerableType) =>
+            {
+                if (semanticModel.GetOperation(invocation) is not IInvocationOperation operation
+                    || operation.TargetMethod.ContainingType.Equals(enumerableType, SymbolEqualityComparer.Default) is false)
+                {
+                    return IncrementalResult.Skip;
+                }
+
+                return IncrementalResult.Success(invocation);
+            })
+            .Unwrap(context);
+
+        context.RegisterSourceOutput(
+            syntaxProvider,
+            static (context, node) =>
+            {
+                var latterMemberAccess = (MemberAccessExpressionSyntax)node!.Expression;
+                var terminalInvocation = (InvocationExpressionSyntax)latterMemberAccess.Expression;
+                var terminalMemberAccess = (MemberAccessExpressionSyntax)terminalInvocation.Expression;
+
+                context.ReportDiagnostic(Diagnostic.Create(
+                    Descriptor,
+                    terminalMemberAccess.Name.GetLocation(),
+                    terminalMemberAccess.Name));
+            });
     }
-
-    private static void RegisterDiagnostic(SyntaxNodeAnalysisContext context)
-    {
-        SemanticModel semanticModel = context.SemanticModel;
-
-        if (context.Node is not InvocationExpressionSyntax node || IsTerminationMethod(node, semanticModel) is false)
-            return;
-
-        bool hasLinqAncestor = node.Ancestors()
-            .OfType<MemberAccessExpressionSyntax>()
-            .Any(expressionSyntax => IsLinqEnumerable(expressionSyntax, semanticModel));
-
-        if (hasLinqAncestor is false)
-            return;
-
-        ExpressionSyntax terminalOperationExpression = node.Expression;
-        SyntaxToken terminalOperationWithoutParamsToken = terminalOperationExpression.GetLastToken();
-
-        context.ReportDiagnostic(
-            Diagnostic.Create(
-                Descriptor,
-                terminalOperationWithoutParamsToken.GetLocation(),
-                terminalOperationWithoutParamsToken));
-    }
-
-    private static bool IsLinqEnumerable(ExpressionSyntax syntax, SemanticModel model)
-    {
-        IMethodSymbol? symbol = GetSymbol(syntax, model);
-        return IsLinqEnumerable(symbol, model);
-    }
-
-    private static bool IsLinqEnumerable(ISymbol? symbol, SemanticModel model)
-    {
-        Type linqEnumerableType = typeof(System.Linq.Enumerable);
-        INamedTypeSymbol linqSymbol = model.Compilation.GetTypeSymbol(linqEnumerableType);
-        var comparer = SymbolEqualityComparer.Default;
-
-        return comparer.Equals(symbol?.ContainingType, linqSymbol);
-    }
-
-    private static bool IsTerminationMethod(InvocationExpressionSyntax syntax, SemanticModel model)
-    {
-        ExpressionSyntax expression = syntax.Expression;
-        SyntaxToken method = expression.GetLastToken();
-
-        return TerminationMethods.Contains(method.ToString()) && IsLinqEnumerable(syntax, model);
-    }
-
-    private static IMethodSymbol? GetSymbol(ExpressionSyntax syntax, SemanticModel model)
-        => model.GetSymbolInfo(syntax).Symbol as IMethodSymbol;
 }

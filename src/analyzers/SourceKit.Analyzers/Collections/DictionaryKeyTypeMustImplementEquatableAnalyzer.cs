@@ -1,21 +1,19 @@
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
 using SourceKit.Extensions;
 
 namespace SourceKit.Analyzers.Collections;
 
-[DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyzer
+[Generator]
+public class DictionaryKeyTypeMustImplementEquatableAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1500";
     public const string Title = nameof(DictionaryKeyTypeMustImplementEquatableAnalyzer);
 
     public const string Format = """Type argument for TKey must implement IEquatable""";
 
-    public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
         Title,
         Format,
@@ -23,58 +21,64 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : DiagnosticAnalyze
         DiagnosticSeverity.Error,
         true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = [Descriptor];
-
-    public override void Initialize(AnalysisContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.RegisterSyntaxNodeAction(AnalyzeGeneric, SyntaxKind.GenericName);
-    }
+        IncrementalValuesProvider<GenericNameSyntax> syntaxProvider = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) => node is GenericNameSyntax,
+                static (context, _) => ((GenericNameSyntax)context.Node, context.SemanticModel))
+            .WithComparer(static (node, _) => node.Identifier)
+            .Select(static (node, semanticModel) =>
+            {
+                if (semanticModel.GetSymbolInfo(node).Symbol is not INamedTypeSymbol symbol)
+                    return IncrementalResult.Skip;
 
-    private void AnalyzeGeneric(SyntaxNodeAnalysisContext context)
-    {
-        var node = (GenericNameSyntax)context.Node;
+                if (TryGetDictionaryKeySymbol(symbol, typeof(Dictionary<,>), semanticModel, out INamedTypeSymbol? keySymbol) is false
+                    & TryGetDictionaryKeySymbol(symbol, typeof(IReadOnlyDictionary<,>), semanticModel, out keySymbol) is false
+                    & TryGetDictionaryKeySymbol(symbol, typeof(IDictionary<,>), semanticModel, out keySymbol) is false)
+                {
+                    return IncrementalResult.Skip;
+                }
 
-        if (context.SemanticModel.GetSymbolInfo(node).Symbol is not INamedTypeSymbol symbol)
-            return;
+                if (keySymbol is null || keySymbol.MetadataName is "TKey")
+                    return IncrementalResult.Skip;
 
-        if (TryGetDictionaryKeySymbol(symbol, typeof(Dictionary<,>), context, out INamedTypeSymbol? keySymbol) is false
-            & TryGetDictionaryKeySymbol(symbol, typeof(IReadOnlyDictionary<,>), context, out keySymbol) is false
-            & TryGetDictionaryKeySymbol(symbol, typeof(IDictionary<,>), context, out keySymbol) is false)
-        {
-            return;
-        }
+                if (keySymbol.TypeKind is TypeKind.Enum)
+                    return IncrementalResult.Skip;
 
-        if (keySymbol is null || keySymbol.MetadataName is "TKey")
-            return;
+                return IncrementalResult.Success((node, semanticModel, keySymbol));
+            })
+            .Unwrap(context)
+            .Select(static (node, semanticModel, keySymbol) =>
+            {
+                INamedTypeSymbol equatableSymbol = semanticModel.Compilation.GetTypeSymbol(typeof(IEquatable<>));
 
-        if (keySymbol.TypeKind is TypeKind.Enum)
-            return;
+                IEnumerable<INamedTypeSymbol> foundEquatableSymbols = keySymbol
+                    .FindAssignableTypesConstructedFrom(equatableSymbol);
 
-        INamedTypeSymbol equatableSymbol = context.Compilation.GetTypeSymbol(typeof(IEquatable<>));
+                bool hasCorrectEquatableImplementation = foundEquatableSymbols
+                    .Select(x => x.TypeArguments.First())
+                    .Any(x => keySymbol.Equals(x, SymbolEqualityComparer.Default) || keySymbol.IsAssignableTo(x));
 
-        IEnumerable<INamedTypeSymbol> foundEquatableSymbols = keySymbol
-            .FindAssignableTypesConstructedFrom(equatableSymbol);
+                if (hasCorrectEquatableImplementation)
+                    return IncrementalResult.Skip;
 
-        bool hasCorrectEquatableImplementation = foundEquatableSymbols
-            .Select(x => x.TypeArguments.First())
-            .Any(x => keySymbol.Equals(x, SymbolEqualityComparer.Default) || keySymbol.IsAssignableTo(x));
+                return IncrementalResult.Success(node);
+            })
+            .Unwrap(context);
 
-        if (hasCorrectEquatableImplementation)
-            return;
-
-        var diag = Diagnostic.Create(Descriptor, node.GetLocation());
-        context.ReportDiagnostic(diag);
+        context.RegisterSourceOutput(
+            syntaxProvider,
+            static (context, node) => context.ReportDiagnostic(Diagnostic.Create(Descriptor, node.GetLocation())));
     }
 
     private static bool TryGetDictionaryKeySymbol(
         INamedTypeSymbol nameSymbol,
         Type dictionaryType,
-        SyntaxNodeAnalysisContext context,
+        SemanticModel semanticModel,
         out INamedTypeSymbol? keySymbol)
     {
-        INamedTypeSymbol dictionarySymbol = context.Compilation.GetTypeSymbol(dictionaryType);
+        INamedTypeSymbol dictionarySymbol = semanticModel.Compilation.GetTypeSymbol(dictionaryType);
         INamedTypeSymbol? implementationSymbol = nameSymbol.FindAssignableTypeConstructedFrom(dictionarySymbol);
 
         keySymbol = implementationSymbol?.TypeArguments.FirstOrDefault() as INamedTypeSymbol;

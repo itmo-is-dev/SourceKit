@@ -5,7 +5,7 @@ using SourceKit.Generators.Builder.Models;
 namespace SourceKit.Generators.Builder.Commands;
 
 public record struct TypeBuildingCommand(
-    GeneratorExecutionContext Context,
+    Compilation Compilation,
     TypeDeclarationSyntax Syntax,
     INamedTypeSymbol Symbol,
     IReadOnlyCollection<BuilderProperty> Properties);

@@ -1,0 +1,58 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="xunit"/>
+        <PackageReference Include="xunit.runner.visualstudio">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\analyzers\SourceKit.Analyzers\SourceKit.Analyzers.csproj"/>
+        <ProjectReference Include="..\SourceKit.Tests.Common\SourceKit.Tests.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\..\samples\analyzers\SourceKit.Analyzers.Collections.Samples\**\*.cs"
+                 Exclude="..\..\samples\analyzers\SourceKit.Analyzers.Collections.Samples\obj\**"
+                 LinkBase="SourceKit.Analyzers.Collections.Samples\"
+                 CopyToOutputDirectory="PreserveNewest"/>
+
+        <Content Include="..\..\samples\analyzers\SourceKit.Analyzers.Enumerable.Samples\**\*.cs"
+                 Exclude="..\..\samples\analyzers\SourceKit.Analyzers.Enumerable.Samples\obj\**"
+                 LinkBase="SourceKit.Analyzers.Enumerable.Samples\"
+                 CopyToOutputDirectory="PreserveNewest"/>
+
+        <Content Include="..\..\samples\analyzers\SourceKit.Analyzers.MemberAccessibility.Samples\**\*.cs"
+                 Exclude="..\..\samples\analyzers\SourceKit.Analyzers.MemberAccessibility.Samples\obj\**"
+                 LinkBase="SourceKit.Analyzers.MemberAccessibility.Samples\"
+                 CopyToOutputDirectory="PreserveNewest"/>
+
+        <Content Include="..\..\samples\analyzers\SourceKit.Analyzers.MustBePartial.Samples\**\*.cs"
+                 Exclude="..\..\samples\analyzers\SourceKit.Analyzers.MustBePartial.Samples\obj\**"
+                 LinkBase="SourceKit.Analyzers.MustBePartial.Samples\"
+                 CopyToOutputDirectory="PreserveNewest"/>
+
+        <Content Include="..\..\samples\analyzers\SourceKit.Analyzers.Nullable.Samples\**\*.cs"
+                 Exclude="..\..\samples\analyzers\SourceKit.Analyzers.Nullable.Samples\obj\**"
+                 LinkBase="SourceKit.Analyzers.Nullable.Samples\"
+                 CopyToOutputDirectory="PreserveNewest"/>
+
+        <Content Include="..\..\samples\analyzers\SourceKit.Analyzers.Properties.Samples\**\*.cs"
+                 Exclude="..\..\samples\analyzers\SourceKit.Analyzers.Properties.Samples\obj\**"
+                 LinkBase="SourceKit.Analyzers.Properties.Samples\"
+                 CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
+
+</Project>

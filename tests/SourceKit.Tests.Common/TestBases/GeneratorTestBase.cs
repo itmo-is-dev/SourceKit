@@ -3,20 +3,22 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace SourceKit.Tests.Common.TestBases;
 
 public abstract class GeneratorTestBase<TGenerator>
-    where TGenerator : ISourceGenerator, new()
+    where TGenerator : IIncrementalGenerator, new()
 {
     protected GeneratorTestBuilder GeneratorTest => new();
+
+    protected DiagnosticResult Diagnostic(DiagnosticDescriptor descriptor) => new(descriptor);
 
     protected sealed class GeneratorTestBuilder
     {
         private readonly List<SourceFile> _sources = [];
         private readonly List<SourceFile> _generatedSources = [];
         private readonly List<Assembly> _additionalReferences = [];
+        private readonly List<DiagnosticResult> _expectedDiagnostics = [];
         private ReferenceAssemblies _referenceAssemblies = ReferenceAssemblies.Net.Net60;
 
         public GeneratorTestBuilder WithSource(SourceFile file)
@@ -43,9 +45,15 @@ public abstract class GeneratorTestBase<TGenerator>
             return this;
         }
 
-        public CSharpSourceGeneratorTest<TGenerator, XUnitVerifier> Build()
+        public GeneratorTestBuilder WithExpectedDiagnostic(DiagnosticResult diagnostic)
         {
-            var test = new CSharpSourceGeneratorTest<TGenerator, XUnitVerifier>
+            _expectedDiagnostics.Add(diagnostic);
+            return this;
+        }
+
+        public CSharpSourceGeneratorTest<TGenerator, DefaultVerifier> Build()
+        {
+            var test = new CSharpSourceGeneratorTest<TGenerator, DefaultVerifier>
             {
                 ReferenceAssemblies = _referenceAssemblies,
                 SolutionTransforms =
@@ -73,6 +81,8 @@ public abstract class GeneratorTestBase<TGenerator>
 
             foreach (Assembly assembly in _additionalReferences)
                 test.TestState.AdditionalReferences.Add(assembly);
+
+            test.TestState.ExpectedDiagnostics.AddRange(_expectedDiagnostics);
 
             return test;
         }

@@ -4,7 +4,7 @@ namespace SourceKit.Analyzers.MustBePartial;
 
 public static class MustBePartialConstants
 {
-    public const string AnnotationsNamespace = "SourceKit.Analyzers.MustBePartial.Annotations";
+    public const string AnnotationsNamespace = "SourceKit.Analyzers.Annotations.MustBePartial";
 
     public const string DerivativesMustBePartialAttributeName = nameof(DerivativesMustBePartialAttribute);
 

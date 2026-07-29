@@ -1,0 +1,2 @@
+[*.{cs,tt}]
+max_line_length = 300

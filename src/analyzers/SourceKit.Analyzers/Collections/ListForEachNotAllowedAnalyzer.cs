@@ -1,20 +1,20 @@
-using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Operations;
 
 namespace SourceKit.Analyzers.Collections;
 
-[DiagnosticAnalyzer(LanguageNames.CSharp)]
-public class ListForEachNotAllowedAnalyzer : DiagnosticAnalyzer
+[Generator]
+public class ListForEachNotAllowedAnalyzer : IIncrementalGenerator
 {
+    private const string ForEachMethodName = "ForEach";
+    private const string ListMetadataName = "System.Collections.Generic.List`1";
+
     public const string DiagnosticId = "SK1501";
     public const string Title = nameof(ListForEachNotAllowedAnalyzer);
-
     public const string Format = """Using ForEach method is not allowed""";
 
-    public static readonly DiagnosticDescriptor Descriptor = new DiagnosticDescriptor(
+    public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
         Title,
         Format,
@@ -22,55 +22,37 @@ public class ListForEachNotAllowedAnalyzer : DiagnosticAnalyzer
         DiagnosticSeverity.Warning,
         true);
 
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } =
-        ImmutableArray.Create(Descriptor);
-
-    public override void Initialize(AnalysisContext context)
+    public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        context.EnableConcurrentExecution();
-        context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
-        context.RegisterSyntaxNodeAction(AnalyzeSyntaxNode, SyntaxKind.SimpleMemberAccessExpression);
-    }
+        IncrementalValueProvider<IncrementalResult<INamedTypeSymbol>> listTypeProvider = context.CompilationProvider
+            .Select(static compilation => compilation.GetTypeByMetadataName(ListMetadataName) is { } listType ? IncrementalResult.Success(listType) : IncrementalResult.Skip);
 
-    private static void AnalyzeSyntaxNode(SyntaxNodeAnalysisContext context)
-    {
-        var node = (MemberAccessExpressionSyntax) context.Node;
+        IncrementalValuesProvider<InvocationExpressionSyntax> syntaxProvider = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) => node is InvocationExpressionSyntax
+                {
+                    Expression: MemberAccessExpressionSyntax
+                    {
+                        Name.Identifier.Text: ForEachMethodName,
+                    },
+                },
+                static (context, _) => ((InvocationExpressionSyntax)context.Node, context.SemanticModel))
+            .CombineAndUnwrap(listTypeProvider, context)
+            .Select(static (syntax, semanticModel, listType) =>
+            {
+                if (semanticModel.GetOperation(syntax) is not IInvocationOperation operation
+                    || operation.Instance?.Type is not INamedTypeSymbol instanceType
+                    || instanceType.ConstructedFrom.Equals(listType, SymbolEqualityComparer.Default) is false)
+                {
+                    return IncrementalResult.Skip;
+                }
 
-        if (node.Expression is not IdentifierNameSyntax identifierNameSyntax)
-        {
-            return;
-        }
+                return IncrementalResult.Success(syntax);
+            })
+            .Unwrap(context);
 
-        if (node.Name is not IdentifierNameSyntax expressionName)
-        {
-            return;
-        }
-
-        var semanticModel = context.SemanticModel;
-
-        var invocationTargetTypeSymbol = semanticModel
-            .GetTypeInfo(identifierNameSyntax)
-            .ConvertedType;
-
-        if (invocationTargetTypeSymbol is null)
-        {
-            return;
-        }
-
-        var isInvocationTargetList = invocationTargetTypeSymbol
-            .ToString()
-            .Contains("System.Collections.Generic.List");
-
-        var isExpressionForEach = expressionName.ToString() == "ForEach";
-        
-        if (!isInvocationTargetList || !isExpressionForEach)
-        {
-            return;
-        }
-
-        context.ReportDiagnostic(
-            Diagnostic.Create(
-                Descriptor,
-                context.Node.GetLocation()));
+        context.RegisterSourceOutput(
+            syntaxProvider,
+            static (context, node) => context.ReportDiagnostic(Diagnostic.Create(Descriptor, node.GetLocation())));
     }
 }

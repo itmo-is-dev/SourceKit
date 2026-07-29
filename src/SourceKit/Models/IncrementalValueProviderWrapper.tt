@@ -1,0 +1,118 @@
+<#@ template language="C#" #>
+<#@ import namespace="System.Linq" #>
+
+using System.Collections.Immutable;
+
+
+// ReSharper disable InvokeAsExtensionMember
+// ReSharper disable once CheckNamespace
+namespace Microsoft.CodeAnalysis;
+
+<#
+    const int maxParameterCount = 10;
+
+    static string ExtractElements(string parameterName, int parameterCount) =>
+        parameterCount is 1
+            ? parameterName
+            : string.Join(", ", Enumerable.Range(1, parameterCount).Select(index => $"{parameterName}.Item{index}"));
+
+    static string CreateTypeParameters(int parameterCount, int start = 1)
+        => string.Join(", ", Enumerable.Range(start, parameterCount).Select(index => $"T{index}"));
+
+    static string CreateTupleTypeParameters(int parameterCount, int start = 1)
+        => parameterCount is 1
+            ? CreateTypeParameters(parameterCount, start)
+            : $"({CreateTypeParameters(parameterCount, start)})";
+
+    foreach (string typeName in new[] { "IncrementalValueProvider", "IncrementalValuesProvider" })
+    {
+        for (var parameterCount = 2; parameterCount <= maxParameterCount; parameterCount++)
+        {
+            string genericParameters = CreateTypeParameters(parameterCount);
+#>
+public readonly struct <#= typeName #><<#= genericParameters #>>(<#= typeName #><(<#= genericParameters #>)> provider)
+{
+    private readonly <#= typeName #><(<#= genericParameters #>)> _provider = provider;
+
+    public static implicit operator <#= typeName #><<#= genericParameters #>>(<#= typeName #><(<#= genericParameters #>)> provider)
+    {
+        return new <#= typeName #><<#= genericParameters #>>(provider);
+    }
+
+    public static implicit operator <#= typeName #><(<#= genericParameters #>)>(<#= typeName #><<#= genericParameters #>> provider)
+    {
+        return provider._provider;
+    }
+
+    public <#= typeName #><<#= genericParameters #>> WithComparer(IEqualityComparer<(<#= genericParameters #>)> comparer)
+    {
+        return _provider.WithComparer(comparer);
+    }
+
+    public <#= typeName #><<#= genericParameters #>> WithTrackingName(string name)
+    {
+        return _provider.WithTrackingName(name);
+    }
+
+    public IncrementalValuesProvider<<#= genericParameters #>> Where(Func<<#= genericParameters #>, bool> predicate)
+    {
+        return IncrementalValueProviderExtensions.Where(_provider, tuple => predicate(<#= ExtractElements("tuple", parameterCount) #>));
+    }
+<#
+            if (typeName == "IncrementalValuesProvider")
+            {
+#>
+    public IncrementalValueProvider<ImmutableArray<(<#= genericParameters #>)>> Collect()
+    {
+        return _provider.Collect();
+    }
+<#
+            }
+            for (var returnParameterCount = 1; returnParameterCount < maxParameterCount; returnParameterCount++)
+            {
+                string returnTypeParameters = CreateTypeParameters(returnParameterCount, start: parameterCount + 1);
+                string returnTupleTypeParameters = CreateTupleTypeParameters(returnParameterCount, start: parameterCount + 1);
+#>
+
+    public <#= typeName #><<#= returnTypeParameters #>> Select<<#= returnTypeParameters #>>(
+        Func<<#= genericParameters #>, CancellationToken, <#= returnTupleTypeParameters #>> selector)
+    {
+        return IncrementalValueProviderExtensions.Select(_provider, (tuple, ct) => selector(<#= ExtractElements("tuple", parameterCount) #>, ct));
+    }
+
+    public <#= typeName #><<#= returnTypeParameters #>> Select<<#= returnTypeParameters #>>(
+        Func<<#= genericParameters #>, <#= returnTupleTypeParameters #>> selector)
+    {
+        return IncrementalValueProviderExtensions.Select(_provider, (tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
+    }
+
+    public IncrementalValuesProvider<<#= returnTypeParameters #>> SelectMany<<#= returnTypeParameters #>>(
+        Func<<#= genericParameters #>, CancellationToken, IEnumerable<<#= returnTupleTypeParameters #>>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(<#= ExtractElements("tuple", parameterCount) #>, ct));
+    }
+
+    public IncrementalValuesProvider<<#= returnTypeParameters #>> SelectMany<<#= returnTypeParameters #>>(
+        Func<<#= genericParameters #>, IEnumerable<<#= returnTupleTypeParameters #>>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
+    }
+    
+<#
+                if (parameterCount + returnParameterCount <= maxParameterCount)
+                {
+#>
+    public <#= typeName #><<#= genericParameters #>, <#= returnTypeParameters #>> Combine<<#= returnTypeParameters #>>(
+        IncrementalValueProvider<<#= returnTupleTypeParameters #>> other)
+    {
+        return IncrementalValueProviderExtensions.Combine(_provider, other).Select((tuple, _) => (<#= ExtractElements("tuple.Left", parameterCount) #>, <#= ExtractElements("tuple.Right", returnParameterCount) #>));
+    }
+<#
+                }
+            }
+#>
+}
+<#
+        }
+    }
+#>

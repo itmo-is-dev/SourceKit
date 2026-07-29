@@ -25,7 +25,7 @@ public class RequiredValueAnalyzerTests : AnalyzerTestBase<RequiredValueAnalyzer
             .WithSource(usageFile)
             .WithAdditionalReference(typeof(GenerateBuilderAttribute).Assembly)
             .WithExpectedDiagnostic(diagnostic)
-            .WithSourceGenerator(new BuilderSourceGenerator())
+            .WithSourceGenerator(new IncrementalBuilderGenerator())
             .Build()
             .RunAsync();
     }
@@ -39,7 +39,7 @@ public class RequiredValueAnalyzerTests : AnalyzerTestBase<RequiredValueAnalyzer
         await AnalyzerTest
             .WithSource(usageFile)
             .WithAdditionalReference(typeof(GenerateBuilderAttribute).Assembly)
-            .WithSourceGenerator(new BuilderSourceGenerator())
+            .WithSourceGenerator(new IncrementalBuilderGenerator())
             .Build()
             .RunAsync();
     }

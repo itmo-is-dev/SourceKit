@@ -6,6 +6,7 @@ public static class Constants
 {
     public const string AnnotationsNamespace = "SourceKit.Generators.Builder.Annotations";
 
+    public const string GenerateBuilderAttributeShortName = "GenerateBuilder";
     public const string GenerateBuilderAttributeName = nameof(GenerateBuilderAttribute);
     public const string InitializesPropertyAttributeName = nameof(InitializesPropertyAttribute);
     public const string RequiredValueAttributeName = nameof(RequiredValueAttribute);

@@ -44,7 +44,7 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
                     .FinishWith((r, _) => r.Syntax)
             );
 
-        ServiceProvider? provider = collection.BuildServiceProvider();
+        ServiceProvider provider = collection.BuildServiceProvider();
         Chain = provider.GetRequiredService<IChain<FileBuildingCommand, CompilationUnitSyntax>>();
     }
 
@@ -70,9 +70,9 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
 
         IncrementalValuesProvider<ProtoMessage> protoMessages = assemblyTypes
             .Combine(messageInterfaceSymbol)
-            .Where(static tuple => tuple.Right is not null)
             .Combine(context.CompilationProvider)
-            .Select(static (tuple, _) => OnVisitNamedTypeSymbol(tuple.Left.Left, tuple.Left.Right!, tuple.Right))
+            .Where(static (_, messageInterfaceSymbol, _) => messageInterfaceSymbol is not null)
+            .Select(static (assemblyType, messageInterfaceSymbol, compilation) => OnVisitNamedTypeSymbol(assemblyType, messageInterfaceSymbol!, compilation))
             .Where(static message => message is not null)
             .Select(static (message, _) => message!);
 
