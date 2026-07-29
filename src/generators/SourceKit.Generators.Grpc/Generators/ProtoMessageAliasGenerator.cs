@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using SourceKit.Extensions;
 using SourceKit.Generators.Grpc.Extensions;
+using SourceKit.Tools;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Grpc.Generators;
@@ -98,6 +99,7 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
                     return;
 
                 UsingDirectiveSyntax[] directives = protoTypes
+                    .Distinct(SymbolEqualityComparer.Default.Cast<ISymbol, INamedTypeSymbol>())
                     .GroupBy(x => x.Name, (k, values) => (k, values: values.ToArray()))
                     .Where(x => x.values.Length is 1)
                     .Select(x => x.values.Single())
