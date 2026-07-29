@@ -80,12 +80,14 @@ public sealed class IncrementalBuilderGenerator : IIncrementalGenerator
         IncrementalValuesProvider<(string, string)> builderTypes = context.SyntaxProvider
             .CreateSyntaxProvider(static (node, _) => node is TypeDeclarationSyntax, static (context, _) => (TypeDeclarationSyntax)context.Node)
             .CombineAndUnwrap(attributeTypeProvider, context)
+            .WithComparer(static (syntax, _) => syntax)
             .Where(static (typeSyntax, _) => typeSyntax.AttributeLists
                 .SelectMany(list => list.Attributes)
                 .Select(attribute => attribute.Name)
                 .OfType<IdentifierNameSyntax>()
                 .Any(name => name.Identifier.Text is Constants.GenerateBuilderAttributeName or Constants.GenerateBuilderAttributeShortName))
             .Combine(context.CompilationProvider)
+            .WithComparer(static (syntax, _, _) => syntax)
             .Select((typeSyntax, attributeType, compilation) =>
             {
                 SemanticModel semanticModel = compilation.GetSemanticModel(typeSyntax.SyntaxTree);

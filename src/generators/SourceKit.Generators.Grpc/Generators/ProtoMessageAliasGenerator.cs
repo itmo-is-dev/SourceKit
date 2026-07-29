@@ -62,7 +62,8 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
                 .Where(static (symbol, _) => symbol.TypeKind is TypeKind.Class)
                 .Where(static (symbol, messageInterfaceSymbol) => symbol.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default))
                 .Where(static (symbol, _) => symbol.ContainingType is null)
-                .Select(static (symbol, _) => symbol);
+                .Select(static (symbol, _) => symbol)
+                .WithComparer(static symbol => (symbol.Name, symbol.ContainingNamespace.ToDisplayString()));
         }
 
         IncrementalValuesProvider<INamedTypeSymbol> FilterProtoEnums(IncrementalValuesProvider<INamedTypeSymbol> provider)
@@ -77,7 +78,8 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
                         .GetAttributes()
                         .Any(attr => attr.AttributeClass?.Equals(enumAttributeSymbol, SymbolEqualityComparer.Default) is true)))
                 .Where(static (symbol, _) => symbol.ContainingType is null)
-                .Select(static (symbol, _) => symbol);
+                .Select(static (symbol, _) => symbol)
+                .WithComparer(static symbol => (symbol.Name, symbol.ContainingNamespace.ToDisplayString()));
         }
 
         IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> definedProtoMessageTypes = FilterProtoMessages(definedTypes).Collect();

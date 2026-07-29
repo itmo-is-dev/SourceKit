@@ -10,7 +10,6 @@ using SourceKit.Generators.Grpc.Builders.FileBuilders;
 using SourceKit.Generators.Grpc.Builders.TypeBuilders;
 using SourceKit.Generators.Grpc.Builders.UsingBuilders;
 using SourceKit.Generators.Grpc.Commands;
-using SourceKit.Generators.Grpc.Extensions;
 using SourceKit.Generators.Grpc.Models;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
@@ -90,7 +89,7 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
             .Unwrap(context);
 
         context.RegisterSourceOutput(
-            protoMessages.Combine(context.CompilationProvider),
+            protoMessages.Combine(context.CompilationProvider).WithComparer(static (message, _) => message),
             static (context, message, compilation) =>
             {
                 try
@@ -124,19 +123,19 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
         if (symbol.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default) is false)
             return null;
 
-        ProtoProperty[] properties = ParseProperties(symbol, compilation).ToArray();
+        ImmutableArray<ProtoProperty> properties = [..ParseProperties(symbol, compilation)];
 
         INamedTypeSymbol? typesSymbol = symbol
             .GetMembers()
             .OfType<INamedTypeSymbol>()
             .SingleOrDefault(x => x.Name == "Types" && x.IsStatic);
 
-        ProtoMessage[]? nestedMessages = typesSymbol?
+        var nestedMessages = typesSymbol?
             .GetMembers()
             .OfType<INamedTypeSymbol>()
             .Select(s => OnVisitNamedTypeSymbol(s, messageInterfaceSymbol, compilation))
             .WhereNotNull()
-            .ToArray();
+            .ToImmutableArray();
 
         return new ProtoMessage(symbol, properties, nestedMessages ?? []);
     }
