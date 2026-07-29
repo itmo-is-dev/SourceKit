@@ -24,7 +24,9 @@ public class NullForgivingOperatorNotAllowedAnalyzer : IIncrementalGenerator
     {
         var syntaxProvider = context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (node, _) => node is PostfixUnaryExpressionSyntax syntax && syntax.Ancestors().Any(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression)) is false,
+                static (node, _) => node is PostfixUnaryExpressionSyntax syntax
+                                    && syntax.IsKind(SyntaxKind.SuppressNullableWarningExpression)
+                                    && node.Ancestors().All(static ancestor => ancestor.IsKind(SyntaxKind.SuppressNullableWarningExpression) is false),
                 static (context, _) => (PostfixUnaryExpressionSyntax)context.Node);
 
         context.RegisterSourceOutput(
