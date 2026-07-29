@@ -61,6 +61,30 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return IncrementalValueProviderExtensions.SelectMany(first, (t1, _) => selector(t1));
     }
 
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValuesProvider<<#= genericParameters #>> SelectMany<TFrom, <#= genericParameters #>>(
+        this IncrementalValuesProvider<TFrom> first, 
+        Func<TFrom, ImmutableArray<<#= tupleGenericParameters #>>> selector)
+    {
+        return IncrementalValueProviderExtensions.SelectMany(first, (t1, _) => selector(t1));
+    }
+
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValuesProvider<<#= genericParameters #>> SelectMany<TFrom, <#= genericParameters #>>(
+        this IncrementalValueProvider<TFrom> first, 
+        Func<TFrom, IEnumerable<<#= tupleGenericParameters #>>> selector)
+    {
+        return IncrementalValueProviderExtensions.SelectMany(first, (t1, _) => selector(t1));
+    }
+
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValuesProvider<<#= genericParameters #>> SelectMany<TFrom, <#= genericParameters #>>(
+        this IncrementalValueProvider<TFrom> first, 
+        Func<TFrom, ImmutableArray<<#= tupleGenericParameters #>>> selector)
+    {
+        return IncrementalValueProviderExtensions.SelectMany(first, (t1, _) => selector(t1));
+    }
+
     public static IncrementalValuesProvider<<#= genericParameters #>> WithComparer<<#= genericParameters #>, TComparand>(
         this IncrementalValuesProvider<<#= genericParameters #>> provider,
         Func<<#= genericParameters #>, TComparand> selector)
@@ -87,18 +111,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return IncrementalValueProviderExtensions.Combine(source, other).Select(static (tuple, _) => (<#= ExtractElements("tuple.Left", parameterCount) #>, tuple.Right));
     }
 
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValueProvider<<#= genericParameters #>, TAdded> Combine<<#= genericParameters #>, TAdded>(
+        this IncrementalValueProvider<<#= tupleGenericParameters #>> source,
+        IncrementalValueProvider<TAdded> other)
+    {
+        return IncrementalValueProviderExtensions.Combine(source, other).Select(static (tuple, _) => (<#= ExtractElements("tuple.Left", parameterCount) #>, tuple.Right));
+    }
+
 <#
         }
 
         if (parameterCount < maxParameterCount)
         {
-            #>
+#>
     public static IncrementalValuesProvider<<#= genericParameters #>, TAdded> CombineAndUnwrap<<#= genericParameters #>, TAdded>(
         this IncrementalValuesProvider<<#= tupleGenericParameters #>> source,
         IncrementalValueProvider<IncrementalResult<TAdded>> other,
         IncrementalGeneratorInitializationContext context)
     {
-        return IncrementalValueProviderExtensions.Combine(source, other).Select(static (tuple, _) => tuple.Right.Map(value => (<#= ExtractElements("tuple.Left", parameterCount)#>, value))).Unwrap(context);
+        return IncrementalValueProviderExtensions.Combine(source, other).Select(static (tuple, _) => tuple.Right.Map(value => (<#= ExtractElements("tuple.Left", parameterCount) #>, value))).Unwrap(context);
     }
 <#
         }
@@ -106,6 +138,38 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         if (parameterCount > 1)
         {
 #>
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValuesProvider<TTo> SelectMany<<#= genericParameters #>, TTo>(
+        this IncrementalValuesProvider<<#= tupleGenericParameters #>> first, 
+        Func<<#= genericParameters #>, IEnumerable<TTo>> selector)
+    {
+        return IncrementalValueProviderExtensions.SelectMany(first, (tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
+    }
+
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValuesProvider<TTo> SelectMany<<#= genericParameters #>, TTo>(
+        this IncrementalValuesProvider<<#= tupleGenericParameters #>> first, 
+        Func<<#= genericParameters #>, ImmutableArray<TTo>> selector)
+    {
+        return IncrementalValueProviderExtensions.SelectMany(first, (tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
+    }
+
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValuesProvider<TTo> SelectMany<<#= genericParameters #>, TTo>(
+        this IncrementalValueProvider<<#= tupleGenericParameters #>> first, 
+        Func<<#= genericParameters #>, IEnumerable<TTo>> selector)
+    {
+        return IncrementalValueProviderExtensions.SelectMany(first, (tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
+    }
+
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValuesProvider<TTo> SelectMany<<#= genericParameters #>, TTo>(
+        this IncrementalValueProvider<<#= tupleGenericParameters #>> first, 
+        Func<<#= genericParameters #>, ImmutableArray<TTo>> selector)
+    {
+        return IncrementalValueProviderExtensions.SelectMany(first, (tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
+    }
+
     public static IncrementalValuesProvider<<#= genericParameters #>> WithComparer<<#= genericParameters #>, TComparand>(
         this IncrementalValuesProvider<<#= tupleGenericParameters #>> provider,
         Func<<#= genericParameters #>, TComparand> selector)
@@ -134,6 +198,38 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<TFrom, CancellationToken, <#= tupleGenericParameters #>> selector)
     {
         return IncrementalValueProviderExtensions.Select(source, selector);
+    }
+
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValuesProvider<TTo> Select<<#= genericParameters #>, TTo>(
+        this IncrementalValuesProvider<<#= tupleGenericParameters #>> source,
+        Func<<#= genericParameters #>, CancellationToken, TTo> selector)
+    {
+        return IncrementalValueProviderExtensions.Select(source, (tuple, ct) => selector(<#= ExtractElements("tuple", parameterCount) #>, ct));
+    }
+
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValuesProvider<TTo> Select<<#= genericParameters #>, TTo>(
+        this IncrementalValuesProvider<<#= tupleGenericParameters #>> source,
+        Func<<#= genericParameters #>, TTo> selector)
+    {
+        return IncrementalValueProviderExtensions.Select(source, (tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
+    }
+
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValueProvider<TTo> Select<<#= genericParameters #>, TTo>(
+        this IncrementalValueProvider<<#= tupleGenericParameters #>> source,
+        Func<<#= genericParameters #>, CancellationToken, TTo> selector)
+    {
+        return IncrementalValueProviderExtensions.Select(source, (tuple, ct) => selector(<#= ExtractElements("tuple", parameterCount) #>, ct));
+    }
+
+    [OverloadResolutionPriority(2147483647)]
+    public static IncrementalValueProvider<TTo> Select<<#= genericParameters #>, TTo>(
+        this IncrementalValueProvider<<#= tupleGenericParameters #>> source,
+        Func<<#= genericParameters #>, TTo> selector)
+    {
+        return IncrementalValueProviderExtensions.Select(source, (tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
     }
 
     [OverloadResolutionPriority(2147483647)]
@@ -183,7 +279,17 @@ public static partial class SourceKitValuesProviderExtensionsInternal
     {
         context.RegisterSourceOutput(
             (IncrementalValueProvider<<#= tupleGenericParameters #>>)provider,
-            (ctx, tuple) => action(ctx, <#= ExtractElements("tuple", parameterCount)#>));
+            (ctx, tuple) => action(ctx, <#= ExtractElements("tuple", parameterCount) #>));
+    }
+
+    public static void RegisterSourceOutput<<#= genericParameters #>>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<<#= tupleGenericParameters #>> provider,
+        Action<SourceProductionContext, <#= genericParameters #>> action)
+    {
+        context.RegisterSourceOutput(
+            provider,
+            (ctx, tuple) => action(ctx, <#= ExtractElements("tuple", parameterCount) #>));
     }
 
     public static void RegisterSourceOutput<<#= genericParameters #>>(
@@ -193,7 +299,17 @@ public static partial class SourceKitValuesProviderExtensionsInternal
     {
         context.RegisterSourceOutput(
             (IncrementalValuesProvider<<#= tupleGenericParameters #>>)provider,
-            (ctx, tuple) => action(ctx, <#= ExtractElements("tuple", parameterCount)#>));
+            (ctx, tuple) => action(ctx, <#= ExtractElements("tuple", parameterCount) #>));
+    }
+
+    public static void RegisterSourceOutput<<#= genericParameters #>>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<<#= tupleGenericParameters #>> provider,
+        Action<SourceProductionContext, <#= genericParameters #>> action)
+    {
+        context.RegisterSourceOutput(
+            provider,
+            (ctx, tuple) => action(ctx, <#= ExtractElements("tuple", parameterCount) #>));
     }
 <#
         }

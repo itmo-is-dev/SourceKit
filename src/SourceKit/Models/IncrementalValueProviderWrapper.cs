@@ -54,7 +54,19 @@ public readonly struct IncrementalValueProvider<T1, T2>(IncrementalValueProvider
     }
 
     public IncrementalValuesProvider<T3> SelectMany<T3>(
+        Func<T1, T2, CancellationToken, ImmutableArray<T3>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3> SelectMany<T3>(
         Func<T1, T2, IEnumerable<T3>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3> SelectMany<T3>(
+        Func<T1, T2, ImmutableArray<T3>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -84,7 +96,19 @@ public readonly struct IncrementalValueProvider<T1, T2>(IncrementalValueProvider
     }
 
     public IncrementalValuesProvider<T3, T4> SelectMany<T3, T4>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4> SelectMany<T3, T4>(
         Func<T1, T2, IEnumerable<(T3, T4)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4> SelectMany<T3, T4>(
+        Func<T1, T2, ImmutableArray<(T3, T4)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -114,7 +138,19 @@ public readonly struct IncrementalValueProvider<T1, T2>(IncrementalValueProvider
     }
 
     public IncrementalValuesProvider<T3, T4, T5> SelectMany<T3, T4, T5>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5> SelectMany<T3, T4, T5>(
         Func<T1, T2, IEnumerable<(T3, T4, T5)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5> SelectMany<T3, T4, T5>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -144,7 +180,19 @@ public readonly struct IncrementalValueProvider<T1, T2>(IncrementalValueProvider
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6> SelectMany<T3, T4, T5, T6>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6> SelectMany<T3, T4, T5, T6>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6> SelectMany<T3, T4, T5, T6>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -174,7 +222,19 @@ public readonly struct IncrementalValueProvider<T1, T2>(IncrementalValueProvider
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7> SelectMany<T3, T4, T5, T6, T7>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7> SelectMany<T3, T4, T5, T6, T7>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7> SelectMany<T3, T4, T5, T6, T7>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -204,7 +264,19 @@ public readonly struct IncrementalValueProvider<T1, T2>(IncrementalValueProvider
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8> SelectMany<T3, T4, T5, T6, T7, T8>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8> SelectMany<T3, T4, T5, T6, T7, T8>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8> SelectMany<T3, T4, T5, T6, T7, T8>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -234,7 +306,19 @@ public readonly struct IncrementalValueProvider<T1, T2>(IncrementalValueProvider
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9> SelectMany<T3, T4, T5, T6, T7, T8, T9>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9> SelectMany<T3, T4, T5, T6, T7, T8, T9>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9> SelectMany<T3, T4, T5, T6, T7, T8, T9>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -264,7 +348,19 @@ public readonly struct IncrementalValueProvider<T1, T2>(IncrementalValueProvider
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -294,7 +390,19 @@ public readonly struct IncrementalValueProvider<T1, T2>(IncrementalValueProvider
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10, T11>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -348,7 +456,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3>(IncrementalValueProv
     }
 
     public IncrementalValuesProvider<T4> SelectMany<T4>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<T4>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4> SelectMany<T4>(
         Func<T1, T2, T3, IEnumerable<T4>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4> SelectMany<T4>(
+        Func<T1, T2, T3, ImmutableArray<T4>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -378,7 +498,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3>(IncrementalValueProv
     }
 
     public IncrementalValuesProvider<T4, T5> SelectMany<T4, T5>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5> SelectMany<T4, T5>(
         Func<T1, T2, T3, IEnumerable<(T4, T5)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5> SelectMany<T4, T5>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -408,7 +540,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3>(IncrementalValueProv
     }
 
     public IncrementalValuesProvider<T4, T5, T6> SelectMany<T4, T5, T6>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6> SelectMany<T4, T5, T6>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6> SelectMany<T4, T5, T6>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -438,7 +582,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3>(IncrementalValueProv
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7> SelectMany<T4, T5, T6, T7>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7> SelectMany<T4, T5, T6, T7>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7> SelectMany<T4, T5, T6, T7>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -468,7 +624,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3>(IncrementalValueProv
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8> SelectMany<T4, T5, T6, T7, T8>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8> SelectMany<T4, T5, T6, T7, T8>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8> SelectMany<T4, T5, T6, T7, T8>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -498,7 +666,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3>(IncrementalValueProv
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9> SelectMany<T4, T5, T6, T7, T8, T9>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9> SelectMany<T4, T5, T6, T7, T8, T9>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9> SelectMany<T4, T5, T6, T7, T8, T9>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -528,7 +708,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3>(IncrementalValueProv
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10> SelectMany<T4, T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10> SelectMany<T4, T5, T6, T7, T8, T9, T10>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10> SelectMany<T4, T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -558,7 +750,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3>(IncrementalValueProv
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -583,7 +787,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3>(IncrementalValueProv
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -637,7 +853,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4>(IncrementalValue
     }
 
     public IncrementalValuesProvider<T5> SelectMany<T5>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<T5>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5> SelectMany<T5>(
         Func<T1, T2, T3, T4, IEnumerable<T5>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5> SelectMany<T5>(
+        Func<T1, T2, T3, T4, ImmutableArray<T5>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -667,7 +895,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4>(IncrementalValue
     }
 
     public IncrementalValuesProvider<T5, T6> SelectMany<T5, T6>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6> SelectMany<T5, T6>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6> SelectMany<T5, T6>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -697,7 +937,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4>(IncrementalValue
     }
 
     public IncrementalValuesProvider<T5, T6, T7> SelectMany<T5, T6, T7>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7> SelectMany<T5, T6, T7>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7> SelectMany<T5, T6, T7>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -727,7 +979,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4>(IncrementalValue
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8> SelectMany<T5, T6, T7, T8>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8> SelectMany<T5, T6, T7, T8>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8> SelectMany<T5, T6, T7, T8>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -757,7 +1021,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4>(IncrementalValue
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9> SelectMany<T5, T6, T7, T8, T9>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9> SelectMany<T5, T6, T7, T8, T9>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9> SelectMany<T5, T6, T7, T8, T9>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -787,7 +1063,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4>(IncrementalValue
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10> SelectMany<T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10> SelectMany<T5, T6, T7, T8, T9, T10>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10> SelectMany<T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -817,7 +1105,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4>(IncrementalValue
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11> SelectMany<T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11> SelectMany<T5, T6, T7, T8, T9, T10, T11>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11> SelectMany<T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -842,7 +1142,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4>(IncrementalValue
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -867,7 +1179,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4>(IncrementalValue
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -921,7 +1245,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5>(IncrementalV
     }
 
     public IncrementalValuesProvider<T6> SelectMany<T6>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<T6>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6> SelectMany<T6>(
         Func<T1, T2, T3, T4, T5, IEnumerable<T6>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6> SelectMany<T6>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<T6>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -951,7 +1287,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5>(IncrementalV
     }
 
     public IncrementalValuesProvider<T6, T7> SelectMany<T6, T7>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7> SelectMany<T6, T7>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7> SelectMany<T6, T7>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -981,7 +1329,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5>(IncrementalV
     }
 
     public IncrementalValuesProvider<T6, T7, T8> SelectMany<T6, T7, T8>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8> SelectMany<T6, T7, T8>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8> SelectMany<T6, T7, T8>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -1011,7 +1371,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5>(IncrementalV
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9> SelectMany<T6, T7, T8, T9>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9> SelectMany<T6, T7, T8, T9>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9> SelectMany<T6, T7, T8, T9>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -1041,7 +1413,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5>(IncrementalV
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10> SelectMany<T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10> SelectMany<T6, T7, T8, T9, T10>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10> SelectMany<T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -1071,7 +1455,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5>(IncrementalV
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11> SelectMany<T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11> SelectMany<T6, T7, T8, T9, T10, T11>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11> SelectMany<T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -1096,7 +1492,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5>(IncrementalV
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12> SelectMany<T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12> SelectMany<T6, T7, T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12> SelectMany<T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -1121,7 +1529,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5>(IncrementalV
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -1146,7 +1566,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5>(IncrementalV
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -1200,7 +1632,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6>(Incremen
     }
 
     public IncrementalValuesProvider<T7> SelectMany<T7>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<T7>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7> SelectMany<T7>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<T7>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7> SelectMany<T7>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<T7>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -1230,7 +1674,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6>(Incremen
     }
 
     public IncrementalValuesProvider<T7, T8> SelectMany<T7, T8>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8> SelectMany<T7, T8>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8> SelectMany<T7, T8>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -1260,7 +1716,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6>(Incremen
     }
 
     public IncrementalValuesProvider<T7, T8, T9> SelectMany<T7, T8, T9>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9> SelectMany<T7, T8, T9>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9> SelectMany<T7, T8, T9>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -1290,7 +1758,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6>(Incremen
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10> SelectMany<T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10> SelectMany<T7, T8, T9, T10>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10> SelectMany<T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -1320,7 +1800,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6>(Incremen
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11> SelectMany<T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11> SelectMany<T7, T8, T9, T10, T11>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11> SelectMany<T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -1345,7 +1837,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6>(Incremen
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12> SelectMany<T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12> SelectMany<T7, T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12> SelectMany<T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -1370,7 +1874,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6>(Incremen
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13> SelectMany<T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13> SelectMany<T7, T8, T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13> SelectMany<T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -1395,7 +1911,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6>(Incremen
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -1420,7 +1948,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6>(Incremen
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -1474,7 +2014,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>(Incr
     }
 
     public IncrementalValuesProvider<T8> SelectMany<T8>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<T8>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8> SelectMany<T8>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<T8>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8> SelectMany<T8>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<T8>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -1504,7 +2056,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>(Incr
     }
 
     public IncrementalValuesProvider<T8, T9> SelectMany<T8, T9>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9> SelectMany<T8, T9>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9> SelectMany<T8, T9>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -1534,7 +2098,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>(Incr
     }
 
     public IncrementalValuesProvider<T8, T9, T10> SelectMany<T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10> SelectMany<T8, T9, T10>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10> SelectMany<T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -1564,7 +2140,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>(Incr
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11> SelectMany<T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11> SelectMany<T8, T9, T10, T11>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11> SelectMany<T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -1589,7 +2177,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>(Incr
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12> SelectMany<T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12> SelectMany<T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12> SelectMany<T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -1614,7 +2214,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>(Incr
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13> SelectMany<T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13> SelectMany<T8, T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13> SelectMany<T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -1639,7 +2251,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>(Incr
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14> SelectMany<T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14> SelectMany<T8, T9, T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14> SelectMany<T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -1664,7 +2288,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>(Incr
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -1689,7 +2325,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>(Incr
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15, T16>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -1743,7 +2391,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>(
     }
 
     public IncrementalValuesProvider<T9> SelectMany<T9>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<T9>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9> SelectMany<T9>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<T9>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9> SelectMany<T9>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<T9>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -1773,7 +2433,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>(
     }
 
     public IncrementalValuesProvider<T9, T10> SelectMany<T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10> SelectMany<T9, T10>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10> SelectMany<T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -1803,7 +2475,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>(
     }
 
     public IncrementalValuesProvider<T9, T10, T11> SelectMany<T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11> SelectMany<T9, T10, T11>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11> SelectMany<T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -1828,7 +2512,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>(
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12> SelectMany<T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12> SelectMany<T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12> SelectMany<T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -1853,7 +2549,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>(
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13> SelectMany<T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13> SelectMany<T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13> SelectMany<T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -1878,7 +2586,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>(
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14> SelectMany<T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14> SelectMany<T9, T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14> SelectMany<T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -1903,7 +2623,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>(
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15> SelectMany<T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15> SelectMany<T9, T10, T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15> SelectMany<T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -1928,7 +2660,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>(
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -1953,7 +2697,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>(
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16, T17>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -2007,7 +2763,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T10> SelectMany<T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<T10>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10> SelectMany<T10>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<T10>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10> SelectMany<T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<T10>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -2037,7 +2805,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T10, T11> SelectMany<T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11> SelectMany<T10, T11>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11> SelectMany<T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -2062,7 +2842,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T10, T11, T12> SelectMany<T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12> SelectMany<T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12> SelectMany<T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -2087,7 +2879,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13> SelectMany<T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13> SelectMany<T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13> SelectMany<T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -2112,7 +2916,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14> SelectMany<T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14> SelectMany<T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14> SelectMany<T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -2137,7 +2953,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15> SelectMany<T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15> SelectMany<T10, T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15> SelectMany<T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -2162,7 +2990,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16> SelectMany<T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16> SelectMany<T10, T11, T12, T13, T14, T15, T16>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16> SelectMany<T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -2187,7 +3027,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -2212,7 +3064,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17, T18>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17, T18>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17, T18>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -2266,7 +3130,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T11> SelectMany<T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<T11>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11> SelectMany<T11>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<T11>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11> SelectMany<T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<T11>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -2291,7 +3167,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T11, T12> SelectMany<T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12> SelectMany<T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12> SelectMany<T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -2316,7 +3204,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T11, T12, T13> SelectMany<T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13> SelectMany<T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13> SelectMany<T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -2341,7 +3241,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14> SelectMany<T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14> SelectMany<T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14> SelectMany<T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -2366,7 +3278,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15> SelectMany<T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15> SelectMany<T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15> SelectMany<T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -2391,7 +3315,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16> SelectMany<T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16> SelectMany<T11, T12, T13, T14, T15, T16>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16> SelectMany<T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15, T16)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -2416,7 +3352,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17> SelectMany<T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17> SelectMany<T11, T12, T13, T14, T15, T16, T17>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17> SelectMany<T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -2441,7 +3389,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -2466,7 +3426,19 @@ public readonly struct IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, 
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18, T19> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18, T19>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17, T18, T19)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18, T19> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18, T19>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15, T16, T17, T18, T19)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18, T19> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18, T19>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17, T18, T19)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -2524,7 +3496,19 @@ public readonly struct IncrementalValuesProvider<T1, T2>(IncrementalValuesProvid
     }
 
     public IncrementalValuesProvider<T3> SelectMany<T3>(
+        Func<T1, T2, CancellationToken, ImmutableArray<T3>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3> SelectMany<T3>(
         Func<T1, T2, IEnumerable<T3>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3> SelectMany<T3>(
+        Func<T1, T2, ImmutableArray<T3>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -2554,7 +3538,19 @@ public readonly struct IncrementalValuesProvider<T1, T2>(IncrementalValuesProvid
     }
 
     public IncrementalValuesProvider<T3, T4> SelectMany<T3, T4>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4> SelectMany<T3, T4>(
         Func<T1, T2, IEnumerable<(T3, T4)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4> SelectMany<T3, T4>(
+        Func<T1, T2, ImmutableArray<(T3, T4)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -2584,7 +3580,19 @@ public readonly struct IncrementalValuesProvider<T1, T2>(IncrementalValuesProvid
     }
 
     public IncrementalValuesProvider<T3, T4, T5> SelectMany<T3, T4, T5>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5> SelectMany<T3, T4, T5>(
         Func<T1, T2, IEnumerable<(T3, T4, T5)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5> SelectMany<T3, T4, T5>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -2614,7 +3622,19 @@ public readonly struct IncrementalValuesProvider<T1, T2>(IncrementalValuesProvid
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6> SelectMany<T3, T4, T5, T6>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6> SelectMany<T3, T4, T5, T6>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6> SelectMany<T3, T4, T5, T6>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -2644,7 +3664,19 @@ public readonly struct IncrementalValuesProvider<T1, T2>(IncrementalValuesProvid
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7> SelectMany<T3, T4, T5, T6, T7>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7> SelectMany<T3, T4, T5, T6, T7>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7> SelectMany<T3, T4, T5, T6, T7>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -2674,7 +3706,19 @@ public readonly struct IncrementalValuesProvider<T1, T2>(IncrementalValuesProvid
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8> SelectMany<T3, T4, T5, T6, T7, T8>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8> SelectMany<T3, T4, T5, T6, T7, T8>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8> SelectMany<T3, T4, T5, T6, T7, T8>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -2704,7 +3748,19 @@ public readonly struct IncrementalValuesProvider<T1, T2>(IncrementalValuesProvid
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9> SelectMany<T3, T4, T5, T6, T7, T8, T9>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9> SelectMany<T3, T4, T5, T6, T7, T8, T9>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9> SelectMany<T3, T4, T5, T6, T7, T8, T9>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -2734,7 +3790,19 @@ public readonly struct IncrementalValuesProvider<T1, T2>(IncrementalValuesProvid
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -2764,7 +3832,19 @@ public readonly struct IncrementalValuesProvider<T1, T2>(IncrementalValuesProvid
     }
 
     public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, CancellationToken, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, ct));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10, T11>(
         Func<T1, T2, IEnumerable<(T3, T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
+    }
+
+    public IncrementalValuesProvider<T3, T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T3, T4, T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, ImmutableArray<(T3, T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2));
     }
@@ -2822,7 +3902,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3>(IncrementalValuesPr
     }
 
     public IncrementalValuesProvider<T4> SelectMany<T4>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<T4>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4> SelectMany<T4>(
         Func<T1, T2, T3, IEnumerable<T4>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4> SelectMany<T4>(
+        Func<T1, T2, T3, ImmutableArray<T4>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -2852,7 +3944,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3>(IncrementalValuesPr
     }
 
     public IncrementalValuesProvider<T4, T5> SelectMany<T4, T5>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5> SelectMany<T4, T5>(
         Func<T1, T2, T3, IEnumerable<(T4, T5)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5> SelectMany<T4, T5>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -2882,7 +3986,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3>(IncrementalValuesPr
     }
 
     public IncrementalValuesProvider<T4, T5, T6> SelectMany<T4, T5, T6>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6> SelectMany<T4, T5, T6>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6> SelectMany<T4, T5, T6>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -2912,7 +4028,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3>(IncrementalValuesPr
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7> SelectMany<T4, T5, T6, T7>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7> SelectMany<T4, T5, T6, T7>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7> SelectMany<T4, T5, T6, T7>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -2942,7 +4070,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3>(IncrementalValuesPr
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8> SelectMany<T4, T5, T6, T7, T8>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8> SelectMany<T4, T5, T6, T7, T8>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8> SelectMany<T4, T5, T6, T7, T8>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -2972,7 +4112,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3>(IncrementalValuesPr
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9> SelectMany<T4, T5, T6, T7, T8, T9>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9> SelectMany<T4, T5, T6, T7, T8, T9>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9> SelectMany<T4, T5, T6, T7, T8, T9>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -3002,7 +4154,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3>(IncrementalValuesPr
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10> SelectMany<T4, T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10> SelectMany<T4, T5, T6, T7, T8, T9, T10>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10> SelectMany<T4, T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -3032,7 +4196,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3>(IncrementalValuesPr
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -3057,7 +4233,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3>(IncrementalValuesPr
     }
 
     public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, CancellationToken, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, ct));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, IEnumerable<(T4, T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public IncrementalValuesProvider<T4, T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T4, T5, T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, ImmutableArray<(T4, T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3));
     }
@@ -3115,7 +4303,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4>(IncrementalValu
     }
 
     public IncrementalValuesProvider<T5> SelectMany<T5>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<T5>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5> SelectMany<T5>(
         Func<T1, T2, T3, T4, IEnumerable<T5>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5> SelectMany<T5>(
+        Func<T1, T2, T3, T4, ImmutableArray<T5>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -3145,7 +4345,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4>(IncrementalValu
     }
 
     public IncrementalValuesProvider<T5, T6> SelectMany<T5, T6>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6> SelectMany<T5, T6>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6> SelectMany<T5, T6>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -3175,7 +4387,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4>(IncrementalValu
     }
 
     public IncrementalValuesProvider<T5, T6, T7> SelectMany<T5, T6, T7>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7> SelectMany<T5, T6, T7>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7> SelectMany<T5, T6, T7>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -3205,7 +4429,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4>(IncrementalValu
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8> SelectMany<T5, T6, T7, T8>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8> SelectMany<T5, T6, T7, T8>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8> SelectMany<T5, T6, T7, T8>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -3235,7 +4471,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4>(IncrementalValu
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9> SelectMany<T5, T6, T7, T8, T9>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9> SelectMany<T5, T6, T7, T8, T9>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9> SelectMany<T5, T6, T7, T8, T9>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -3265,7 +4513,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4>(IncrementalValu
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10> SelectMany<T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10> SelectMany<T5, T6, T7, T8, T9, T10>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10> SelectMany<T5, T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -3295,7 +4555,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4>(IncrementalValu
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11> SelectMany<T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11> SelectMany<T5, T6, T7, T8, T9, T10, T11>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11> SelectMany<T5, T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -3320,7 +4592,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4>(IncrementalValu
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -3345,7 +4629,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4>(IncrementalValu
     }
 
     public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, CancellationToken, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, ct));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, IEnumerable<(T5, T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public IncrementalValuesProvider<T5, T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T5, T6, T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, ImmutableArray<(T5, T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
     }
@@ -3403,7 +4699,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5>(Incremental
     }
 
     public IncrementalValuesProvider<T6> SelectMany<T6>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<T6>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6> SelectMany<T6>(
         Func<T1, T2, T3, T4, T5, IEnumerable<T6>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6> SelectMany<T6>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<T6>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -3433,7 +4741,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5>(Incremental
     }
 
     public IncrementalValuesProvider<T6, T7> SelectMany<T6, T7>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7> SelectMany<T6, T7>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7> SelectMany<T6, T7>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -3463,7 +4783,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5>(Incremental
     }
 
     public IncrementalValuesProvider<T6, T7, T8> SelectMany<T6, T7, T8>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8> SelectMany<T6, T7, T8>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8> SelectMany<T6, T7, T8>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -3493,7 +4825,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5>(Incremental
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9> SelectMany<T6, T7, T8, T9>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9> SelectMany<T6, T7, T8, T9>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9> SelectMany<T6, T7, T8, T9>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -3523,7 +4867,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5>(Incremental
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10> SelectMany<T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10> SelectMany<T6, T7, T8, T9, T10>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10> SelectMany<T6, T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -3553,7 +4909,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5>(Incremental
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11> SelectMany<T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11> SelectMany<T6, T7, T8, T9, T10, T11>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11> SelectMany<T6, T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -3578,7 +4946,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5>(Incremental
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12> SelectMany<T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12> SelectMany<T6, T7, T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12> SelectMany<T6, T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -3603,7 +4983,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5>(Incremental
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -3628,7 +5020,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5>(Incremental
     }
 
     public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, CancellationToken, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, ct));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, IEnumerable<(T6, T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public IncrementalValuesProvider<T6, T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T6, T7, T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, ImmutableArray<(T6, T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
@@ -3686,7 +5090,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6>(Increme
     }
 
     public IncrementalValuesProvider<T7> SelectMany<T7>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<T7>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7> SelectMany<T7>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<T7>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7> SelectMany<T7>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<T7>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -3716,7 +5132,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6>(Increme
     }
 
     public IncrementalValuesProvider<T7, T8> SelectMany<T7, T8>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8> SelectMany<T7, T8>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8> SelectMany<T7, T8>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -3746,7 +5174,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6>(Increme
     }
 
     public IncrementalValuesProvider<T7, T8, T9> SelectMany<T7, T8, T9>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9> SelectMany<T7, T8, T9>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9> SelectMany<T7, T8, T9>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -3776,7 +5216,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6>(Increme
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10> SelectMany<T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10> SelectMany<T7, T8, T9, T10>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10> SelectMany<T7, T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -3806,7 +5258,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6>(Increme
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11> SelectMany<T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11> SelectMany<T7, T8, T9, T10, T11>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11> SelectMany<T7, T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -3831,7 +5295,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6>(Increme
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12> SelectMany<T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12> SelectMany<T7, T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12> SelectMany<T7, T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -3856,7 +5332,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6>(Increme
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13> SelectMany<T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13> SelectMany<T7, T8, T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13> SelectMany<T7, T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -3881,7 +5369,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6>(Increme
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -3906,7 +5406,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6>(Increme
     }
 
     public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, CancellationToken, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, ct));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, IEnumerable<(T7, T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public IncrementalValuesProvider<T7, T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T7, T8, T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, ImmutableArray<(T7, T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
     }
@@ -3964,7 +5476,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7>(Inc
     }
 
     public IncrementalValuesProvider<T8> SelectMany<T8>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<T8>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8> SelectMany<T8>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<T8>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8> SelectMany<T8>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<T8>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -3994,7 +5518,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7>(Inc
     }
 
     public IncrementalValuesProvider<T8, T9> SelectMany<T8, T9>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9> SelectMany<T8, T9>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9> SelectMany<T8, T9>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -4024,7 +5560,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7>(Inc
     }
 
     public IncrementalValuesProvider<T8, T9, T10> SelectMany<T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10> SelectMany<T8, T9, T10>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10> SelectMany<T8, T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -4054,7 +5602,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7>(Inc
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11> SelectMany<T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11> SelectMany<T8, T9, T10, T11>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11> SelectMany<T8, T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -4079,7 +5639,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7>(Inc
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12> SelectMany<T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12> SelectMany<T8, T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12> SelectMany<T8, T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -4104,7 +5676,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7>(Inc
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13> SelectMany<T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13> SelectMany<T8, T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13> SelectMany<T8, T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -4129,7 +5713,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7>(Inc
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14> SelectMany<T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14> SelectMany<T8, T9, T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14> SelectMany<T8, T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -4154,7 +5750,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7>(Inc
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -4179,7 +5787,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7>(Inc
     }
 
     public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, CancellationToken, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, ct));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15, T16>(
         Func<T1, T2, T3, T4, T5, T6, T7, IEnumerable<(T8, T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public IncrementalValuesProvider<T8, T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T8, T9, T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, ImmutableArray<(T8, T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
@@ -4237,7 +5857,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8>
     }
 
     public IncrementalValuesProvider<T9> SelectMany<T9>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<T9>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9> SelectMany<T9>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<T9>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9> SelectMany<T9>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<T9>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -4267,7 +5899,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8>
     }
 
     public IncrementalValuesProvider<T9, T10> SelectMany<T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10> SelectMany<T9, T10>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10> SelectMany<T9, T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -4297,7 +5941,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8>
     }
 
     public IncrementalValuesProvider<T9, T10, T11> SelectMany<T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11> SelectMany<T9, T10, T11>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11> SelectMany<T9, T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -4322,7 +5978,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8>
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12> SelectMany<T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12> SelectMany<T9, T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12> SelectMany<T9, T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -4347,7 +6015,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8>
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13> SelectMany<T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13> SelectMany<T9, T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13> SelectMany<T9, T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -4372,7 +6052,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8>
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14> SelectMany<T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14> SelectMany<T9, T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14> SelectMany<T9, T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -4397,7 +6089,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8>
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15> SelectMany<T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15> SelectMany<T9, T10, T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15> SelectMany<T9, T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -4422,7 +6126,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8>
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15, T16)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -4447,7 +6163,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8>
     }
 
     public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, CancellationToken, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, ct));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16, T17>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, IEnumerable<(T9, T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public IncrementalValuesProvider<T9, T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T9, T10, T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, ImmutableArray<(T9, T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
     }
@@ -4505,7 +6233,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T10> SelectMany<T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<T10>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10> SelectMany<T10>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<T10>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10> SelectMany<T10>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<T10>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -4535,7 +6275,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T10, T11> SelectMany<T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11> SelectMany<T10, T11>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11> SelectMany<T10, T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -4560,7 +6312,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T10, T11, T12> SelectMany<T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12> SelectMany<T10, T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12> SelectMany<T10, T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -4585,7 +6349,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13> SelectMany<T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13> SelectMany<T10, T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13> SelectMany<T10, T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -4610,7 +6386,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14> SelectMany<T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14> SelectMany<T10, T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14> SelectMany<T10, T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -4635,7 +6423,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15> SelectMany<T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15> SelectMany<T10, T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15> SelectMany<T10, T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -4660,7 +6460,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16> SelectMany<T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16> SelectMany<T10, T11, T12, T13, T14, T15, T16>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16> SelectMany<T10, T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -4685,7 +6497,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16, T17)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -4710,7 +6534,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17, T18>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, CancellationToken, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, ct));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17, T18>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, IEnumerable<(T10, T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public IncrementalValuesProvider<T10, T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T10, T11, T12, T13, T14, T15, T16, T17, T18>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, ImmutableArray<(T10, T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
     }
@@ -4768,7 +6604,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T11> SelectMany<T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<T11>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11> SelectMany<T11>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<T11>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11> SelectMany<T11>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<T11>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -4793,7 +6641,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T11, T12> SelectMany<T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12> SelectMany<T11, T12>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12> SelectMany<T11, T12>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -4818,7 +6678,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T11, T12, T13> SelectMany<T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13> SelectMany<T11, T12, T13>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13> SelectMany<T11, T12, T13>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -4843,7 +6715,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14> SelectMany<T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14> SelectMany<T11, T12, T13, T14>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14> SelectMany<T11, T12, T13, T14>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -4868,7 +6752,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15> SelectMany<T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15> SelectMany<T11, T12, T13, T14, T15>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15> SelectMany<T11, T12, T13, T14, T15>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -4893,7 +6789,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16> SelectMany<T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16> SelectMany<T11, T12, T13, T14, T15, T16>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15, T16)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16> SelectMany<T11, T12, T13, T14, T15, T16>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15, T16)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -4918,7 +6826,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17> SelectMany<T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17> SelectMany<T11, T12, T13, T14, T15, T16, T17>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15, T16, T17)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17> SelectMany<T11, T12, T13, T14, T15, T16, T17>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -4943,7 +6863,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17, T18)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
@@ -4968,7 +6900,19 @@ public readonly struct IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8,
     }
 
     public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18, T19> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18, T19>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, CancellationToken, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17, T18, T19)>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10, ct));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18, T19> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18, T19>(
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, IEnumerable<(T11, T12, T13, T14, T15, T16, T17, T18, T19)>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public IncrementalValuesProvider<T11, T12, T13, T14, T15, T16, T17, T18, T19> SelectMany<T11, T12, T13, T14, T15, T16, T17, T18, T19>(
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, ImmutableArray<(T11, T12, T13, T14, T15, T16, T17, T18, T19)>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }

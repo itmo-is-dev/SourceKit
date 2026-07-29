@@ -93,7 +93,19 @@ public readonly struct <#= typeName #><<#= genericParameters #>>(<#= typeName #>
     }
 
     public IncrementalValuesProvider<<#= returnTypeParameters #>> SelectMany<<#= returnTypeParameters #>>(
+        Func<<#= genericParameters #>, CancellationToken, ImmutableArray<<#= returnTupleTypeParameters #>>> selector)
+    {
+        return _provider.SelectMany((tuple, ct) => selector(<#= ExtractElements("tuple", parameterCount) #>, ct));
+    }
+
+    public IncrementalValuesProvider<<#= returnTypeParameters #>> SelectMany<<#= returnTypeParameters #>>(
         Func<<#= genericParameters #>, IEnumerable<<#= returnTupleTypeParameters #>>> selector)
+    {
+        return _provider.SelectMany((tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
+    }
+
+    public IncrementalValuesProvider<<#= returnTypeParameters #>> SelectMany<<#= returnTypeParameters #>>(
+        Func<<#= genericParameters #>, ImmutableArray<<#= returnTupleTypeParameters #>>> selector)
     {
         return _provider.SelectMany((tuple, _) => selector(<#= ExtractElements("tuple", parameterCount) #>));
     }

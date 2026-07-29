@@ -58,30 +58,41 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
 
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<INamedTypeSymbol> assemblyTypes = context.CompilationProvider
-            .SelectMany(static (compilation, ct) => compilation
-                .EnumerateAllAvailableTypes(ct)
-                .Where(type => type.ContainingAssembly.Equals(compilation.Assembly, SymbolEqualityComparer.Default))
-                .Where(type => type.ContainingType is null));
+        IncrementalValuesProvider<INamedTypeSymbol> assemblyTypes = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) =>
+                {
+                    return node is TypeDeclarationSyntax { BaseList: { } baseList }
+                           && baseList.Types.Any(type =>
+                               type.Type is IdentifierNameSyntax name
+                               && name.Identifier.Text.Contains("IMessage"));
+                },
+                static (context, _) =>
+                {
+                    return context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol
+                        ? IncrementalResult.Success(symbol)
+                        : IncrementalResult.Skip;
+                })
+            .Unwrap(context);
 
-        IncrementalValueProvider<INamedTypeSymbol?> messageInterfaceSymbol = context.CompilationProvider
-            .Select(static (compilation, _) => compilation
-                .GetTypeByMetadataName(Constants.ProtobufMessageInterfaceFullyQualifiedName));
+        IncrementalValueProvider<IncrementalResult<INamedTypeSymbol>> messageInterfaceSymbol = context.CompilationProvider
+            .Select(static (compilation, _) => compilation.GetTypeByMetadataName(Constants.ProtobufMessageInterfaceFullyQualifiedName) is { } symbol
+                ? IncrementalResult.Success(symbol)
+                : IncrementalResult.Skip);
 
         IncrementalValuesProvider<ProtoMessage> protoMessages = assemblyTypes
-            .Combine(messageInterfaceSymbol)
+            .CombineAndUnwrap(messageInterfaceSymbol, context)
             .Combine(context.CompilationProvider)
-            .Where(static (_, messageInterfaceSymbol, _) => messageInterfaceSymbol is not null)
-            .Select(static (assemblyType, messageInterfaceSymbol, compilation) => OnVisitNamedTypeSymbol(assemblyType, messageInterfaceSymbol!, compilation))
-            .Where(static message => message is not null)
-            .Select(static (message, _) => message!);
+            .WithComparer(static (type, _, _) => type)
+            .Select(static (assemblyType, messageInterfaceSymbol, compilation) => OnVisitNamedTypeSymbol(assemblyType, messageInterfaceSymbol, compilation) is { } message
+                ? IncrementalResult.Success(message)
+                : IncrementalResult.Skip)
+            .Unwrap(context);
 
         context.RegisterSourceOutput(
             protoMessages.Combine(context.CompilationProvider),
-            static (context, tuple) =>
+            static (context, message, compilation) =>
             {
-                var (message, compilation) = tuple;
-
                 try
                 {
                     var command = new FileBuildingCommand(compilation, CompilationUnit(), message);

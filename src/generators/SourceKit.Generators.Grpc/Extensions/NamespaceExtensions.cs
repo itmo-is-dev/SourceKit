@@ -2,19 +2,15 @@ using Microsoft.CodeAnalysis;
 
 namespace SourceKit.Generators.Grpc.Extensions;
 
-public static class CompilationExtensions
+public static class NamespaceExtensions
 {
-    /// <summary>
-    ///     Enumerates all types reachable from this compilation including the types,
-    ///     that were defined outside the compiled assembly.
-    /// </summary>
     public static IEnumerable<INamedTypeSymbol> EnumerateAllAvailableTypes(
-        this Compilation compilation,
+        this INamespaceSymbol ns,
         CancellationToken cancellationToken)
     {
-        return EnumerateNestedTypesAndSelf(compilation.GlobalNamespace, cancellationToken);
+        return EnumerateNestedTypesAndSelf(ns, cancellationToken);
     }
-    
+
     private static IEnumerable<INamedTypeSymbol> EnumerateNestedTypesAndSelf(
         INamespaceOrTypeSymbol symbol,
         CancellationToken cancellationToken)

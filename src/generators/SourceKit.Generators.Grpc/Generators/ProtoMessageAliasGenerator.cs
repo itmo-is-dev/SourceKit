@@ -13,43 +13,84 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
 {
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
-        IncrementalValuesProvider<INamedTypeSymbol> allTypes = context.CompilationProvider
-            .SelectMany(static (compilation, ct) => compilation.EnumerateAllAvailableTypes(ct))
+        IncrementalValueProvider<IncrementalResult<INamedTypeSymbol>> messageInterfaceSymbol = context.CompilationProvider
+            .Select(static (compilation, _) => compilation.GetTypeByMetadataName(Constants.ProtobufMessageInterfaceFullyQualifiedName) is { } symbol
+                ? IncrementalResult.Success(symbol)
+                : IncrementalResult.Skip);
+
+        IncrementalValueProvider<IncrementalResult<INamedTypeSymbol>> enumAttributeSymbol = context.CompilationProvider
+            .Select(static (compilation, _) => compilation.GetTypeByMetadataName(Constants.ProtobufOriginalNameAttributeFullyQualifiedName) is { } symbol
+                ? IncrementalResult.Success(symbol)
+                : IncrementalResult.Skip);
+
+        IncrementalValuesProvider<INamedTypeSymbol> definedTypes = context.SyntaxProvider
+            .CreateSyntaxProvider(
+                static (node, _) => node switch
+                {
+                    TypeDeclarationSyntax typeDeclaration =>
+                        typeDeclaration.BaseList is { } baseList
+                        && baseList.Types.Any(type =>
+                            type.Type is IdentifierNameSyntax name
+                            && name.Identifier.Text.Contains("IMessage")),
+
+                    EnumDeclarationSyntax => true,
+
+                    _ => false,
+                },
+                static (context, _) =>
+                {
+                    return context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol
+                        ? IncrementalResult.Success(symbol)
+                        : IncrementalResult.Skip;
+                })
+            .Unwrap(context)
             .Where(IsApplicableType);
 
-        IncrementalValueProvider<INamedTypeSymbol?> messageInterfaceSymbol = context.CompilationProvider
-            .Select(static (compilation, _) => compilation.GetTypeByMetadataName(
-                Constants.ProtobufMessageInterfaceFullyQualifiedName));
+        IncrementalValuesProvider<INamedTypeSymbol> referencedTypes = context.CompilationProvider
+            .SelectMany(static compilation => compilation.References.Select(reference => (reference, compilation)).ToImmutableArray())
+            .WithComparer(static (reference, _) => reference)
+            .Select(static (reference, compilation) => compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assemblySymbol
+                ? IncrementalResult.Success(assemblySymbol)
+                : IncrementalResult.Skip)
+            .Unwrap(context)
+            .SelectMany(static (assembly, ct) => assembly.GlobalNamespace.EnumerateAllAvailableTypes(ct));
 
-        IncrementalValueProvider<INamedTypeSymbol?> enumAttributeSymbol = context.CompilationProvider
-            .Select(static (compilation, _) => compilation.GetTypeByMetadataName(
-                Constants.ProtobufOriginalNameAttributeFullyQualifiedName));
+        IncrementalValuesProvider<INamedTypeSymbol> FilterProtoMessages(IncrementalValuesProvider<INamedTypeSymbol> provider)
+        {
+            return provider
+                .CombineAndUnwrap(messageInterfaceSymbol, context)
+                .Where(static (symbol, _) => symbol.TypeKind is TypeKind.Class)
+                .Where(static (symbol, messageInterfaceSymbol) => symbol.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default))
+                .Where(static (symbol, _) => symbol.ContainingType is null)
+                .Select(static (symbol, _) => symbol);
+        }
 
-        IncrementalValuesProvider<INamedTypeSymbol> protoMessages = allTypes
-            .Combine(messageInterfaceSymbol)
-            .Where(static tuple => tuple.Right is not null)
-            .Where(static tuple => tuple.Left.TypeKind is TypeKind.Class)
-            .Where(static tuple => tuple.Left.AllInterfaces.Contains(tuple.Right!, SymbolEqualityComparer.Default))
-            .Where(static tuple => tuple.Left.ContainingType is null)
-            .Select(static (tuple, _) => tuple.Left);
+        IncrementalValuesProvider<INamedTypeSymbol> FilterProtoEnums(IncrementalValuesProvider<INamedTypeSymbol> provider)
+        {
+            return provider
+                .CombineAndUnwrap(enumAttributeSymbol, context)
+                .Where(static (symbol, _) => symbol.TypeKind is TypeKind.Enum)
+                .Where(static (symbol, enumAttributeSymbol) => symbol
+                    .GetMembers()
+                    .OfType<IFieldSymbol>()
+                    .All(member => member
+                        .GetAttributes()
+                        .Any(attr => attr.AttributeClass?.Equals(enumAttributeSymbol, SymbolEqualityComparer.Default) is true)))
+                .Where(static (symbol, _) => symbol.ContainingType is null)
+                .Select(static (symbol, _) => symbol);
+        }
 
-        IncrementalValuesProvider<INamedTypeSymbol> protoEnums = allTypes
-            .Combine(enumAttributeSymbol)
-            .Where(static tuple => tuple.Left.TypeKind is TypeKind.Enum)
-            .Where(static tuple => tuple.Left
-                .GetMembers()
-                .OfType<IFieldSymbol>()
-                .All(member => member
-                    .GetAttributes()
-                    .Any(attr => attr.AttributeClass?.Equals(tuple.Right, SymbolEqualityComparer.Default) is true)))
-            .Where(tuple => tuple.Left.ContainingType is null)
-            .Select((tuple, _) => tuple.Left);
+        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> definedProtoMessageTypes = FilterProtoMessages(definedTypes).Collect();
+        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> definedProtoEnumTypes = FilterProtoEnums(definedTypes).Collect();
 
-        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> protoTypes = protoMessages
-            .Collect()
-            .Combine(protoEnums.Collect())
-            .SelectMany((tuple, _) => tuple.Left.Concat(tuple.Right))
-            .Collect();
+        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> referencedProtoMessageTypes = FilterProtoMessages(referencedTypes).Collect();
+        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> referencedProtoEnumTypes = FilterProtoEnums(referencedTypes).Collect();
+
+        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> protoTypes = definedProtoMessageTypes
+            .Combine(definedProtoEnumTypes)
+            .Combine(referencedProtoMessageTypes)
+            .Combine(referencedProtoEnumTypes)
+            .Select(static (array1, array2, array3, array4) => array1.Concat(array2).Concat(array3).Concat(array4).ToImmutableArray());
 
         context.RegisterSourceOutput(
             protoTypes,
