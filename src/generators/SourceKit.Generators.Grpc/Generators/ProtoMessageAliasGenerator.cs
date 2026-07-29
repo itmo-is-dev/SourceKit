@@ -30,7 +30,7 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
                     TypeDeclarationSyntax typeDeclaration =>
                         typeDeclaration.BaseList is { } baseList
                         && baseList.Types.Any(type =>
-                            type.Type is IdentifierNameSyntax name
+                            type.Type is SimpleNameSyntax name
                             && name.Identifier.Text.Contains("IMessage")),
 
                     EnumDeclarationSyntax => true,

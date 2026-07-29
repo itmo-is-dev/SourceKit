@@ -64,7 +64,7 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
                 {
                     return node is TypeDeclarationSyntax { BaseList: { } baseList }
                            && baseList.Types.Any(type =>
-                               type.Type is IdentifierNameSyntax name
+                               type.Type is SimpleNameSyntax name
                                && name.Identifier.Text.Contains("IMessage"));
                 },
                 static (context, _) =>
