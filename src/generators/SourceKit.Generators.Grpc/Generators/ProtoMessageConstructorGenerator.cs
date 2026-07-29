@@ -59,19 +59,10 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
     {
         IncrementalValuesProvider<INamedTypeSymbol> assemblyTypes = context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (node, _) =>
-                {
-                    return node is TypeDeclarationSyntax { BaseList: { } baseList }
-                           && baseList.Types.Any(type =>
-                               type.Type is SimpleNameSyntax name
-                               && name.Identifier.Text.Contains("IMessage"));
-                },
-                static (context, _) =>
-                {
-                    return context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol
-                        ? IncrementalResult.Success(symbol)
-                        : IncrementalResult.Skip;
-                })
+                static (node, _) => node is TypeDeclarationSyntax { BaseList: not null },
+                static (context, _) => context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol
+                    ? IncrementalResult.Success(symbol)
+                    : IncrementalResult.Skip)
             .Unwrap(context);
 
         IncrementalValueProvider<IncrementalResult<INamedTypeSymbol>> messageInterfaceSymbol = context.CompilationProvider

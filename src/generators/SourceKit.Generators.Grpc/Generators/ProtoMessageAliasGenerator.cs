@@ -27,12 +27,7 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(
                 static (node, _) => node switch
                 {
-                    TypeDeclarationSyntax typeDeclaration =>
-                        typeDeclaration.BaseList is { } baseList
-                        && baseList.Types.Any(type =>
-                            type.Type is SimpleNameSyntax name
-                            && name.Identifier.Text.Contains("IMessage")),
-
+                    TypeDeclarationSyntax typeDeclaration => typeDeclaration.BaseList is not null,
                     EnumDeclarationSyntax => true,
 
                     _ => false,
