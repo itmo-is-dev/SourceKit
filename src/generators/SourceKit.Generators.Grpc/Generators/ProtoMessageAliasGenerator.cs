@@ -48,6 +48,7 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
                 ? IncrementalResult.Success(assemblySymbol)
                 : IncrementalResult.Skip)
             .Unwrap(context)
+            .WithComparer(static assembly => assembly.Identity)
             .SelectMany(static (assembly, ct) => assembly.GlobalNamespace.EnumerateAllAvailableTypes(ct));
 
         IncrementalValuesProvider<INamedTypeSymbol> FilterProtoMessages(IncrementalValuesProvider<INamedTypeSymbol> provider)

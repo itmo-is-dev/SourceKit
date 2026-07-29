@@ -22,7 +22,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.0.$(PatchVersion)</Version>
+        <Version>1.0.$(PatchVersion)$(VersionSuffix)</Version>
         <PackageReleaseNotes>Added AnnotatedMustBePartialAttribute</PackageReleaseNotes>
     </PropertyGroup>
 

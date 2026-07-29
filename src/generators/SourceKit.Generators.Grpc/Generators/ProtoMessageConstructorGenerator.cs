@@ -60,7 +60,7 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
         IncrementalValuesProvider<INamedTypeSymbol> assemblyTypes = context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is TypeDeclarationSyntax { BaseList: not null },
-                static (context, _) => context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol symbol
+                static (context, _) => context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol { ContainingType: null } symbol
                     ? IncrementalResult.Success(symbol)
                     : IncrementalResult.Skip)
             .Unwrap(context);
