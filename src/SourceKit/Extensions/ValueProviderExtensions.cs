@@ -182,6 +182,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return ((IncrementalValueProvider<T1, T2>)provider).Where(predicate);
     }
 
+    public static void RegisterSourceOutput<T1, T2>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<T1, T2> provider,
+        Action<SourceProductionContext, T1, T2> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<(T1, T2)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2));
+    }
+
+    public static void RegisterSourceOutput<T1, T2>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<T1, T2> provider,
+        Action<SourceProductionContext, T1, T2> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<(T1, T2)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2));
+    }
+
     [OverloadResolutionPriority(2147483647)]
     public static IncrementalValuesProvider<T1, T2, T3> Select<TFrom, T1, T2, T3>(
         this IncrementalValuesProvider<TFrom> source,
@@ -303,6 +323,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<T1, T2, T3, bool> predicate)
     {
         return ((IncrementalValueProvider<T1, T2, T3>)provider).Where(predicate);
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<T1, T2, T3> provider,
+        Action<SourceProductionContext, T1, T2, T3> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<(T1, T2, T3)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3));
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<T1, T2, T3> provider,
+        Action<SourceProductionContext, T1, T2, T3> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<(T1, T2, T3)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3));
     }
 
     [OverloadResolutionPriority(2147483647)]
@@ -428,6 +468,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return ((IncrementalValueProvider<T1, T2, T3, T4>)provider).Where(predicate);
     }
 
+    public static void RegisterSourceOutput<T1, T2, T3, T4>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<T1, T2, T3, T4> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<(T1, T2, T3, T4)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<T1, T2, T3, T4> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<(T1, T2, T3, T4)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4));
+    }
+
     [OverloadResolutionPriority(2147483647)]
     public static IncrementalValuesProvider<T1, T2, T3, T4, T5> Select<TFrom, T1, T2, T3, T4, T5>(
         this IncrementalValuesProvider<TFrom> source,
@@ -549,6 +609,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<T1, T2, T3, T4, T5, bool> predicate)
     {
         return ((IncrementalValueProvider<T1, T2, T3, T4, T5>)provider).Where(predicate);
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<T1, T2, T3, T4, T5> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<(T1, T2, T3, T4, T5)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<T1, T2, T3, T4, T5> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<(T1, T2, T3, T4, T5)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5));
     }
 
     [OverloadResolutionPriority(2147483647)]
@@ -674,6 +754,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return ((IncrementalValueProvider<T1, T2, T3, T4, T5, T6>)provider).Where(predicate);
     }
 
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<T1, T2, T3, T4, T5, T6> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<(T1, T2, T3, T4, T5, T6)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<T1, T2, T3, T4, T5, T6> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6));
+    }
+
     [OverloadResolutionPriority(2147483647)]
     public static IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7> Select<TFrom, T1, T2, T3, T4, T5, T6, T7>(
         this IncrementalValuesProvider<TFrom> source,
@@ -795,6 +895,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<T1, T2, T3, T4, T5, T6, T7, bool> predicate)
     {
         return ((IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7>)provider).Where(predicate);
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6, T7>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6, T7> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<(T1, T2, T3, T4, T5, T6, T7)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6, T7>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6, T7> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6, T7)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7));
     }
 
     [OverloadResolutionPriority(2147483647)]
@@ -920,6 +1040,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return ((IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8>)provider).Where(predicate);
     }
 
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6, T7, T8>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6, T7, T8> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<(T1, T2, T3, T4, T5, T6, T7, T8)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6, T7, T8>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6, T7, T8> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6, T7, T8)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8));
+    }
+
     [OverloadResolutionPriority(2147483647)]
     public static IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8, T9> Select<TFrom, T1, T2, T3, T4, T5, T6, T7, T8, T9>(
         this IncrementalValuesProvider<TFrom> source,
@@ -1043,6 +1183,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return ((IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, T9>)provider).Where(predicate);
     }
 
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, T9> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6, T7, T8, T9> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8, T9> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6, T7, T8, T9> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9));
+    }
+
     [OverloadResolutionPriority(2147483647)]
     public static IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> Select<TFrom, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
         this IncrementalValuesProvider<TFrom> source,
@@ -1149,6 +1309,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, bool> predicate)
     {
         return ((IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>)provider).Where(predicate);
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
+    }
+
+    public static void RegisterSourceOutput<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> provider,
+        Action<SourceProductionContext, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>)provider,
+            (ctx, tuple) => action(ctx, tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10));
     }
 
    

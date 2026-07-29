@@ -175,6 +175,26 @@ public static partial class SourceKitValuesProviderExtensionsInternal
     {
         return ((IncrementalValueProvider<<#= genericParameters #>>)provider).Where(predicate);
     }
+
+    public static void RegisterSourceOutput<<#= genericParameters #>>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValueProvider<<#= genericParameters #>> provider,
+        Action<SourceProductionContext, <#= genericParameters #>> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValueProvider<<#= tupleGenericParameters #>>)provider,
+            (ctx, tuple) => action(ctx, <#= ExtractElements("tuple", parameterCount)#>));
+    }
+
+    public static void RegisterSourceOutput<<#= genericParameters #>>(
+        this IncrementalGeneratorInitializationContext context,
+        IncrementalValuesProvider<<#= genericParameters #>> provider,
+        Action<SourceProductionContext, <#= genericParameters #>> action)
+    {
+        context.RegisterSourceOutput(
+            (IncrementalValuesProvider<<#= tupleGenericParameters #>>)provider,
+            (ctx, tuple) => action(ctx, <#= ExtractElements("tuple", parameterCount)#>));
+    }
 <#
         }
     }

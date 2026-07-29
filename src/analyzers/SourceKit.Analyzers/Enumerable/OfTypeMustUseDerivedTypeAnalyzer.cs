@@ -26,18 +26,19 @@ public class OfTypeMustUseDerivedTypeAnalyzer : IIncrementalGenerator
         var syntaxProvider = context.SyntaxProvider
             .CreateSyntaxProvider(
                 static (node, _) => node is InvocationExpressionSyntax,
-                static (InvocationExpressionSyntax, ITypeSymbol, ITypeSymbol)? (context, _) =>
+                static (context, _) =>
                 {
-                    var operation = (IInvocationOperation)context.SemanticModel.GetOperation(context.Node)!;
+                    if (context.SemanticModel.GetOperation(context.Node) is not IInvocationOperation operation)
+                        return IncrementalResult.Skip;
 
                     if (operation.TargetMethod.Name is not "OfType")
-                        return null;
+                        return IncrementalResult.Skip;
 
                     var enumerableStaticSymbol = context.SemanticModel.Compilation.GetTypeSymbol(typeof(System.Linq.Enumerable));
                     var containingType = operation.TargetMethod.ContainingType;
 
                     if (containingType.Equals(enumerableStaticSymbol, SymbolEqualityComparer.Default) is false)
-                        return null;
+                        return IncrementalResult.Skip;
 
                     var argument = operation.Arguments.Single();
 
@@ -48,34 +49,32 @@ public class OfTypeMustUseDerivedTypeAnalyzer : IIncrementalGenerator
                     if (value.Type is not INamedTypeSymbol namedSourceType
                         || operation.Type is not INamedTypeSymbol namedReturnType)
                     {
-                        return null;
+                        return IncrementalResult.Skip;
                     }
 
                     var sourceElementType = namedSourceType.TypeArguments.SingleOrDefault();
                     var returnElementType = namedReturnType.TypeArguments.Single();
 
                     if (sourceElementType is null)
-                        return null;
+                        return IncrementalResult.Skip;
 
                     if (returnElementType.IsAssignableTo(sourceElementType))
-                        return null;
+                        return IncrementalResult.Skip;
 
                     if (sourceElementType is ITypeParameterSymbol parameterSymbol &&
-                        parameterSymbol.ConstraintTypes.Any(c => returnElementType.IsAssignableTo(c)))
+                        parameterSymbol.ConstraintTypes.Any(returnElementType.IsAssignableTo))
                     {
-                        return null;
+                        return IncrementalResult.Skip;
                     }
 
-                    return ((InvocationExpressionSyntax)context.Node, returnElementType, sourceElementType);
+                    return IncrementalResult.Success(((InvocationExpressionSyntax)context.Node, returnElementType, sourceElementType));
                 })
-            .Where(node => node is not null);
+            .Unwrap(context);
 
         context.RegisterSourceOutput(
             syntaxProvider,
-            static (context, tuple) =>
+            static (context, node, returnElementType, sourceElementType) =>
             {
-                var (node, returnElementType, sourceElementType) = tuple!.Value;
-
                 var diagnostic = Diagnostic.Create(
                     Descriptor,
                     node.GetLocation(),
