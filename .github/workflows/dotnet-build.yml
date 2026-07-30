@@ -33,6 +33,11 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          version: 'latest'
+
       - name: Cache nuget packages
         uses: actions/cache@v3
         if: steps.cache-tests.outputs.cache-hit != 'true'
@@ -41,7 +46,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('**/*.Packages.props', '**/*.csproj') }}
           restore-keys: |
             ${{ runner.os }}-nuget-
-            
+
       - name: move nuget config
         if: steps.cache-tests.outputs.cache-hit != 'true'
         run: |
@@ -61,7 +66,7 @@ jobs:
         run: |
           mv .tmp-nuget-config/NuGet.config .
           rm -rf .tmp-nuget-config
-          
+
       - name: Remove .Reflect tests
         if: steps.cache-tests.outpust.cache-hit != 'true'
         run: |

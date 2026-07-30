@@ -1,9 +1,11 @@
 using System.Collections.Immutable;
+using System.Text;
 using FluentChaining;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Operations;
+using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.DependencyInjection;
 using SourceKit.Extensions;
 using SourceKit.Generators.Grpc.Builders.FileBuilders;
@@ -59,7 +61,8 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
     {
         IncrementalValuesProvider<INamedTypeSymbol> assemblyTypes = context.SyntaxProvider
             .CreateSyntaxProvider(
-                static (node, _) => node is TypeDeclarationSyntax { BaseList: not null },
+                static (node, _) => node is TypeDeclarationSyntax { BaseList: { } baseList }
+                                    && baseList.Types.Any(type => type.Type.IsSimpleNameEquals("IMessage")),
                 static (context, _) => context.SemanticModel.GetDeclaredSymbol(context.Node) is INamedTypeSymbol { ContainingType: null } symbol
                     ? IncrementalResult.Success(symbol)
                     : IncrementalResult.Skip)
@@ -91,7 +94,7 @@ public sealed class ProtoMessageConstructorGenerator : IIncrementalGenerator
                     var fileName = $"{message.Type.GetFullyQualifiedName()}.{Constants.FilenameSuffix}";
                     string source = compilationUnit.NormalizeWhitespace(eol: "\n", elasticTrivia: true).ToFullString();
 
-                    context.AddSource(fileName, source);
+                    context.AddSource(fileName, SourceText.From(source, Encoding.UTF8));
                 }
                 catch (Exception e)
                 {

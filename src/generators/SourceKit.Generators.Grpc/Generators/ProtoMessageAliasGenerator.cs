@@ -1,10 +1,10 @@
 using System.Collections.Immutable;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using SourceKit.Extensions;
-using SourceKit.Generators.Grpc.Extensions;
-using SourceKit.Tools;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Grpc.Generators;
@@ -15,12 +15,17 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         IncrementalValueProvider<IncrementalResult<INamedTypeSymbol>> messageInterfaceSymbol = context.CompilationProvider
-            .Select(static (compilation, _) => compilation.GetTypeByMetadataName(Constants.ProtobufMessageInterfaceFullyQualifiedName) is { } symbol
+            .Select(static compilation => compilation.GetTypeByMetadataName(Constants.ProtobufMessageInterfaceFullyQualifiedName) is { } symbol
                 ? IncrementalResult.Success(symbol)
                 : IncrementalResult.Skip);
 
         IncrementalValueProvider<IncrementalResult<INamedTypeSymbol>> enumAttributeSymbol = context.CompilationProvider
-            .Select(static (compilation, _) => compilation.GetTypeByMetadataName(Constants.ProtobufOriginalNameAttributeFullyQualifiedName) is { } symbol
+            .Select(static compilation => compilation.GetTypeByMetadataName(Constants.ProtobufOriginalNameAttributeFullyQualifiedName) is { } symbol
+                ? IncrementalResult.Success(symbol)
+                : IncrementalResult.Skip);
+
+        IncrementalValueProvider<IncrementalResult<INamedTypeSymbol>> exportedAliasAttributeSymbol = context.CompilationProvider
+            .Select(static compilation => compilation.GetTypeByMetadataName(Constants.ExportProtoAliasAttributeMetadataName) is { } symbol
                 ? IncrementalResult.Success(symbol)
                 : IncrementalResult.Skip);
 
@@ -28,7 +33,10 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
             .CreateSyntaxProvider(
                 static (node, _) => node switch
                 {
-                    TypeDeclarationSyntax typeDeclaration => typeDeclaration.BaseList is not null,
+                    TypeDeclarationSyntax typeDeclaration =>
+                        typeDeclaration.BaseList is { } baseList
+                        && baseList.Types.Any(type => type.Type.IsSimpleNameEquals("IMessage")),
+
                     EnumDeclarationSyntax => true,
 
                     _ => false,
@@ -42,95 +50,133 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
             .Unwrap(context)
             .Where(IsApplicableType);
 
-        IncrementalValuesProvider<INamedTypeSymbol> referencedTypes = context.CompilationProvider
-            .SelectMany(static compilation => compilation.References.Select(reference => (reference, compilation)).ToImmutableArray())
-            .WithComparer(static (reference, _) => reference)
-            .Select(static (reference, compilation) => compilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assemblySymbol
-                ? IncrementalResult.Success(assemblySymbol)
-                : IncrementalResult.Skip)
-            .Unwrap(context)
+        IncrementalValueProvider<ImmutableArray<MessageAliasDefinition>> definedProtoMessageTypes = definedTypes
+            .CombineAndUnwrap(messageInterfaceSymbol, context)
+            .Where(static (symbol, _) => symbol.TypeKind is TypeKind.Class)
+            .Where(static (symbol, messageInterfaceSymbol) => symbol.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default))
+            .Where(static (symbol, _) => symbol.ContainingType is null)
+            .Select(static (symbol, _) => symbol)
+            .WithComparer(static symbol => (symbol.Name, symbol.ContainingNamespace.ToDisplayString()))
+            .Select(MessageAliasDefinition.Create)
+            .Collect();
+
+        IncrementalValueProvider<ImmutableArray<MessageAliasDefinition>> definedProtoEnumTypes = definedTypes
+            .CombineAndUnwrap(enumAttributeSymbol, context)
+            .Where(static (symbol, _) => symbol.TypeKind is TypeKind.Enum)
+            .Where(static (symbol, enumAttributeSymbol) => symbol
+                .GetMembers()
+                .OfType<IFieldSymbol>()
+                .All(member => member
+                    .GetAttributes()
+                    .Any(attr => attr.AttributeClass?.Equals(enumAttributeSymbol, SymbolEqualityComparer.Default) is true)))
+            .Where(static (symbol, _) => symbol.ContainingType is null)
+            .Select(static (symbol, _) => symbol)
+            .WithComparer(static symbol => (symbol.Name, symbol.ContainingNamespace.ToDisplayString()))
+            .Select(MessageAliasDefinition.Create)
+            .Collect();
+
+        IncrementalValueProvider<ImmutableArray<MessageAliasDefinition>> exportedAliasDefinitions = context.CompilationProvider
+            .SelectMany(static compilation => compilation
+                .References
+                .Select(compilation.GetAssemblyOrModuleSymbol)
+                .OfType<IAssemblySymbol>()
+                .ToImmutableArray())
             .WithComparer(static assembly => assembly.Identity)
-            .SelectMany(static (assembly, ct) => assembly.GlobalNamespace.EnumerateAllAvailableTypes(ct));
+            .CombineAndUnwrap(exportedAliasAttributeSymbol, context)
+            .WithComparer(static (assembly, _) => assembly.Identity)
+            .SelectMany(static (assembly, exportAttributeSymbol) => assembly
+                .GetAttributes()
+                .Where(attribute => SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, exportAttributeSymbol))
+                .Where(attribute => attribute.ConstructorArguments is [{ Value: string }, { Value: string }])
+                .Select(attribute => new MessageAliasDefinition(
+                    Alias: (string)attribute.ConstructorArguments[0].Value!,
+                    TypeName: (string)attribute.ConstructorArguments[1].Value!))
+                .ToImmutableArray())
+            .Collect();
 
-        IncrementalValuesProvider<INamedTypeSymbol> FilterProtoMessages(IncrementalValuesProvider<INamedTypeSymbol> provider)
-        {
-            return provider
-                .CombineAndUnwrap(messageInterfaceSymbol, context)
-                .Where(static (symbol, _) => symbol.TypeKind is TypeKind.Class)
-                .Where(static (symbol, messageInterfaceSymbol) => symbol.AllInterfaces.Contains(messageInterfaceSymbol, SymbolEqualityComparer.Default))
-                .Where(static (symbol, _) => symbol.ContainingType is null)
-                .Select(static (symbol, _) => symbol)
-                .WithComparer(static symbol => (symbol.Name, symbol.ContainingNamespace.ToDisplayString()));
-        }
+        context.RegisterSourceOutput(definedProtoMessageTypes, CreateExportAliasAttributeWriter("DefinedMessages"));
+        context.RegisterSourceOutput(definedProtoEnumTypes, CreateExportAliasAttributeWriter("DefinedEnums"));
 
-        IncrementalValuesProvider<INamedTypeSymbol> FilterProtoEnums(IncrementalValuesProvider<INamedTypeSymbol> provider)
-        {
-            return provider
-                .CombineAndUnwrap(enumAttributeSymbol, context)
-                .Where(static (symbol, _) => symbol.TypeKind is TypeKind.Enum)
-                .Where(static (symbol, enumAttributeSymbol) => symbol
-                    .GetMembers()
-                    .OfType<IFieldSymbol>()
-                    .All(member => member
-                        .GetAttributes()
-                        .Any(attr => attr.AttributeClass?.Equals(enumAttributeSymbol, SymbolEqualityComparer.Default) is true)))
-                .Where(static (symbol, _) => symbol.ContainingType is null)
-                .Select(static (symbol, _) => symbol)
-                .WithComparer(static symbol => (symbol.Name, symbol.ContainingNamespace.ToDisplayString()));
-        }
-
-        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> definedProtoMessageTypes = FilterProtoMessages(definedTypes).Collect();
-        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> definedProtoEnumTypes = FilterProtoEnums(definedTypes).Collect();
-
-        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> referencedProtoMessageTypes = FilterProtoMessages(referencedTypes).Collect();
-        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> referencedProtoEnumTypes = FilterProtoEnums(referencedTypes).Collect();
-
-        IncrementalValueProvider<ImmutableArray<INamedTypeSymbol>> protoTypes = definedProtoMessageTypes
-            .Combine(definedProtoEnumTypes)
-            .Combine(referencedProtoMessageTypes)
-            .Combine(referencedProtoEnumTypes)
-            .Select(static (array1, array2, array3, array4) => array1.Concat(array2).Concat(array3).Concat(array4).ToImmutableArray());
-
-        context.RegisterSourceOutput(
-            protoTypes,
-            static (context, protoTypes) =>
-            {
-                if (protoTypes is [])
-                    return;
-
-                UsingDirectiveSyntax[] directives = protoTypes
-                    .Distinct(SymbolEqualityComparer.Default.Cast<ISymbol, INamedTypeSymbol>())
-                    .GroupBy(x => x.Name, (k, values) => (k, values: values.ToArray()))
-                    .Where(x => x.values.Length is 1)
-                    .Select(x => x.values.Single())
-                    .OrderBy(x => x.Name)
-                    .Select(GenerateAlias)
-                    .ToArray();
-
-                if (directives is [])
-                    return;
-
-                CompilationUnitSyntax unit = CompilationUnit().AddUsings(directives).NormalizeWhitespace(eol: "\n");
-                string text = unit.ToFullString();
-
-                text = $"""
-                // <auto-generated>
-                //      This code was generated by a SourceKit.Generators.Grpc code generator.
-                //      https://github.com/itmo-is-dev/SourceKit
-                // </auto-generated>
-                
-                {text}
-                """;
-
-                context.AddSource("SourceKit.Generators.Grpc.ProtoAlias.cs", text);
-            });
+        context.RegisterSourceOutput(definedProtoMessageTypes, CreateAliasWriter("DefinedMessages"));
+        context.RegisterSourceOutput(definedProtoEnumTypes, CreateAliasWriter("DefinedEnums"));
+        context.RegisterSourceOutput(exportedAliasDefinitions, CreateAliasWriter("Exported"));
     }
 
-    private static UsingDirectiveSyntax GenerateAlias(INamedTypeSymbol symbol)
+    static Action<SourceProductionContext, ImmutableArray<MessageAliasDefinition>> CreateExportAliasAttributeWriter(string filePostfix)
     {
-        return UsingDirective(IdentifierName(symbol.GetFullyQualifiedName()))
-            .WithGlobalKeyword(Token(SyntaxKind.GlobalKeyword))
-            .WithAlias(NameEquals(IdentifierName($"Proto{symbol.Name}")));
+        return (context, types) =>
+        {
+            if (types is [])
+                return;
+
+            AttributeListSyntax[] attributes = types
+                .Distinct()
+                .GroupBy(alias => alias.Alias, (_, values) => values.ToArray())
+                .Where(definitions => definitions.Length is 1)
+                .Select(definitions => definitions.Single())
+                .OrderBy(alias => alias.Alias)
+                .Select(alias => AttributeList()
+                    .AddAttributes(Attribute(IdentifierName("global::SourceKit.Generators.Grpc.Annotations.ExportProtoAlias"))
+                        .AddArgumentListArguments(
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(alias.Alias))),
+                            AttributeArgument(LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(alias.TypeName)))))
+                    .WithTarget(AttributeTargetSpecifier(Token(SyntaxKind.AssemblyKeyword))))
+                .ToArray();
+
+            if (attributes is [])
+                return;
+
+            CompilationUnitSyntax unit = CompilationUnit().AddAttributeLists(attributes).NormalizeWhitespace(eol: "\n");
+            string text = unit.ToFullString();
+
+            text = $"""
+            // <auto-generated>
+            //      This code was generated by a SourceKit.Generators.Grpc code generator.
+            //      https://github.com/itmo-is-dev/SourceKit
+            // </auto-generated>
+            
+            {text}
+            """;
+
+            context.AddSource($"SourceKit.Generators.Grpc.ExportProtoAlias.{filePostfix}.g.cs", SourceText.From(text, Encoding.UTF8));
+        };
+    }
+
+    static Action<SourceProductionContext, ImmutableArray<MessageAliasDefinition>> CreateAliasWriter(string filePostfix)
+    {
+        return (context, types) =>
+        {
+            if (types is [])
+                return;
+
+            UsingDirectiveSyntax[] directives = types
+                .Distinct()
+                .GroupBy(alias => alias.Alias, (_, values) => values.ToArray())
+                .Where(definitions => definitions.Length is 1)
+                .Select(definitions => definitions.Single())
+                .OrderBy(alias => alias.Alias)
+                .Select(alias => UsingDirective(IdentifierName(alias.TypeName))
+                    .WithGlobalKeyword(Token(SyntaxKind.GlobalKeyword))
+                    .WithAlias(NameEquals(IdentifierName(alias.Alias))))
+                .ToArray();
+
+            if (directives is [])
+                return;
+
+            CompilationUnitSyntax unit = CompilationUnit().AddUsings(directives).NormalizeWhitespace(eol: "\n");
+            string text = unit.ToFullString();
+
+            text = $"""
+            // <auto-generated>
+            //      This code was generated by a SourceKit.Generators.Grpc code generator.
+            //      https://github.com/itmo-is-dev/SourceKit
+            // </auto-generated>
+            
+            {text}
+            """;
+
+            context.AddSource($"SourceKit.Generators.Grpc.ProtoAlias.{filePostfix}.g.cs", SourceText.From(text, Encoding.UTF8));
+        };
     }
 
     private static bool IsApplicableType(INamedTypeSymbol type)
@@ -142,5 +188,12 @@ public sealed class ProtoMessageAliasGenerator : IIncrementalGenerator
             return false;
 
         return true;
+    }
+
+    public readonly record struct MessageAliasDefinition(string Alias, string TypeName)
+    {
+        public static MessageAliasDefinition Create(INamedTypeSymbol symbol) => new(
+            Alias: $"Proto{symbol.Name}",
+            TypeName: symbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
     }
 }

@@ -1,4 +1,4 @@
-using SourceKit.Analyzers.MustBePartial.Annotations;
+using SourceKit.Analyzers.Annotations.MustBePartial;
 
 namespace SourceKit.Generators.Builder.Annotations;
 

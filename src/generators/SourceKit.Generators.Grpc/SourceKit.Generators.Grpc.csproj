@@ -74,6 +74,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\SourceKit\SourceKit.csproj"/>
+        <ProjectReference Include="..\SourceKit.Generators.Grpc.Annotations\SourceKit.Generators.Grpc.Annotations.csproj" />
     </ItemGroup>
 
     <ItemGroup>

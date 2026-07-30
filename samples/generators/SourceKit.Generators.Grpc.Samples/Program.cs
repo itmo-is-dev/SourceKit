@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SourceKit.Generators.Grpc.Samples.Grpc;
 
 Console.WriteLine("Hello, World!");
 

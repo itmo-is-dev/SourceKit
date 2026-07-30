@@ -13,7 +13,7 @@
 
     <PropertyGroup>
         <PatchVersion>0-local</PatchVersion>
-        <VersionSuffix>-alpha</VersionSuffix>
+        <VersionSuffix></VersionSuffix>
     </PropertyGroup>
 
     <PropertyGroup>

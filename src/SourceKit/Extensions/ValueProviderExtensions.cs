@@ -75,6 +75,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<T1, TComparand>(tuple => selector(tuple)));
     }
 
+    public static IncrementalValuesProvider<IncrementalResult<T1>> WithResultComparer<T1, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<T1>> provider,
+        Func<T1, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<T1, TComparand>(tuple => selector(tuple)));
+    }
+
     public static IncrementalValuesProvider<T1, TAdded> CombineAndUnwrap<T1, TAdded>(
         this IncrementalValuesProvider<T1> source,
         IncrementalValueProvider<IncrementalResult<TAdded>> other,
@@ -143,6 +150,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<T1, T2, TComparand> selector)
     {
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<(T1, T2), TComparand>(tuple => selector(tuple.Item1, tuple.Item2)));
+    }
+
+    public static IncrementalValuesProvider<IncrementalResult<(T1, T2)>> WithResultComparer<T1, T2, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<(T1, T2)>> provider,
+        Func<T1, T2, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<(T1, T2), TComparand>(tuple => selector(tuple.Item1, tuple.Item2)));
     }
 
     [OverloadResolutionPriority(2147483647)]
@@ -404,6 +418,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<(T1, T2, T3), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3)));
     }
 
+    public static IncrementalValuesProvider<IncrementalResult<(T1, T2, T3)>> WithResultComparer<T1, T2, T3, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<(T1, T2, T3)>> provider,
+        Func<T1, T2, T3, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<(T1, T2, T3), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3)));
+    }
+
     [OverloadResolutionPriority(2147483647)]
     public static IncrementalValuesProvider<T1, T2, T3, TAdded> Combine<T1, T2, T3, TAdded>(
         this IncrementalValuesProvider<(T1, T2, T3)> source,
@@ -661,6 +682,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<T1, T2, T3, T4, TComparand> selector)
     {
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<(T1, T2, T3, T4), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4)));
+    }
+
+    public static IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4)>> WithResultComparer<T1, T2, T3, T4, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4)>> provider,
+        Func<T1, T2, T3, T4, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<(T1, T2, T3, T4), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4)));
     }
 
     [OverloadResolutionPriority(2147483647)]
@@ -922,6 +950,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<(T1, T2, T3, T4, T5), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5)));
     }
 
+    public static IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5)>> WithResultComparer<T1, T2, T3, T4, T5, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5)>> provider,
+        Func<T1, T2, T3, T4, T5, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<(T1, T2, T3, T4, T5), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5)));
+    }
+
     [OverloadResolutionPriority(2147483647)]
     public static IncrementalValuesProvider<T1, T2, T3, T4, T5, TAdded> Combine<T1, T2, T3, T4, T5, TAdded>(
         this IncrementalValuesProvider<(T1, T2, T3, T4, T5)> source,
@@ -1179,6 +1214,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<T1, T2, T3, T4, T5, T6, TComparand> selector)
     {
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<(T1, T2, T3, T4, T5, T6), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6)));
+    }
+
+    public static IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6)>> WithResultComparer<T1, T2, T3, T4, T5, T6, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6)>> provider,
+        Func<T1, T2, T3, T4, T5, T6, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<(T1, T2, T3, T4, T5, T6), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6)));
     }
 
     [OverloadResolutionPriority(2147483647)]
@@ -1440,6 +1482,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<(T1, T2, T3, T4, T5, T6, T7), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7)));
     }
 
+    public static IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6, T7)>> WithResultComparer<T1, T2, T3, T4, T5, T6, T7, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6, T7)>> provider,
+        Func<T1, T2, T3, T4, T5, T6, T7, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<(T1, T2, T3, T4, T5, T6, T7), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7)));
+    }
+
     [OverloadResolutionPriority(2147483647)]
     public static IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, TAdded> Combine<T1, T2, T3, T4, T5, T6, T7, TAdded>(
         this IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6, T7)> source,
@@ -1697,6 +1746,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<T1, T2, T3, T4, T5, T6, T7, T8, TComparand> selector)
     {
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<(T1, T2, T3, T4, T5, T6, T7, T8), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8)));
+    }
+
+    public static IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6, T7, T8)>> WithResultComparer<T1, T2, T3, T4, T5, T6, T7, T8, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6, T7, T8)>> provider,
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<(T1, T2, T3, T4, T5, T6, T7, T8), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8)));
     }
 
     [OverloadResolutionPriority(2147483647)]
@@ -1958,6 +2014,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<(T1, T2, T3, T4, T5, T6, T7, T8, T9), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9)));
     }
 
+    public static IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>> WithResultComparer<T1, T2, T3, T4, T5, T6, T7, T8, T9, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6, T7, T8, T9)>> provider,
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<(T1, T2, T3, T4, T5, T6, T7, T8, T9), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9)));
+    }
+
     [OverloadResolutionPriority(2147483647)]
     public static IncrementalValuesProvider<T1, T2, T3, T4, T5, T6, T7, T8, T9, TAdded> Combine<T1, T2, T3, T4, T5, T6, T7, T8, T9, TAdded>(
         this IncrementalValuesProvider<(T1, T2, T3, T4, T5, T6, T7, T8, T9)> source,
@@ -2215,6 +2278,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TComparand> selector)
     {
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10)));
+    }
+
+    public static IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>> WithResultComparer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)>> provider,
+        Func<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10), TComparand>(tuple => selector(tuple.Item1, tuple.Item2, tuple.Item3, tuple.Item4, tuple.Item5, tuple.Item6, tuple.Item7, tuple.Item8, tuple.Item9, tuple.Item10)));
     }
 
     [OverloadResolutionPriority(2147483647)]

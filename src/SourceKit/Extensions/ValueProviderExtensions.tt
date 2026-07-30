@@ -99,6 +99,13 @@ public static partial class SourceKitValuesProviderExtensionsInternal
         return provider.WithComparer(EqualityComparerFactory.CreateFromSelector<<#= tupleGenericParameters #>, TComparand>(tuple => selector(<#= ExtractElements("tuple", parameterCount) #>)));
     }
 
+    public static IncrementalValuesProvider<IncrementalResult<<#= tupleGenericParameters #>>> WithResultComparer<<#= genericParameters #>, TComparand>(
+        this IncrementalValuesProvider<IncrementalResult<<#= tupleGenericParameters #>>> provider,
+        Func<<#= genericParameters #>, TComparand> selector)
+    {
+        return provider.WithComparer(new IncrementalResultComparer<<#= tupleGenericParameters #>, TComparand>(tuple => selector(<#= ExtractElements("tuple", parameterCount) #>)));
+    }
+
 <#
         if (parameterCount is > 1 and < maxParameterCount)
         {

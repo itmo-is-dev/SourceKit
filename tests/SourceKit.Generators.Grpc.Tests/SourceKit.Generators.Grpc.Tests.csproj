@@ -31,7 +31,11 @@
         <Content Include="..\..\samples\generators\SourceKit.Generators.Grpc.Samples\**\*.cs"
                  Exclude="..\..\samples\generators\SourceKit.Generators.Grpc.Samples\obj\**"
                  LinkBase="SourceKit.Generators.Grpc.Samples\"
-                 CopyToOutputDirectory="Always"/>
+                 CopyToOutputDirectory="PreserveNewest"/>
+
+        <Content Include="..\..\samples\generators\SourceKit.Generators.Grpc.Samples\**\*.proto"
+                 LinkBase="SourceKit.Generators.Grpc.Samples\"
+                 CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>

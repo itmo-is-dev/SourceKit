@@ -1,45 +1,78 @@
-using System.Diagnostics.CodeAnalysis;
+using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 
 // ReSharper disable once CheckNamespace
 namespace SourceKit;
 
+internal enum IncrementalResultKind
+{
+    Skip,
+    Failure,
+    Success,
+}
+
 public readonly struct IncrementalResult
 {
-    internal Diagnostic[]? Diagnostics { get; private init; }
+    internal IncrementalResultKind Kind { get; }
 
-    public static IncrementalResult Skip => default;
+    internal ImmutableArray<Diagnostic>? Diagnostics { get; private init; }
 
-    public static IncrementalResult Failure(params Diagnostic[] diagnostics) => new() { Diagnostics = diagnostics };
+    internal IncrementalResult(IncrementalResultKind kind)
+    {
+        Kind = kind;
+    }
 
-    public static IncrementalResult<T> Success<T>(T value) => new() { Value = value };
+    public static IncrementalResult Skip => new(IncrementalResultKind.Skip);
+
+    public static IncrementalResult SkipWithMetadata(Diagnostic metadata) => new(IncrementalResultKind.Skip)
+    {
+        Diagnostics = [metadata],
+    };
+
+    public static IncrementalResult Failure(params ImmutableArray<Diagnostic> diagnostics) => new(IncrementalResultKind.Failure)
+    {
+        Diagnostics = diagnostics,
+    };
+
+    public static IncrementalResult<T> Success<T>(T value) => new(IncrementalResultKind.Success)
+    {
+        Value = value,
+    };
+
+    public static IncrementalResult<T> Success<T>(T value, Diagnostic metadata) => new(IncrementalResultKind.Success)
+    {
+        Value = value,
+        Diagnostics = [metadata],
+    };
 }
 
 public readonly record struct IncrementalResult<T>
 {
+    internal IncrementalResultKind Kind { get; }
+
     internal T? Value { get; init; }
-    internal Diagnostic[]? Diagnostics { get; private init; }
+    internal ImmutableArray<Diagnostic>? Diagnostics { get; init; }
 
-    [MemberNotNullWhen(true, nameof(Value))]
-    internal bool IsSuccess => Value is not null && Value.Equals(default(T)) is false;
-
-    [MemberNotNullWhen(true, nameof(Diagnostics))]
-    internal bool IsFailure => Diagnostics is not null;
-
-    internal bool IsSkip => IsSuccess is false && IsFailure is false;
+    internal IncrementalResult(IncrementalResultKind kind)
+    {
+        Kind = kind;
+    }
 
     public static implicit operator IncrementalResult<T>(IncrementalResult result)
     {
-        return new IncrementalResult<T> { Diagnostics = result.Diagnostics };
+        return new IncrementalResult<T>(result.Kind)
+        {
+            Diagnostics = result.Diagnostics,
+        };
     }
 
     public IncrementalResult<T2> Map<T2>(Func<T, T2> selector)
     {
-        return this switch
+        return Kind switch
         {
-            { IsSuccess: true } => IncrementalResult.Success(selector(Value)),
-            { IsFailure: true } => IncrementalResult.Failure(Diagnostics),
-            { IsSkip: true } => IncrementalResult.Skip,
+            IncrementalResultKind.Success => IncrementalResult.Success(selector(Value!)),
+            IncrementalResultKind.Failure => IncrementalResult.Failure(Diagnostics!.Value),
+            IncrementalResultKind.Skip => IncrementalResult.Skip,
 
             _ => throw new InvalidOperationException("Unidentifiable result"),
         };

@@ -22,7 +22,7 @@ public static class SourceKitValuesProviderExtensions
             provider,
             static (context, result) =>
             {
-                if (result.IsFailure is false)
+                if (result.Diagnostics is null)
                     return;
 
                 foreach (Diagnostic diagnostic in result.Diagnostics)
@@ -32,7 +32,7 @@ public static class SourceKitValuesProviderExtensions
             });
 
         return IncrementalValueProviderExtensions
-            .Where(provider, static result => result.IsSuccess)
+            .Where(provider, static result => result.Kind is IncrementalResultKind.Success)
             .Select(static (result, _) => result.Value!);
     }
 
@@ -44,7 +44,7 @@ public static class SourceKitValuesProviderExtensions
             provider,
             static (context, result) =>
             {
-                if (result.IsFailure is false)
+                if (result.Diagnostics is null)
                     return;
 
                 foreach (Diagnostic diagnostic in result.Diagnostics)
@@ -54,7 +54,7 @@ public static class SourceKitValuesProviderExtensions
             });
 
         return provider
-            .Where(static result => result.IsSuccess)
+            .Where(static result => result.Kind is IncrementalResultKind.Success)
             .Select(static (result, _) => result.Value!);
     }
 }

@@ -14,5 +14,9 @@ internal static class Constants
     public const string ProtobufRepeatedFieldFullyQualifiedName = $"{ProtobufCollectionsNamespace}.RepeatedField`1";
     public const string ProtobufMapFieldFullyQualifiedName = $"{ProtobufCollectionsNamespace}.MapField`2";
 
+    public const string AnnotationsNamespace = "SourceKit.Generators.Grpc.Annotations";
+
+    public const string ExportProtoAliasAttributeMetadataName = $"{AnnotationsNamespace}.ExportProtoAliasAttribute";
+
     public const string FilenameSuffix = "SourceKit.Generators.Grpc.g.cs";
 }

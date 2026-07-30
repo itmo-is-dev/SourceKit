@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
@@ -10,10 +10,10 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <PackageId>SourceKit.Generators.Builder.Annotations</PackageId>
-        <Title>SourceKit.Generators.Builder.Annotations</Title>
+        <PackageId>SourceKit.Generators.Grpc.Annotations</PackageId>
+        <Title>SourceKit.Generators.Grpc.Annotations</Title>
         <Authors>ronimizy</Authors>
-        <Description>Annotations for SourceKit.Generators.Builder</Description>
+        <Description>Annotations for SourceKit.Generators.Grpc</Description>
         <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
         <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -22,9 +22,9 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <Version>1.1.$(PatchVersion)$(VersionSuffix)</Version>
+        <Version>1.0.$(PatchVersion)$(VersionSuffix)</Version>
         <PackageReleaseNotes>
-            Added GenerateBuilder attribute
+            Added ExportProtoAliasAttribute
         </PackageReleaseNotes>
     </PropertyGroup>
 
