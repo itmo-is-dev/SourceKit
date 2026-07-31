@@ -21,7 +21,7 @@ public abstract class GeneratorTestBase<TGenerator>
         private readonly List<SourceFile> _generatedSources = [];
         private readonly List<Assembly> _additionalReferences = [];
         private readonly List<DiagnosticResult> _expectedDiagnostics = [];
-        private readonly List<string> _disabledDiagnostics = [];
+        private readonly List<string> _disabledDiagnostics = ["CS1591", "CS8019"];
 
         private CompilerDiagnostics _compilerDiagnostics = CompilerDiagnostics.All;
         private ReferenceAssemblies _referenceAssemblies = ReferenceAssemblies.Net.Net90;

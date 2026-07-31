@@ -50,12 +50,17 @@ public class FieldBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, TypeDec
         INamedTypeSymbol constructedListType = listType.Construct(property.ElementType);
         TypeSyntax typeSyntax = constructedListType.ToNameSyntax(includeGlobal: true);
 
+        if (property.IsBuilderConstructorParameter is false)
+        {
+            typeSyntax = NullableType(typeSyntax);
+        }
+
         VariableDeclarationSyntax variableDeclaration = VariableDeclaration(
             typeSyntax,
             SingletonSeparatedList(VariableDeclarator(property.FieldName)));
 
         return FieldDeclaration(variableDeclaration)
-            .AddModifiers(Token(SyntaxKind.PrivateKeyword), Token(SyntaxKind.ReadOnlyKeyword));
+            .AddModifiers(Token(SyntaxKind.PrivateKeyword));
     }
 
     private static MemberDeclarationSyntax ResolveValue(BuilderProperty.Value property)

@@ -67,20 +67,21 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
         if (property.ElementType.IsAssignableTo(comparableType)
             || property.ElementType.IsAssignableTo(genericComparableType))
         {
-            expression = InvocationExpression(
-                MemberAccessExpression(
-                    SyntaxKind.SimpleMemberAccessExpression,
-                    expression,
-                    IdentifierName("Distinct")));
+            expression = InvokeMethod(expression, IdentifierName("Distinct"), isConditionalAccess: property.IsBuilderConstructorParameter is false);
         }
 
-        return property.Kind switch
+        expression = property.Kind switch
         {
-            CollectionKind.Array => InvokeMethod(expression, IdentifierName("ToArray")),
-            CollectionKind.List => InvokeMethod(expression, IdentifierName("ToList")),
-            CollectionKind.HashSet => InvokeMethod(expression, IdentifierName("ToHashSet")),
+            CollectionKind.Array => InvokeMethod(expression, IdentifierName("ToArray"), isConditionalAccess: property.IsBuilderConstructorParameter is false),
+            CollectionKind.List => InvokeMethod(expression, IdentifierName("ToList"), isConditionalAccess: property.IsBuilderConstructorParameter is false),
+            CollectionKind.HashSet => InvokeMethod(expression, IdentifierName("ToHashSet"), isConditionalAccess: property.IsBuilderConstructorParameter is false),
             _ => throw new ArgumentOutOfRangeException(),
         };
+
+        return BinaryExpression(
+            SyntaxKind.CoalesceExpression,
+            expression,
+            CollectionExpression());
     }
 
     private static ExpressionSyntax ResolveValueArgument(BuilderProperty.Value value)
@@ -110,8 +111,13 @@ public class BuildMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
             ThrowExpression(exception));
     }
 
-    private static InvocationExpressionSyntax InvokeMethod(ExpressionSyntax expression, SimpleNameSyntax name)
+    private static InvocationExpressionSyntax InvokeMethod(
+        ExpressionSyntax expression,
+        SimpleNameSyntax name,
+        bool isConditionalAccess)
     {
-        return InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expression, name));
+        return isConditionalAccess
+            ? InvocationExpression(ConditionalAccessExpression(expression, MemberBindingExpression(name)))
+            : InvocationExpression(MemberAccessExpression(SyntaxKind.SimpleMemberAccessExpression, expression, name));
     }
 }

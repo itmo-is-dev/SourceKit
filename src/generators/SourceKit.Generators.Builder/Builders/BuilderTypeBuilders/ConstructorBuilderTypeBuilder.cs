@@ -71,36 +71,28 @@ public class ConstructorBuilderTypeBuilder : ILink<BuilderTypeBuildingCommand, T
 
     private static IEnumerable<StatementSyntax> ResolveStatements(BuilderTypeBuildingCommand request)
     {
-        return request.Properties.Select(p => p switch
+        return request.Properties.SelectMany(p => p switch
         {
             BuilderProperty.Collection collection
-                => ResolveEnumerableStatement(collection, request.Compilation),
+                => ResolveEnumerableStatement(collection),
 
             BuilderProperty.Value value
-                => ResolveValueStatement(value, request.Compilation),
+                => [ResolveValueStatement(value, request.Compilation)],
 
             _ => throw new ArgumentOutOfRangeException(nameof(p)),
         });
     }
 
-    private static StatementSyntax ResolveEnumerableStatement(
-        BuilderProperty.Collection property,
-        Compilation compilation)
+    private static IEnumerable<StatementSyntax> ResolveEnumerableStatement(BuilderProperty.Collection property)
     {
-        INamedTypeSymbol listType = compilation.GetTypeSymbol(typeof(List<>));
+        if (property.IsBuilderConstructorParameter is false)
+            yield break;
 
-        INamedTypeSymbol constructedListType = listType.Construct(property.ElementType);
-        TypeSyntax typeSyntax = constructedListType.ToNameSyntax(includeGlobal: true);
-
-        ArgumentListSyntax arguments = property.IsBuilderConstructorParameter
-            ? ArgumentList().AddArguments(Argument(IdentifierName(property.Symbol.Name)))
-            : ArgumentList();
-
-        return ExpressionStatement(
+        yield return ExpressionStatement(
             AssignmentExpression(
                 SyntaxKind.SimpleAssignmentExpression,
                 IdentifierName(property.FieldName),
-                ObjectCreationExpression(typeSyntax).WithArgumentList(arguments)));
+                CollectionExpression().AddElements(SpreadElement(IdentifierName(property.Symbol.Name)))));
     }
 
     private static StatementSyntax ResolveValueStatement(

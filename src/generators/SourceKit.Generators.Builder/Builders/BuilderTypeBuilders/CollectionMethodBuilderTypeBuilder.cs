@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using FluentChaining;
 using Humanizer;
 using Microsoft.CodeAnalysis;
@@ -67,6 +68,7 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         return MethodDeclaration(IdentifierName(returnType), name)
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(parameter)
+            .AddBodyStatements(CreateLazyInitStatement(property).ToArray())
             .AddBodyStatements(ExpressionStatement(invocation), returnStatement)
             .AddAttributeLists(new InitializesPropertyAttributeBuilder(property.Symbol.Name));
     }
@@ -96,7 +98,20 @@ public class CollectionMethodBuilderTypeBuilder : ILink<BuilderTypeBuildingComma
         return MethodDeclaration(IdentifierName(returnType), name)
             .AddModifiers(Token(SyntaxKind.PublicKeyword))
             .AddParameterListParameters(parameter)
+            .AddBodyStatements(CreateLazyInitStatement(property).ToArray())
             .AddBodyStatements(ExpressionStatement(invocation), returnStatement)
             .AddAttributeLists(new InitializesPropertyAttributeBuilder(property.Symbol.Name));
+    }
+
+    private static IEnumerable<StatementSyntax> CreateLazyInitStatement(BuilderProperty.Collection property)
+    {
+        if (property.IsBuilderConstructorParameter)
+            yield break;
+
+        yield return ExpressionStatement(
+            AssignmentExpression(
+                SyntaxKind.CoalesceAssignmentExpression,
+                IdentifierName(property.FieldName),
+                CollectionExpression()));
     }
 }

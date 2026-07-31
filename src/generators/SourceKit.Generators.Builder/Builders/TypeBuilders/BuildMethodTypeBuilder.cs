@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using FluentChaining;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -41,7 +42,11 @@ public class BuildMethodTypeBuilder : ILink<TypeBuildingCommand, TypeDeclaration
                 builderInvocation,
                 IdentifierName("Build")));
 
+        AttributeSyntax methodImplAttribute = Attribute(IdentifierName("global::System.Runtime.CompilerServices.MethodImpl"))
+            .AddArgumentListArguments(AttributeArgument(IdentifierName("global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining")));
+
         MethodDeclarationSyntax method = MethodDeclaration(IdentifierName(request.Symbol.Name), Identifier("Build"))
+            .AddAttributeLists(AttributeList().AddAttributes(methodImplAttribute))
             .AddModifiers(Token(SyntaxKind.PublicKeyword), Token(SyntaxKind.StaticKeyword))
             .AddParameterListParameters(parameters)
             .AddBodyStatements(ReturnStatement(buildInvocation));
