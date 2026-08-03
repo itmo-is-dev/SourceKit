@@ -64,7 +64,7 @@ public abstract class CodeFixTestBase<TGenerator, TCodeFixProvider>
             var test = new SourceGeneratorCodeFixTest<TGenerator, TCodeFixProvider>();
 
             foreach (SourceFile source in _sources)
-                test.TestState.Sources.Add(source);
+                test.TestState.Sources.Add(source.AsTestSource());
 
             foreach (Assembly assembly in _additionalReferences)
             {
@@ -73,7 +73,7 @@ public abstract class CodeFixTestBase<TGenerator, TCodeFixProvider>
             }
 
             foreach (SourceFile source in _fixedSources)
-                test.FixedState.Sources.Add(source);
+                test.FixedState.Sources.Add(source.AsTestSource());
 
             foreach (DiagnosticResult diagnostic in _expectedDiagnostics)
                 test.ExpectedDiagnostics.Add(diagnostic);

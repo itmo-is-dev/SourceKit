@@ -2,5 +2,5 @@
 
 public class PublicFieldTestCase
 {
-    public object _publicField;
+    public object? _publicField;
 }

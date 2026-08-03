@@ -5,18 +5,11 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace SourceKit.Generators.Builder.Models;
 
-public readonly struct LiteralValue
+public readonly record struct LiteralValue(object? Value)
 {
-    private readonly object? _value;
-
-    public LiteralValue(object? value)
-    {
-        _value = value;
-    }
-
     public bool TryGetLiteralExpression([NotNullWhen(true)] out ExpressionSyntax? token)
     {
-        token = _value switch
+        token = Value switch
         {
             char c => LiteralExpression(SyntaxKind.CharacterLiteralExpression, Literal(c)),
             decimal d => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(d)),
@@ -26,7 +19,7 @@ public readonly struct LiteralValue
             long l => LiteralExpression(SyntaxKind.NumericLiteralExpression, Literal(l)),
             string s => LiteralExpression(SyntaxKind.StringLiteralExpression, Literal(s)),
 
-            _ => default,
+            _ => null,
         };
 
         return token is not null;

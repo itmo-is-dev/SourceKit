@@ -39,7 +39,7 @@ public class ConvertListForEachIntoForEachLoopCodeFixTests : CodeFixTestBase<
             """);
 
         DiagnosticResult diagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 12, 9)
+            .WithLocation(sourceFile.FilePath, 12, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         await CodeFixTest
@@ -81,7 +81,7 @@ public class ConvertListForEachIntoForEachLoopCodeFixTests : CodeFixTestBase<
             """);
 
         DiagnosticResult diagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 12, 9)
+            .WithLocation(sourceFile.FilePath, 12, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         await CodeFixTest
@@ -121,7 +121,7 @@ public class ConvertListForEachIntoForEachLoopCodeFixTests : CodeFixTestBase<
             """);
 
         DiagnosticResult diagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 12, 9)
+            .WithLocation(sourceFile.FilePath, 12, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         await CodeFixTest
@@ -167,7 +167,7 @@ public class ConvertListForEachIntoForEachLoopCodeFixTests : CodeFixTestBase<
             """);
 
         DiagnosticResult diagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 13, 9)
+            .WithLocation(sourceFile.FilePath, 13, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         await CodeFixTest

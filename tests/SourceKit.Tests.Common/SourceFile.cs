@@ -16,14 +16,14 @@ public readonly record struct SourceFile(string Name, string Content, Encoding? 
         return new SourceFile(name, content) { FilePath = path };
     }
 
-    public static implicit operator (string, SourceText)(SourceFile sourceFile)
-        => (sourceFile.Name, SourceText.From(sourceFile.Content, sourceFile.Encoding ?? Encoding.Default));
+    public (string, SourceText) AsTestSource()
+    {
+        return (FilePath, SourceText.From(Content, Encoding));
+    }
 
-    public static implicit operator (string, string)(SourceFile sourceFile) => (sourceFile.Name, sourceFile.Content);
-
-    public (Type GeneratorType, string Name, SourceText Content) AsGeneratorSource<T>()
+    public (Type, string, string) AsGeneratorSource<T>()
         where T : IIncrementalGenerator
     {
-        return (typeof(T), Name, SourceText.From(Content, Encoding ?? Encoding.Default));
+        return (typeof(T), Name, Content);
     }
 }

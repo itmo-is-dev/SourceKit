@@ -21,8 +21,8 @@ public class FieldCannotBePublicCodeFixTests : CodeFixTestBase<FieldCannotBePubl
         fixedSourceFile = sourceFile with { Content = fixedContent };
 
         DiagnosticResult diagnostic = Diagnostic(FieldCannotBePublicAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 19)
-            .WithArguments("object", "_publicField");
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithArguments("object?", "_publicField");
 
         await CodeFixTest
             .WithSource(sourceFile)

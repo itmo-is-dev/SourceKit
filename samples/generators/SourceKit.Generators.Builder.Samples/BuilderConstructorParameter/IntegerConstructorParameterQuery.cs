@@ -5,8 +5,10 @@ namespace SourceKit.Generators.Builder.Samples.BuilderConstructorParameter;
 
 [GenerateBuilder]
 public sealed partial record IntegerConstructorParameterQuery(
-    [BuilderConstructorParameter] int? Id,
-    [BuilderConstructorParameter] int[] Values,
+    [BuilderProperty(BuilderPropertyOptions.ConstructorParameter)]
+    int? Id,
+    [BuilderProperty(BuilderPropertyOptions.ConstructorParameter)]
+    int[] Values,
     List<int> NotParameterValues,
     string Value)
 {

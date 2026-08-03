@@ -14,5 +14,5 @@ public class InitializedRequiredValueSample
 [GenerateBuilder]
 public partial record InitializedRequiredValueSampleQuery(
     Guid[] Ids,
-    [RequiredValue] string Value,
+    [BuilderProperty(BuilderPropertyOptions.Required)] string Value,
     string NotRequiredValue = "aboba");

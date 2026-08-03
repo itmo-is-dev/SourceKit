@@ -2,5 +2,5 @@
 
 public class PublicFieldTestCaseFixed
 {
-    private object _publicField;
+    private object? _publicField;
 }

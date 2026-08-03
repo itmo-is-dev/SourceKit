@@ -31,7 +31,7 @@ public abstract class GeneratorTestBase<TGenerator>
             _sources.Add(file);
             return this;
         }
-        
+
         public GeneratorTestBuilder WithSources(IEnumerable<SourceFile> files)
         {
             _sources.AddRange(files);
@@ -97,14 +97,14 @@ public abstract class GeneratorTestBase<TGenerator>
             };
 
             foreach (SourceFile source in _sources)
-                test.TestState.Sources.Add(source);
+                test.TestState.Sources.Add(source.AsTestSource());
 
             foreach (SourceFile source in _generatedSources)
                 test.TestState.GeneratedSources.Add(source.AsGeneratorSource<TGenerator>());
-            
+
             foreach (Assembly assembly in _additionalReferences)
                 test.TestState.AdditionalReferences.Add(assembly);
-            
+
             test.TestState.ExpectedDiagnostics.AddRange(_expectedDiagnostics);
             test.DisabledDiagnostics.AddRange(_disabledDiagnostics);
             test.CompilerDiagnostics = _compilerDiagnostics;
@@ -116,9 +116,27 @@ public abstract class GeneratorTestBase<TGenerator>
 
 public static class SourceGeneratorTestExtensions
 {
-    public static async Task RunWithCacheVerificationAsync<TGenerator>(
+    public static Task RunWithCacheVerificationAsync<TGenerator>(
         this CSharpSourceGeneratorTest<TGenerator, DefaultVerifier> test,
         params SourceFile[] modifiedSources)
+        where TGenerator : IIncrementalGenerator, new()
+    {
+        return test.RunWithCacheVerificationAsync(trackedSteps: [], modifiedSources);
+    }
+
+    public static Task RunWithTrackedStepsCacheVerificationAsync<TGenerator>(
+        this CSharpSourceGeneratorTest<TGenerator, DefaultVerifier> test,
+        string[] trackedSteps,
+        params SourceFile[] modifiedSources)
+        where TGenerator : IIncrementalGenerator, new()
+    {
+        return test.RunWithCacheVerificationAsync(trackedSteps, modifiedSources);
+    }
+
+    private static async Task RunWithCacheVerificationAsync<TGenerator>(
+        this CSharpSourceGeneratorTest<TGenerator, DefaultVerifier> test,
+        string[] trackedSteps,
+        SourceFile[] modifiedSources)
         where TGenerator : IIncrementalGenerator, new()
     {
         await test.RunAsync();
@@ -131,9 +149,9 @@ public static class SourceGeneratorTestExtensions
 
         IEnumerable<SyntaxTree> cloneSources = test.TestState.Sources
             .Where(source => modifiedSources.Any(modifiedSource => modifiedSource.Name == source.filename) is false)
-            .Concat(modifiedSources.Select(source => ((string, SourceText))source))
+            .Concat(modifiedSources.Select(source => source.AsTestSource()))
             .Select(source => CSharpSyntaxTree.ParseText(source.Item2));
-        
+
         var compilationClone = CSharpCompilation.Create(
             "TestAssembly",
             cloneSources,
@@ -151,11 +169,22 @@ public static class SourceGeneratorTestExtensions
         GeneratorDriver incrementedDriver = dirtyDriver.RunGenerators(compilationClone);
         GeneratorDriverRunResult incrementedResult = incrementedDriver.GetRunResult();
 
-        incrementedResult.Results[0]
+        IEnumerable<(IncrementalGeneratorRunStep step, object Value, IncrementalStepRunReason Reason)> outputs = incrementedResult.Results[0]
             .TrackedOutputSteps
             .SelectMany(step => step.Value)
-            .SelectMany(step => step.Outputs)
-            .Should()
-            .OnlyContain(output => output.Reason == IncrementalStepRunReason.Cached || output.Reason == IncrementalStepRunReason.Unchanged);
+            .Where(step => trackedSteps is [] || trackedSteps.Contains(step.Name))
+            .SelectMany(step => step.Outputs, (step, output) => (step, output.Value, output.Reason));
+
+        foreach (var (step, value, reason) in outputs)
+        {
+            reason
+                .Should()
+                .BeOneOf(
+                    [IncrementalStepRunReason.Cached, IncrementalStepRunReason.Unchanged],
+                    "Step '{0}' had unexpected reason {1}, value = {2}",
+                    step.Name,
+                    reason,
+                    value);
+        }
     }
 }

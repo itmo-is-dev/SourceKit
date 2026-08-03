@@ -11,4 +11,4 @@ public class RequiredValueFromParameterComponent
 }
 
 [GenerateBuilder]
-public partial record Query([RequiredValue] int PageSize);
+public partial record Query([BuilderProperty(BuilderPropertyOptions.Required)] int PageSize);

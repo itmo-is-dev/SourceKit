@@ -40,8 +40,8 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
 
         DiagnosticResult diagnostic = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 19)
-            .WithLocation(sourceFile.Name, 5, 19)
+            .WithLocation(sourceFile.FilePath, 5, 19)
+            .WithLocation(sourceFile.FilePath, 5, 19)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         await AnalyzerTest
@@ -59,14 +59,14 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
 
         DiagnosticResult diagnostic1 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 7, 25)
-            .WithLocation(sourceFile.Name, 7, 25)
+            .WithLocation(sourceFile.FilePath, 7, 25)
+            .WithLocation(sourceFile.FilePath, 7, 25)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "first"));
 
         DiagnosticResult diagnostic2 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 7, 32)
-            .WithLocation(sourceFile.Name, 7, 32)
+            .WithLocation(sourceFile.FilePath, 7, 32)
+            .WithLocation(sourceFile.FilePath, 7, 32)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "second"));
 
         await AnalyzerTest
@@ -85,23 +85,23 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
 
         DiagnosticResult diagnostic1 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 3, 1)
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithLocation(sourceFile.FilePath, 3, 1)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         DiagnosticResult diagnostic2 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 7, 19)
-            .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 3, 1)
+            .WithLocation(sourceFile.FilePath, 7, 19)
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithLocation(sourceFile.FilePath, 3, 1)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         DiagnosticResult diagnostic3 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 12, 17)
-            .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 3, 1)
+            .WithLocation(sourceFile.FilePath, 12, 17)
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithLocation(sourceFile.FilePath, 3, 1)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         await AnalyzerTest
@@ -121,16 +121,16 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
 
         DiagnosticResult diagnostic1 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 29)
-            .WithLocation(sourceFile.Name, 5, 29)
-            .WithLocation(sourceFile.Name, 3, 1)
+            .WithLocation(sourceFile.FilePath, 5, 29)
+            .WithLocation(sourceFile.FilePath, 5, 29)
+            .WithLocation(sourceFile.FilePath, 3, 1)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "_field"));
 
         DiagnosticResult diagnostic2 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 7, 19)
-            .WithLocation(sourceFile.Name, 5, 29)
-            .WithLocation(sourceFile.Name, 3, 1)
+            .WithLocation(sourceFile.FilePath, 7, 19)
+            .WithLocation(sourceFile.FilePath, 5, 29)
+            .WithLocation(sourceFile.FilePath, 3, 1)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "_field"));
 
         await AnalyzerTest
@@ -149,23 +149,23 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
 
         DiagnosticResult diagnostic1 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 3, 1)
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithLocation(sourceFile.FilePath, 3, 1)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         DiagnosticResult diagnostic2 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 7, 19)
-            .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 3, 1)
+            .WithLocation(sourceFile.FilePath, 7, 19)
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithLocation(sourceFile.FilePath, 3, 1)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         DiagnosticResult diagnostic3 = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 9, 29)
-            .WithLocation(sourceFile.Name, 5, 20)
-            .WithLocation(sourceFile.Name, 3, 1)
+            .WithLocation(sourceFile.FilePath, 9, 29)
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithLocation(sourceFile.FilePath, 3, 1)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         await AnalyzerTest
@@ -185,8 +185,8 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
 
         DiagnosticResult diagnostic = AnalyzerVerifier
             .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 28)
-            .WithLocation(sourceFile.Name, 5, 28)
+            .WithLocation(sourceFile.FilePath, 5, 28)
+            .WithLocation(sourceFile.FilePath, 5, 28)
             .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
 
         await AnalyzerTest

@@ -77,31 +77,31 @@ public class PropagateNullableCorrectlyCodeFixTests : CodeFixTestBase<
             .WithFixedSource(fixedSource)
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 34, 60, 34, 89))
+                    .WithSpan(sourceFile.FilePath, 34, 60, 34, 89))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 36, 35, 36, 68))
+                    .WithSpan(sourceFile.FilePath, 36, 35, 36, 68))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 38, 47, 38, 97))
+                    .WithSpan(sourceFile.FilePath, 38, 47, 38, 97))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 39, 45, 39, 95))
+                    .WithSpan(sourceFile.FilePath, 39, 45, 39, 95))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 40, 46, 40, 75))
+                    .WithSpan(sourceFile.FilePath, 40, 46, 40, 75))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 42, 55, 42, 105))
+                    .WithSpan(sourceFile.FilePath, 42, 55, 42, 105))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 43, 52, 43, 85))
+                    .WithSpan(sourceFile.FilePath, 43, 52, 43, 85))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 46, 13, 46, 63))
+                    .WithSpan(sourceFile.FilePath, 46, 13, 46, 63))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 48, 13, 48, 67))
+                    .WithSpan(sourceFile.FilePath, 48, 13, 48, 67))
             .Build()
             .RunAsync();
     }
@@ -171,16 +171,16 @@ public class PropagateNullableCorrectlyCodeFixTests : CodeFixTestBase<
             .WithFixedSource(fixedSource)
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 5, 63, 5, 79))
+                    .WithSpan(sourceFile.FilePath, 5, 63, 5, 79))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 9, 16, 9, 41))
+                    .WithSpan(sourceFile.FilePath, 9, 16, 9, 41))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 16, 20, 16, 45))
+                    .WithSpan(sourceFile.FilePath, 16, 20, 16, 45))
             .WithExpectedDiagnostic(
                 Diagnostic(NullForgivingOperatorNotAllowedAnalyzer.Descriptor)
-                    .WithSpan(sourceFile.Name, 20, 32, 20, 57))
+                    .WithSpan(sourceFile.FilePath, 20, 32, 20, 57))
             .Build()
             .RunAsync();
     }

@@ -22,7 +22,7 @@ public class MakeTypePartialCodeFixTests : CodeFixTestBase<TypeMustBePartialAnal
         SourceFile fixedSource = sourceFile with { Content = fixedContent };
 
         DiagnosticResult diagnostic = Diagnostic(TypeMustBePartialAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 3, 14)
+            .WithLocation(sourceFile.FilePath, 3, 14)
             .WithArguments("NonPartialDerivative");
 
         await CodeFixTest

@@ -18,7 +18,7 @@ public class RequiredValueAnalyzerTests : AnalyzerTestBase<RequiredValueAnalyzer
 
         DiagnosticResult diagnostic = AnalyzerVerifier
             .Diagnostic(RequiredValueAnalyzer.Descriptor)
-            .WithLocation(usageFile.Name, 10, 21)
+            .WithLocation(usageFile.FilePath, 10, 21)
             .WithArguments("Value");
 
         await AnalyzerTest

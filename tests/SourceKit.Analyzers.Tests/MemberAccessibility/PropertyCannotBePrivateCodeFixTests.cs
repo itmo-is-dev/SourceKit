@@ -21,8 +21,8 @@ public class PropertyCannotBePrivateCodeFixTests : CodeFixTestBase<PropertyCanno
         fixedSourceFile = sourceFile with { Content = fixedContent };
 
         DiagnosticResult diagnostic = Diagnostic(PropertyCannotBePrivateAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 5)
-            .WithArguments("object", "PrivateProperty");
+            .WithLocation(sourceFile.FilePath, 5, 5)
+            .WithArguments("object?", "PrivateProperty");
 
         await CodeFixTest
             .WithSource(sourceFile)

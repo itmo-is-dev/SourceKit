@@ -63,7 +63,7 @@ public abstract class AnalyzerTestBase<TAnalyzer>
             };
 
             foreach (SourceFile source in _sources)
-                test.TestState.Sources.Add(source);
+                test.TestState.Sources.Add(source.AsTestSource());
 
             foreach (Assembly assembly in _additionalReferences)
                 test.TestState.AdditionalReferences.Add(assembly);

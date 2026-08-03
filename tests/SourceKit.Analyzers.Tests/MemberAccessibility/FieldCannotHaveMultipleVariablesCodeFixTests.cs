@@ -22,7 +22,7 @@ public class FieldCannotHaveMultipleVariablesCodeFixTests :
         fixedSourceFile = sourceFile with { Content = fixedContent };
 
         DiagnosticResult diagnostic = Diagnostic(FieldCannotHaveMultipleVariablesAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 5);
+            .WithLocation(sourceFile.FilePath, 5, 5);
 
         await CodeFixTest
             .WithSource(sourceFile)

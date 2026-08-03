@@ -4,23 +4,21 @@ namespace SourceKit.Extensions;
 
 public static class CompilationExtensions
 {
-    public static INamedTypeSymbol GetTypeSymbol<T>(this Compilation compilation)
-    {
-        Type type = typeof(T);
+    public static INamedTypeSymbol? FindTypeSymbol(this Compilation compilation, string typeName)
+        => compilation.GetTypeByMetadataName(typeName);
 
-        return compilation.GetTypeByMetadataName(type.FullName ?? string.Empty)
-               ?? throw new ArgumentException($"Type {type} is not part of compilation");
-    }
+    public static INamedTypeSymbol? FindTypeSymbol(this Compilation compilation, Type type)
+        => compilation.FindTypeSymbol(type.FullName ?? string.Empty);
 
-    public static INamedTypeSymbol GetTypeSymbol(this Compilation compilation, Type type)
-    {
-        return compilation.GetTypeByMetadataName(type.FullName ?? string.Empty)
-               ?? throw new ArgumentException($"Type {type} is not part of compilation");
-    }
+    public static INamedTypeSymbol? FindTypeSymbol<T>(this Compilation compilation)
+        => compilation.FindTypeSymbol(typeof(T));
 
     public static INamedTypeSymbol GetTypeSymbol(this Compilation compilation, string typeName)
-    {
-        return compilation.GetTypeByMetadataName(typeName)
-               ?? throw new ArgumentException($"Type {typeName} is not part of compilation");
-    }
+        => compilation.FindTypeSymbol(typeName) ?? throw new ArgumentException($"Type {typeName} is not part of compilation");
+
+    public static INamedTypeSymbol GetTypeSymbol(this Compilation compilation, Type type)
+        => compilation.GetTypeSymbol(type.FullName ?? string.Empty);
+
+    public static INamedTypeSymbol GetTypeSymbol<T>(this Compilation compilation)
+        => compilation.GetTypeSymbol(typeof(T));
 }

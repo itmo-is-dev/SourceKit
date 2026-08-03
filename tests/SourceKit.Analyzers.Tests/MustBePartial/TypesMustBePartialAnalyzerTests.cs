@@ -18,7 +18,7 @@ public class TypesMustBePartialAnalyzerTests : GeneratorTestBase<TypeMustBeParti
             "SourceKit.Analyzers.MustBePartial.Samples/IPartialBase.cs");
 
         DiagnosticResult diagnostic = Diagnostic(TypeMustBePartialAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 3, 14)
+            .WithLocation(sourceFile.FilePath, 3, 14)
             .WithArguments("NonPartialDerivative");
 
         await GeneratorTest

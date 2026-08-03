@@ -14,8 +14,8 @@ public class PropertyCannotBePrivateAnalyzerTests : GeneratorTestBase<PropertyCa
             "SourceKit.Analyzers.MemberAccessibility.Samples/PrivatePropertyCase.cs");
 
         DiagnosticResult diagnostic = Diagnostic(PropertyCannotBePrivateAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 5)
-            .WithArguments("object", "PrivateProperty");
+            .WithLocation(sourceFile.FilePath, 5, 5)
+            .WithArguments("object?", "PrivateProperty");
 
         await GeneratorTest
             .WithSource(sourceFile)

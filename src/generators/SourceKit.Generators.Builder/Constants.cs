@@ -11,6 +11,7 @@ public static class Constants
     public const string InitializesPropertyAttributeName = nameof(InitializesPropertyAttribute);
     public const string RequiredValueAttributeName = nameof(RequiredValueAttribute);
     public const string BuilderConstructorParameterAttributeName = nameof(BuilderConstructorParameterAttribute);
+    public const string BuilderPropertyAttributeName = nameof(BuilderPropertyAttribute);
 
     public const string GenerateBuilderAttributeFullyQualifiedName =
         $"{AnnotationsNamespace}.{GenerateBuilderAttributeName}";
@@ -24,5 +25,7 @@ public static class Constants
     public const string BuilderConstructorParameterAttributeFullyQualifiedName =
         $"{AnnotationsNamespace}.{BuilderConstructorParameterAttributeName}";
 
-    public const string FilenameSuffix = "SourceKit.Generation.Builder.g.cs";
+    public const string BuilderPropertyAttributeFullName = $"{AnnotationsNamespace}.{BuilderPropertyAttributeName}";
+
+    public const string GeneratedSourceNameTemplate = "SourceKit.Generators.Builder.{0}.g.cs";
 }

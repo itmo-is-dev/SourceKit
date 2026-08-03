@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 using SourceKit.Extensions;
+using SourceKit.Generators.Builder.Annotations;
 
 namespace SourceKit.Generators.Builder.Analyzers;
 
@@ -41,18 +42,15 @@ public class RequiredValueAnalyzer : DiagnosticAnalyzer
         if (operation.Instance is not null)
             return;
 
-        var generateBuilderAttribute = context.Compilation.GetTypeByMetadataName(
-            Constants.GenerateBuilderAttributeFullyQualifiedName);
-
-        var requiredValueAttribute = context.Compilation.GetTypeByMetadataName(
-            Constants.RequiredValueAttributeFullyQualifiedName);
-
-        var initializesValueAttribute = context.Compilation.GetTypeByMetadataName(
-            Constants.InitializesPropertyAttributeFullyQualifiedName);
+        INamedTypeSymbol? generateBuilderAttribute = context.Compilation.FindTypeSymbol<GenerateBuilderAttribute>();
+        INamedTypeSymbol? requiredValueAttribute = context.Compilation.FindTypeSymbol<RequiredValueAttribute>();
+        INamedTypeSymbol? initializesValueAttribute = context.Compilation.FindTypeSymbol<InitializesPropertyAttribute>();
+        INamedTypeSymbol? builderPropertyAttribute = context.Compilation.FindTypeSymbol<BuilderPropertyAttribute>();
 
         if (generateBuilderAttribute is null
             || requiredValueAttribute is null
-            || initializesValueAttribute is null)
+            || initializesValueAttribute is null
+            || builderPropertyAttribute is null)
         {
             return;
         }
@@ -60,7 +58,7 @@ public class RequiredValueAnalyzer : DiagnosticAnalyzer
         if (operation.Type is not INamedTypeSymbol modelType)
             return;
 
-        var hasBuilderAttribute = operation.Type
+        bool hasBuilderAttribute = operation.Type
             .GetAttributes()
             .Any(x => x.AttributeClass?.Equals(generateBuilderAttribute, SymbolEqualityComparer.Default) is true);
 
@@ -72,14 +70,25 @@ public class RequiredValueAnalyzer : DiagnosticAnalyzer
 
         ImmutableArray<ISymbol> modelTypeMembers = modelType.GetMembers();
 
+        bool IsRequiredAttribute(AttributeData attributeData)
+        {
+            if (attributeData.IsAttribute(requiredValueAttribute))
+                return true;
+
+            if (attributeData.IsAttribute(builderPropertyAttribute) is false)
+                return false;
+
+            return ((BuilderPropertyOptions)(int)attributeData.ConstructorArguments[0].Value!).HasFlag(BuilderPropertyOptions.Required);
+        }
+
         IEnumerable<string> requiredProperties = modelTypeMembers
             .OfType<IPropertySymbol>()
-            .Where(property => property.GetAttributes().HasAttribute(requiredValueAttribute))
+            .Where(property => property.GetAttributes().Any(IsRequiredAttribute))
             .Select(x => x.Name);
 
         IEnumerable<string> requiredParameters = modelType.Constructors
             .SelectMany(x => x.Parameters)
-            .Where(x => x.GetAttributes().HasAttribute(requiredValueAttribute))
+            .Where(x => x.GetAttributes().Any(IsRequiredAttribute))
             .Select(x => x.Name);
 
         IEnumerable<IInvocationOperation> descendantInvocations = operation.Descendants()

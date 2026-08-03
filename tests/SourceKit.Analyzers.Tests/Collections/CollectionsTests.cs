@@ -14,7 +14,7 @@ public class CollectionsTests : GeneratorTestBase<DictionaryKeyTypeMustImplement
             "SourceKit.Analyzers.Collections.Samples/Dictionary/KeyTypeDoesNotImplementEquatable.cs");
 
         DiagnosticResult diagnostic = Diagnostic(DictionaryKeyTypeMustImplementEquatableAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 7, 12)
+            .WithLocation(sourceFile.FilePath, 7, 12)
             .WithArguments("KeyTypeDoesNotImplementEquatable");
 
         await GeneratorTest
@@ -43,7 +43,7 @@ public class CollectionsTests : GeneratorTestBase<DictionaryKeyTypeMustImplement
             "SourceKit.Analyzers.Collections.Samples/Dictionary/CustomKeyTypeImplementsOtherEquatable.cs");
 
         DiagnosticResult diagnostic = Diagnostic(DictionaryKeyTypeMustImplementEquatableAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 18, 23)
+            .WithLocation(sourceFile.FilePath, 18, 23)
             .WithArguments("CustomKeyTypeImplementsOtherEquatable");
 
         await GeneratorTest

@@ -26,7 +26,7 @@ public class ListForEachNotAllowedTests : GeneratorTestBase<ListForEachNotAllowe
             "SourceKit.Analyzers.Collections.Samples/ListForEachNotAllowed/ListForEachStatementWithLambdaBlockExample.cs");
 
         DiagnosticResult diagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 12, 9)
+            .WithLocation(sourceFile.FilePath, 12, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         await GeneratorTest
@@ -43,7 +43,7 @@ public class ListForEachNotAllowedTests : GeneratorTestBase<ListForEachNotAllowe
             "SourceKit.Analyzers.Collections.Samples/ListForEachNotAllowed/ListForEachStatementWithLambdaExpressionExample.cs");
 
         DiagnosticResult diagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 12, 9)
+            .WithLocation(sourceFile.FilePath, 12, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         await GeneratorTest
@@ -60,7 +60,7 @@ public class ListForEachNotAllowedTests : GeneratorTestBase<ListForEachNotAllowe
             "SourceKit.Analyzers.Collections.Samples/ListForEachNotAllowed/ListForEachStatementWithMemberAccessExpressionExample.cs");
 
         DiagnosticResult diagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 12, 9)
+            .WithLocation(sourceFile.FilePath, 12, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         await GeneratorTest
@@ -77,7 +77,7 @@ public class ListForEachNotAllowedTests : GeneratorTestBase<ListForEachNotAllowe
             "SourceKit.Analyzers.Collections.Samples/ListForEachNotAllowed/ListForEachStatementWithMethodLinkExample.cs");
 
         DiagnosticResult diagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 13, 9)
+            .WithLocation(sourceFile.FilePath, 13, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         await GeneratorTest
@@ -94,19 +94,19 @@ public class ListForEachNotAllowedTests : GeneratorTestBase<ListForEachNotAllowe
             "SourceKit.Analyzers.Collections.Samples/ListForEachNotAllowed/ListForEachStatementComplexExample.cs");
 
         DiagnosticResult lambdaWithExpressionDiagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 15, 9)
+            .WithLocation(sourceFile.FilePath, 15, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         DiagnosticResult lambdaWithBlockDiagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 16, 9)
+            .WithLocation(sourceFile.FilePath, 16, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         DiagnosticResult memberAccessExpressionDiagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 21, 9)
+            .WithLocation(sourceFile.FilePath, 21, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         DiagnosticResult identifierNameDiagnostic = Diagnostic(ListForEachNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 22, 9)
+            .WithLocation(sourceFile.FilePath, 22, 9)
             .WithMessage(string.Format(ListForEachNotAllowedAnalyzer.Format));
 
         await GeneratorTest

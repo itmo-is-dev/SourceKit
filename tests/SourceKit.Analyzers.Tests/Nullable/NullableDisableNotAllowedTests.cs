@@ -14,7 +14,7 @@ public class NullableDisableNotAllowedTests : GeneratorTestBase<NullableDisableN
             "SourceKit.Analyzers.Nullable.Samples/NullableDisableNotAllowed/NullableDisable.cs");
 
         DiagnosticResult diagnostic = Diagnostic(NullableDisableNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 1, 1);
+            .WithLocation(sourceFile.FilePath, 1, 1);
 
         await GeneratorTest
             .WithSource(sourceFile)
@@ -42,10 +42,10 @@ public class NullableDisableNotAllowedTests : GeneratorTestBase<NullableDisableN
             "SourceKit.Analyzers.Nullable.Samples/NullableDisableNotAllowed/MultipleNestedNullableDisable.cs");
 
         DiagnosticResult diagnostic1 = Diagnostic(NullableDisableNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 1, 1);
+            .WithLocation(sourceFile.FilePath, 1, 1);
 
         DiagnosticResult diagnostic2 = Diagnostic(NullableDisableNotAllowedAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 18, 21);
+            .WithLocation(sourceFile.FilePath, 18, 21);
 
         await GeneratorTest
             .WithSource(sourceFile)

@@ -83,9 +83,9 @@ public class DoNotEnumerateCollectionInLinqChainAnalyzerTests
             {
                 private class Comparer<T> : IEqualityComparer<T>
                 {
-                    bool IEqualityComparer<T>.Equals(T x, T y)
+                    bool IEqualityComparer<T>.Equals(T? x, T? y)
                     {
-                        return x.Equals(y);
+                        return x!.Equals(y!);
                     }
                     int IEqualityComparer<T>.GetHashCode(T obj)
                     {
@@ -104,12 +104,13 @@ public class DoNotEnumerateCollectionInLinqChainAnalyzerTests
             """);
 
         DiagnosticResult diagnostic = Diagnostic(DoNotEnumerateCollectionInLinqChainAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 18, 31)
+            .WithLocation(sourceFile.FilePath, 18, 31)
             .WithArguments("ToLookup");
 
         await GeneratorTest
             .WithSource(sourceFile)
             .WithExpectedDiagnostic(diagnostic)
+            .WithDisabledDiagnostics("CS8602")
             .Build()
             .RunAsync();
     }

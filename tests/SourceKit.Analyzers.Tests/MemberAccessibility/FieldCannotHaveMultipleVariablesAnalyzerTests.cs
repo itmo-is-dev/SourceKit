@@ -14,11 +14,12 @@ public class FieldCannotHaveMultipleVariablesAnalyzerTests : GeneratorTestBase<F
             .LoadAsync("SourceKit.Analyzers.MemberAccessibility.Samples/MultipleFieldsCase.cs");
 
         DiagnosticResult diagnostic = Diagnostic(FieldCannotHaveMultipleVariablesAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 5);
+            .WithLocation(sourceFile.FilePath, 5, 5);
 
         await GeneratorTest
             .WithSource(sourceFile)
             .WithExpectedDiagnostic(diagnostic)
+            .WithDisabledDiagnostics("CS0169")
             .Build()
             .RunAsync();
     }

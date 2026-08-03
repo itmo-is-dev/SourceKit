@@ -14,8 +14,8 @@ public class FieldCannotBePublicAnalyzerTests : GeneratorTestBase<FieldCannotBeP
             .LoadAsync("SourceKit.Analyzers.MemberAccessibility.Samples/PublicFieldTestCase.cs");
 
         DiagnosticResult diagnostic = Diagnostic(FieldCannotBePublicAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 5, 19)
-            .WithArguments("object", "_publicField");
+            .WithLocation(sourceFile.FilePath, 5, 20)
+            .WithArguments("object?", "_publicField");
 
         await GeneratorTest
             .WithSource(sourceFile)

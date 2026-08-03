@@ -14,7 +14,7 @@ public class OfTypeMustUseDerivedTypeTests : GeneratorTestBase<OfTypeMustUseDeri
             "SourceKit.Analyzers.Enumerable.Samples/OfTypeMustUseDerivedType/OfTypeSample.cs");
 
         DiagnosticResult diagnostic = Diagnostic(OfTypeMustUseDerivedTypeAnalyzer.Descriptor)
-            .WithLocation(sourceFile.Name, 10, 16)
+            .WithLocation(sourceFile.FilePath, 10, 16)
             .WithArguments(nameof(Int32), nameof(String));
 
         await GeneratorTest
