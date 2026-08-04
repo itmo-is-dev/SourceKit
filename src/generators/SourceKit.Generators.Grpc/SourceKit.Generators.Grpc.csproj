@@ -9,19 +9,7 @@
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        <SourceKitMovePackage>true</SourceKitMovePackage>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <PackageId>SourceKit.Generators.Grpc</PackageId>
-        <Title>SourceKit.Generators.Grpc</Title>
-        <Authors>ronimizy</Authors>
-        <Description>Grpc source generators</Description>
-        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <IsSourceKitPackage>true</IsSourceKitPackage>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -30,17 +18,6 @@
             Fixed alias generation for non-public types
         </PackageReleaseNotes>
     </PropertyGroup>
-
-    <ItemGroup>
-        <None Include="README.md" Pack="true" PackagePath="\"/>
-        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all"/>
-    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="FluentChaining" GeneratePathProperty="true">
@@ -69,12 +46,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="PolySharp" PrivateAssets="all"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj"/>
-        <ProjectReference Include="..\SourceKit.Generators.Grpc.Annotations\SourceKit.Generators.Grpc.Annotations.csproj" />
+        <ProjectReference Include="..\SourceKit.Generators.Grpc.Annotations\SourceKit.Generators.Grpc.Annotations.csproj"/>
     </ItemGroup>
 
     <ItemGroup>

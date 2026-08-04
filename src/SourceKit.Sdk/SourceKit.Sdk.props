@@ -1,0 +1,11 @@
+<Project>
+
+    <PropertyGroup>
+        <DevelopmentDependency>true</DevelopmentDependency>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="SourceKit.Runtime"/>
+    </ItemGroup>
+
+</Project>

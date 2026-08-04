@@ -4,52 +4,14 @@
         <TargetFramework>netstandard2.0</TargetFramework>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <IncludeBuildOutput>false</IncludeBuildOutput>
-        <SourceKitMovePackage>true</SourceKitMovePackage>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <PackageId>SourceKit</PackageId>
-        <Title>SourceKit</Title>
-        <Authors>ronimizy</Authors>
-        <Description>Source generator extensions</Description>
-        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <Version>1.1.$(PatchVersion)$(VersionSuffix)</Version>
-        <PackageReleaseNotes>
-            Added UsingDirectiveSyntaxExtensions
-        </PackageReleaseNotes>
-    </PropertyGroup>
+    <Import Project="SourceKit.props"/>
 
     <ItemGroup>
-        <None Include="README.md" Pack="true" PackagePath="\"/>
-        <None Include="..\..\LICENSE.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
+        <None Update="Models\IncrementalValueProviderWrapper.tt" Generator="TextTemplatingFileGenerator" LastGenOutput="IncrementalValueProviderWrapper.cs"/>
+        <Compile Update="Models\IncrementalValueProviderWrapper.cs" AutoGen="True" DesignTime="True" DependentUpon="IncrementalValueProviderWrapper.tt"/>
 
-    <ItemGroup>
-        <None Update="Models\IncrementalValueProviderWrapper.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>IncrementalValueProviderWrapper.cs</LastGenOutput>
-        </None>
-        <Compile Update="Models\IncrementalValueProviderWrapper.cs" AutoGen="True" DesignTime="True">
-          <DependentUpon>IncrementalValueProviderWrapper.tt</DependentUpon>
-        </Compile>
-
-        <None Update="Extensions\ValueProviderExtensions.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>ValueProviderExtensions.cs</LastGenOutput>
-        </None>
-        <Compile Update="Extensions\ValueProviderExtensions.cs" AutoGen="True" DesignTime="True">
-          <DependentUpon>ValueProviderExtensions.tt</DependentUpon>
-        </Compile>
+        <None Update="Extensions\ValueProviderExtensions.tt" Generator="TextTemplatingFileGenerator" LastGenOutput="ValueProviderExtensions.cs"/>
+        <Compile Update="Extensions\ValueProviderExtensions.cs" AutoGen="True" DesignTime="True" DependentUpon="ValueProviderExtensions.tt"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -57,10 +19,6 @@
         <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
         <PackageReference Include="PolySharp" PrivateAssets="all"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
 
 </Project>

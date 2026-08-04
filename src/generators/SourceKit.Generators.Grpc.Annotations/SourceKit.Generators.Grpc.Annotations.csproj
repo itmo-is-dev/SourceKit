@@ -6,19 +6,7 @@
 
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <SourceKitMovePackage>true</SourceKitMovePackage>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <PackageId>SourceKit.Generators.Grpc.Annotations</PackageId>
-        <Title>SourceKit.Generators.Grpc.Annotations</Title>
-        <Authors>ronimizy</Authors>
-        <Description>Annotations for SourceKit.Generators.Grpc</Description>
-        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <IsSourceKitPackage>true</IsSourceKitPackage>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -27,11 +15,6 @@
             Added ExportProtoAliasAttribute
         </PackageReleaseNotes>
     </PropertyGroup>
-
-    <ItemGroup>
-        <None Include="..\..\..\README.md" Pack="true" PackagePath="\"/>
-        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference

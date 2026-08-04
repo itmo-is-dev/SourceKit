@@ -6,25 +6,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <NoWarn>$(NoWarn);NU5128</NoWarn>
     </PropertyGroup>
 
     <PropertyGroup>
         <PatchVersion>0-local</PatchVersion>
-        <VersionSuffix></VersionSuffix>
+        <VersionSuffix>-alpha</VersionSuffix>
     </PropertyGroup>
-
-    <PropertyGroup>
-        <SourceKitPackageOutputPath>
-            $([System.IO.Path]::Combine($(SolutionDir), 'bin', 'packages'))
-        </SourceKitPackageOutputPath>
-    </PropertyGroup>
-
-    <Target Name="CopyPackageToGlobalPath" AfterTargets="Pack" Condition="'$(SourceKitMovePackage)' == 'true'">
-        <Copy SourceFiles="$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg"
-              DestinationFolder="$(SourceKitPackageOutputPath)"/>
-    </Target>
 
 </Project>

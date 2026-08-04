@@ -6,29 +6,12 @@
 
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <SourceKitMovePackage>true</SourceKitMovePackage>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <PackageId>SourceKit.Analyzers.Annotations</PackageId>
-        <Title>SourceKit.Analyzers.Annotations</Title>
-        <Authors>ronimizy</Authors>
-        <Description>Annotations for SourceKit.Analyzers</Description>
-        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <IsSourceKitPackage>true</IsSourceKitPackage>
     </PropertyGroup>
 
     <PropertyGroup>
         <Version>1.0.$(PatchVersion)$(VersionSuffix)</Version>
         <PackageReleaseNotes>Added AnnotatedMustBePartialAttribute</PackageReleaseNotes>
     </PropertyGroup>
-
-    <ItemGroup>
-        <None Include="..\..\..\README.md" Pack="true" PackagePath="\"/>
-        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
 
 </Project>

@@ -9,19 +9,7 @@
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        <SourceKitMovePackage>true</SourceKitMovePackage>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <PackageId>SourceKit.Generators.Builder</PackageId>
-        <Title>SourceKit.Generators.Builder</Title>
-        <Authors>ronimizy</Authors>
-        <Description>Type builder source generator</Description>
-        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <IsSourceKitPackage>true</IsSourceKitPackage>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -32,27 +20,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="README.md" Pack="true" PackagePath="\"/>
-        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Common">
-            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
-        </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" GeneratePathProperty="true">
-            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
-        </PackageReference>
-
         <PackageReference Include="Humanizer.Core" GeneratePathProperty="true">
             <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
         </PackageReference>
@@ -60,22 +27,9 @@
         <PackageReference Include="Humanizer.Core.uk" GeneratePathProperty="true">
             <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
         </PackageReference>
-
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection" GeneratePathProperty="true">
-            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
-        </PackageReference>
-
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" GeneratePathProperty="true">
-            <PrivateAssets Condition="'$(Configuration)' == 'Release'">all</PrivateAssets>
-        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="PolySharp" PrivateAssets="all"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj"/>
         <ProjectReference Include="..\SourceKit.Generators.Builder.Annotations\SourceKit.Generators.Builder.Annotations.csproj"/>
     </ItemGroup>
 
@@ -83,12 +37,8 @@
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(OutputPath)\$(AssemblyName).Annotations.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
 
-        <None Include="$(PkgMicrosoft_Bcl_AsyncInterfaces)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(PkgHumanizer_Core)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
         <None Include="$(PkgHumanizer_Core_uk)\lib\netstandard2.0\uk\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-
-        <None Include="$(PkgMicrosoft_Extensions_DependencyInjection)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
-        <None Include="$(PkgMicrosoft_Extensions_DependencyInjection_Abstractions)\lib\netstandard2.0\*.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false"/>
     </ItemGroup>
 
 </Project>

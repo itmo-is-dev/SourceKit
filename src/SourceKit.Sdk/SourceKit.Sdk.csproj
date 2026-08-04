@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <IsSourceKitCorePackage>true</IsSourceKitCorePackage>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+    </PropertyGroup>
+
+    <Import Project="..\SourceKit\SourceKit.props"/>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SourceKit\SourceKit.csproj" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\SourceKit\README.md" Pack="true" PackagePath=".\README.md"/>
+        <None Include="$(OutputPath)\SourceKit.dll" Pack="true" PackagePath="lib\$(TargetFramework)" Visible="false"/>
+        <None Include="SourceKit.Sdk.props" Pack="true" PackagePath="build\SourceKit.Sdk.props"/>
+    </ItemGroup>
+
+</Project>

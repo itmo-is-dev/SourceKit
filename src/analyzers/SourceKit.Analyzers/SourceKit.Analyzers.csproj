@@ -9,18 +9,7 @@
     <PropertyGroup>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <IncludeBuildOutput>false</IncludeBuildOutput>
-        <SourceKitMovePackage>true</SourceKitMovePackage>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <PackageId>SourceKit.Analyzers</PackageId>
-        <Title>SourceKit.Analyzers</Title>
-        <Description>Custom analyzers</Description>
-        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+        <IsSourceKitPackage>true</IsSourceKitPackage>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -29,20 +18,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\README.md" Pack="true" PackagePath="\"/>
-        <None Include="..\..\..\LICENSE.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\SourceKit\SourceKit.csproj"/>
         <ProjectReference Include="..\SourceKit.Analyzers.Annotations\SourceKit.Analyzers.Annotations.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
-        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all"/>
-        <PackageReference Include="PolySharp" PrivateAssets="all"/>
     </ItemGroup>
 
     <ItemGroup>

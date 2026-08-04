@@ -1,0 +1,59 @@
+<Project>
+
+    <PropertyGroup Condition="'$(IsSourceKitPackage)' == 'true' or '$(IsSourceKitCorePackage)' == 'true'">
+        <DevelopmentDependency>true</DevelopmentDependency>
+        <SourceKitPackageOutputPath>$(SolutionDir)bin\packages</SourceKitPackageOutputPath>
+
+        <PackageId>$(AssemblyName)</PackageId>
+        <Title>$(AssemblyName)</Title>
+        <Authors>ronimizy</Authors>
+        <Description>Source generator extensions</Description>
+        <PackageProjectUrl>https://github.com/itmo-is-dev/SourceKit</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/itmo-is-dev/SourceKit</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseFile>LICENSE.md</PackageLicenseFile>
+    </PropertyGroup>
+
+    <ItemGroup Condition="'$(IsSourceKitPackage)' == 'true' or '$(IsSourceKitCorePackage)' == 'true'">
+        <None Include="README.md" Pack="true" PackagePath="\" Condition="Exists('README.md')"/>
+        <None Include="$(MSBuildThisFileDirectory)README.md" Pack="true" PackagePath="\" Condition="!Exists('README.md')"/>
+        <None Include="$(MSBuildThisFileDirectory)LICENSE.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(IsSourceKitPackage)' == 'true'">
+        <ProjectReference Include="$(MSBuildThisFileDirectory)src\SourceKit\SourceKit.csproj" PrivateAssets="all"/>
+        <PackageReference Include="SourceKit.Runtime"/>
+
+        <PackageReference Include="PolySharp" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp" PrivateAssets="all"/>
+        <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <Target Name="CopyPackageToGlobalPath"
+            AfterTargets="Pack"
+            Condition="'$(IsSourceKitPackage)' == 'true' or '$(IsSourceKitCorePackage)' == 'true'">
+
+        <Message Importance="high" Text="Copied package '$(PackageId)'"/>
+
+        <Copy SourceFiles="$(OutputPath)..\$(PackageId).$(PackageVersion).nupkg"
+              DestinationFolder="$(SourceKitPackageOutputPath)"/>
+
+    </Target>
+
+    <Target Name="Clear NuGet package cache"
+            Condition="'$(IsSourceKitPackage)' == 'true' or '$(IsSourceKitCorePackage)' == 'true'"
+            AfterTargets="Pack">
+
+        <Exec Command="dotnet nuget locals global-packages --list | awk '{print $2}'"
+              ConsoleToMSBuild="true">
+            <Output TaskParameter="ConsoleOutput" PropertyName="NuGetCachePath"/>
+        </Exec>
+
+        <RemoveDir Directories="$(NuGetCachePath)$(PackageId)\$(Version)"/>
+        <Exec Command="dotnet restore $([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'samples', 'SourceKit.RestoreSentinel', 'SourceKit.RestoreSentinel.csproj')) /p:CustomPackageName=$(PackageId)"/>
+
+    </Target>
+
+</Project>
