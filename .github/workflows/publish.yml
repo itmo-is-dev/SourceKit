@@ -7,6 +7,7 @@ on:
       - 'src/**'
       - '.github/workflows/publish.yml'
       - '*.props'
+      - '*.slnx'
 
   workflow_dispatch:
 
@@ -24,26 +25,13 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: exclude redundant projects and files
-        run: |
-          dotnet sln SourceKit.sln remove tests/SourceKit.Reflect.Tests/SourceKit.Reflect.Tests.csproj
-          rm -rf tests/SourceKit.Reflect.Tests
-          
-          for proj in $(find samples | grep csproj$)
-          do
-            proj_dir=$(dirname "$proj")
-          
-            dotnet sln SourceKit.sln remove "$proj"
-            rm -rf "$proj_dir"
-          done
-
       - name: restore
-        run: dotnet restore SourceKit.sln
+        run: dotnet restore SourceKit.slnx
 
       - name: build
         run: |
-          dotnet build SourceKit.sln -c Release --no-restore /p:PatchVersion=${{ github.run_number }} /p:GeneratePackageOnBuild=false
-          dotnet build SourceKit.sln -c Release --no-restore /p:PatchVersion=${{ github.run_number }}
+          dotnet build SourceKit.slnx -c Release --no-restore /p:PatchVersion=${{ github.run_number }} /p:GeneratePackageOnBuild=false
+          dotnet build SourceKit.slnx -c Release --no-restore /p:PatchVersion=${{ github.run_number }}
 
       - name: publish to GitHub nuget repository
         run: |
