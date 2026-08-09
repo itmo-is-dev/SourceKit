@@ -8,6 +8,7 @@ on:
       - '.github/workflows/publish.yml'
       - '*.props'
       - '*.slnx'
+      - 'scripts/**'
 
   workflow_dispatch:
 
