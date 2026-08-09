@@ -43,7 +43,7 @@
     </Target>
 
     <Target Name="Clear NuGet package cache"
-            Condition="'$(IsSourceKitPackage)' == 'true' or '$(IsSourceKitCorePackage)' == 'true'"
+            Condition="('$(IsSourceKitPackage)' == 'true' or '$(IsSourceKitCorePackage)' == 'true') and '$(IsPackageBuild)' != 'true' and '$(IsWarmupBuild)' != 'true'"
             AfterTargets="Pack">
 
         <Exec Command="dotnet nuget locals global-packages --list | awk '{print $2}'"

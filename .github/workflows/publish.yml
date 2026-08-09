@@ -37,7 +37,7 @@ jobs:
         run: |
           mkdir -p ./bin/packages
           dotnet build SourceKit.slnx -c Release /p:PatchVersion=${{ github.run_number }} /p:IsWarmupBuild=true
-          dotnet build SourceKit.slnx -c Release /p:PatchVersion=${{ github.run_number }}
+          dotnet build SourceKit.slnx -c Release /p:PatchVersion=${{ github.run_number }} /p:IsPackageBuild=true
 
       - name: publish to GitHub nuget repository
         run: |
