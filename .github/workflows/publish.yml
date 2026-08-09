@@ -41,6 +41,8 @@ jobs:
 
       - name: publish to GitHub nuget repository
         run: |
+          ls bin/packages
+          
           for file in bin/packages/*.nupkg
           do
             dotnet nuget push "${file#/}" --source "nuget.org" --api-key ${{ secrets.NUGET_API_KEY }}
