@@ -27,14 +27,14 @@ jobs:
 
       - name: remove tests
         run: |
-          for file in "$(find ./tests -name '*.csproj'")
+          for file in "$(find ./tests -name '*.csproj')"
           do
             dotnet sln remove SourceKit.slnx "$file"
           done
 
       - name: remove samples
         run: |
-          for file in "$(find ./samples -name '*.csproj'")
+          for file in "$(find ./samples -name '*.csproj')"
           do
             dotnet sln remove SourceKit.slnx "$file"
           done
