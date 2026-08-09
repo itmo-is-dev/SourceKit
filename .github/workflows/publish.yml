@@ -25,18 +25,19 @@ jobs:
         with:
           dotnet-version: 10.0.x
 
-      - name: restore
-        run: |
-          # local source is yet to exist at this point
-          
-          mv NuGet.config NuGet.config1
-          dotnet restore SourceKit.slnx
-          mv NuGet.config1 NuGet.config
+#      - name: restore
+#        run: |
+#          # local source is yet to exist at this point
+#          
+#          mv NuGet.config NuGet.config1
+#          dotnet restore SourceKit.slnx
+#          mv NuGet.config1 NuGet.config
 
       - name: build
         run: |
-          dotnet build SourceKit.slnx -c Release --no-restore /p:PatchVersion=${{ github.run_number }} /p:GeneratePackageOnBuild=false
-          dotnet build SourceKit.slnx -c Release --no-restore /p:PatchVersion=${{ github.run_number }}
+#          dotnet build SourceKit.slnx -c Release --no-restore /p:PatchVersion=${{ github.run_number }} /p:GeneratePackageOnBuild=false
+          mkdir -p ./bin/packages
+          dotnet build SourceKit.slnx -c Release /p:PatchVersion=${{ github.run_number }}
 
       - name: publish to GitHub nuget repository
         run: |
