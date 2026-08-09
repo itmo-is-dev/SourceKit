@@ -33,7 +33,9 @@ public sealed record ValueBuilderParameter(
     {
         TypeSyntax valueTypeSyntax = ParameterTypeSyntax;
 
-        if (IsNullableReferenceType && Options.HasFlag(BuilderPropertyOptions.ConstructorParameter) is false)
+        if (IsReferenceType
+            && IsNullableReferenceType is false
+            && Options.HasFlag(BuilderPropertyOptions.ConstructorParameter) is false)
         {
             valueTypeSyntax = NullableType(valueTypeSyntax);
         }

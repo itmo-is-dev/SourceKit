@@ -24,8 +24,10 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<IncrementalBuilderG
             
             namespace TestNamespace;
             
+            public record ReferenceTypeModel;
+            
             [GenerateBuilder]
-            public partial record Model(int UnaryValue, int[] CollectionValue);
+            public partial record Model(int UnaryValue, int[] CollectionValue, ReferenceTypeModel? NullableReferenceTypeProperty);
             """);
 
         var generatedSource = new SourceFile(
@@ -45,9 +47,11 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<IncrementalBuilderG
                     {
                         private int _unaryValue;
                         private global::System.Collections.Generic.HashSet<int>? _collectionValue;
+                        private global::TestNamespace.ReferenceTypeModel? _nullableReferenceTypeProperty;
                         public Builder()
                         {
                             _unaryValue = default;
+                            _nullableReferenceTypeProperty = default;
                         }
                         
                         {{InitializesPropertyAttribute("UnaryValue")}}
@@ -74,9 +78,16 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<IncrementalBuilderG
                             return this;
                         }
                         
+                        {{InitializesPropertyAttribute("NullableReferenceTypeProperty")}}
+                        public Builder WithNullableReferenceTypeProperty(global::TestNamespace.ReferenceTypeModel? value)
+                        {
+                            _nullableReferenceTypeProperty = value;
+                            return this;
+                        }
+                        
                         public Model Build()
                         {
-                            return new Model(UnaryValue: _unaryValue, CollectionValue: [.._collectionValue ?? []]);
+                            return new Model(UnaryValue: _unaryValue, CollectionValue: [.._collectionValue ?? []], NullableReferenceTypeProperty: _nullableReferenceTypeProperty);
                         }
                     }
                 }
