@@ -26,7 +26,12 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: restore
-        run: dotnet restore SourceKit.slnx
+        run: |
+          # local source is yet to exist at this point
+          
+          mv NuGet.config NuGet.config1
+          dotnet restore SourceKit.slnx
+          mv NuGet.config1 NuGet.config
 
       - name: build
         run: |
