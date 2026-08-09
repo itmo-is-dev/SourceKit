@@ -45,6 +45,8 @@
     <Target Name="Clear NuGet package cache"
             Condition="('$(IsSourceKitPackage)' == 'true' or '$(IsSourceKitCorePackage)' == 'true') and '$(IsPackageBuild)' != 'true' and '$(IsWarmupBuild)' != 'true'"
             AfterTargets="Pack">
+        
+        <Message Importance="high" Text="Clearing cache for $(PackageId)"/>
 
         <Exec Command="dotnet nuget locals global-packages --list | awk '{print $2}'"
               ConsoleToMSBuild="true">
