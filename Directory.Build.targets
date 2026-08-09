@@ -23,7 +23,7 @@
 
     <ItemGroup Condition="'$(IsSourceKitPackage)' == 'true'">
         <ProjectReference Include="$(MSBuildThisFileDirectory)src\SourceKit\SourceKit.csproj" PrivateAssets="all"/>
-        <PackageReference Include="SourceKit.Runtime"/>
+        <PackageReference Include="SourceKit.Runtime" Condition="'$(IsWarmupBuild)' != 'true'"/>
 
         <PackageReference Include="PolySharp" PrivateAssets="all"/>
         <PackageReference Include="Microsoft.CodeAnalysis.Common" PrivateAssets="all"/>
@@ -55,5 +55,11 @@
         <Exec Command="dotnet restore $([System.IO.Path]::Combine($(MSBuildThisFileDirectory), 'samples', 'SourceKit.RestoreSentinel', 'SourceKit.RestoreSentinel.csproj')) /p:CustomPackageName=$(PackageId)"/>
 
     </Target>
+    
+    <PropertyGroup Condition="'$(IsWarmupBuild)' == 'true'">
+        <GeneratePackageOnBuild Condition="'$(IsSourceKitCorePackage)' != 'true'">
+            false
+        </GeneratePackageOnBuild>
+    </PropertyGroup>
 
 </Project>

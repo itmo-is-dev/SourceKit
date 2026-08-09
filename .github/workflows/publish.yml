@@ -24,19 +24,25 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 10.0.x
-          
-          #      - name: restore
-          #        run: |
-          #          # local source is yet to exist at this point
-          #          
-          #          mv NuGet.config NuGet.config1
-          #          dotnet restore SourceKit.slnx
-          #          mv NuGet.config1 NuGet.config
-          #          dotnet build SourceKit.slnx -c Release --no-restore /p:PatchVersion=${{ github.run_number }} /p:GeneratePackageOnBuild=false
+
+      - name: remove tests
+        run: |
+          for file in "$(find ./tests -name '*.csproj'")
+          do
+            dotnet sln remove SourceKit.slnx "$file"
+          done
+
+      - name: remove samples
+        run: |
+          for file in "$(find ./samples -name '*.csproj'")
+          do
+            dotnet sln remove SourceKit.slnx "$file"
+          done
 
       - name: build
         run: |
           mkdir -p ./bin/packages
+          dotnet build SourceKit.slnx -c Release /p:PatchVersion=${{ github.run_number }} /p:IsWarmupBuild=true
           dotnet build SourceKit.slnx -c Release /p:PatchVersion=${{ github.run_number }}
 
       - name: publish to GitHub nuget repository
