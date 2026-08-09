@@ -1,3 +1,5 @@
 #!/bin/bash
 
-source ./solution-scripts.sh
+THIS_FILE_DIRECTORY=$(dirname "$0")
+
+source "$THIS_FILE_DIRECTORY"/solution-scripts.sh
