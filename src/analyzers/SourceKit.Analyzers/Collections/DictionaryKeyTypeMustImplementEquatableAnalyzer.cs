@@ -49,6 +49,9 @@ public class DictionaryKeyTypeMustImplementEquatableAnalyzer : IIncrementalGener
             .Unwrap(context)
             .Select(static (node, semanticModel, keySymbol) =>
             {
+                if (keySymbol.IsTupleType)
+                    return IncrementalResult.Skip;
+
                 INamedTypeSymbol equatableSymbol = semanticModel.Compilation.GetTypeSymbol(typeof(IEquatable<>));
 
                 IEnumerable<INamedTypeSymbol> foundEquatableSymbols = keySymbol
