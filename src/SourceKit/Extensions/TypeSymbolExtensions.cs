@@ -32,7 +32,7 @@ public static class TypeSymbolExtensions
         this ITypeSymbol type,
         INamedTypeSymbol baseType)
     {
-        IEnumerable<INamedTypeSymbol>? symbols = type.FindAssignableTypesConstructedFrom(baseType);
+        IEnumerable<INamedTypeSymbol> symbols = type.FindAssignableTypesConstructedFrom(baseType);
 
         return symbols
             .FirstOrDefault(current =>
@@ -49,6 +49,7 @@ public static class TypeSymbolExtensions
         IEnumerable<INamedTypeSymbol> baseTypes = namedTypeSymbol.GetBaseTypesAndInterfaces();
 
         return baseTypes
+            .Append(namedTypeSymbol)
             .Where(current =>
                 current.ConstructedFrom.Equals(baseType, SymbolEqualityComparer.Default));
     }
@@ -74,7 +75,7 @@ public static class TypeSymbolExtensions
             return arrayTypeSymbol.ElementType;
         }
 
-        INamedTypeSymbol? genericEnumerableType = compilation.GetTypeSymbol(typeof(IEnumerable<>));
+        INamedTypeSymbol genericEnumerableType = compilation.GetTypeSymbol(typeof(IEnumerable<>));
 
         INamedTypeSymbol? constructedFrom = enumerableType.FindAssignableTypeConstructedFrom(genericEnumerableType);
 

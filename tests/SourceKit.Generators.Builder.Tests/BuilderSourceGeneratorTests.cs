@@ -21,13 +21,18 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<IncrementalBuilderG
             Encoding: Encoding.UTF8,
             Content: """
             using SourceKit.Generators.Builder.Annotations;
+            using System.Collections.Generic;
             
             namespace TestNamespace;
             
             public record ReferenceTypeModel;
             
             [GenerateBuilder]
-            public partial record Model(int UnaryValue, int[] CollectionValue, ReferenceTypeModel? NullableReferenceTypeProperty);
+            public partial record Model(
+                int UnaryValue, 
+                int[] CollectionValue, 
+                ReferenceTypeModel? NullableReferenceTypeProperty,
+                IEnumerable<int> EnumerableProperty);
             """);
 
         var generatedSource = new SourceFile(
@@ -48,6 +53,7 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<IncrementalBuilderG
                         private int _unaryValue;
                         private global::System.Collections.Generic.HashSet<int>? _collectionValue;
                         private global::TestNamespace.ReferenceTypeModel? _nullableReferenceTypeProperty;
+                        private global::System.Collections.Generic.HashSet<int>? _enumerableProperty;
                         public Builder()
                         {
                             _unaryValue = default;
@@ -85,9 +91,26 @@ public class BuilderSourceGeneratorTests : GeneratorTestBase<IncrementalBuilderG
                             return this;
                         }
                         
+                        {{InitializesPropertyAttribute("EnumerableProperty")}}
+                        public Builder WithEnumerableProperty(int element)
+                        {
+                            _enumerableProperty ??= [];
+                            _enumerableProperty.Add(element);
+                            return this;
+                        }
+                        
+                        {{InitializesPropertyAttribute("EnumerableProperty")}}
+                        public Builder WithEnumerableProperties(global::System.Collections.Generic.IEnumerable<int> elements)
+                        {
+                            _enumerableProperty ??= [];
+                            foreach (int element in elements)
+                                _enumerableProperty.Add(element);
+                            return this;
+                        }
+                        
                         public Model Build()
                         {
-                            return new Model(UnaryValue: _unaryValue, CollectionValue: [.._collectionValue ?? []], NullableReferenceTypeProperty: _nullableReferenceTypeProperty);
+                            return new Model(UnaryValue: _unaryValue, CollectionValue: [.._collectionValue ?? []], NullableReferenceTypeProperty: _nullableReferenceTypeProperty, EnumerableProperty: [.._enumerableProperty ?? []]);
                         }
                     }
                 }
