@@ -9,13 +9,11 @@ namespace SourceKit.Analyzers.MemberAccessibility;
 public class FieldCannotBePublicAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1101";
-    public const string Title = nameof(FieldCannotBePublicAnalyzer);
-
     public const string Format = """Field '{0} {1}' cannot be public""";
 
     public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
-        Title,
+        "Field cannot be public",
         Format,
         "Design",
         DiagnosticSeverity.Error,

@@ -7,13 +7,11 @@ namespace SourceKit.Analyzers.MemberAccessibility;
 public class FieldCannotHaveMultipleVariablesAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1102";
-    public const string Title = nameof(FieldCannotHaveMultipleVariablesAnalyzer);
-
     public const string Format = """Each field must have separate declaration""";
 
     public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
-        Title,
+        "Field cannot have multiple variables",
         Format,
         "Design",
         DiagnosticSeverity.Error,

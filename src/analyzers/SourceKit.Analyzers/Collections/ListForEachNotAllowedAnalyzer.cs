@@ -11,12 +11,11 @@ public class ListForEachNotAllowedAnalyzer : IIncrementalGenerator
     private const string ListMetadataName = "System.Collections.Generic.List`1";
 
     public const string DiagnosticId = "SK1501";
-    public const string Title = nameof(ListForEachNotAllowedAnalyzer);
     public const string Format = """Using ForEach method is not allowed""";
 
     public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
-        Title,
+        "List.ForEach method is not allowed",
         Format,
         "Design",
         DiagnosticSeverity.Warning,

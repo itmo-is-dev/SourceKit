@@ -8,13 +8,11 @@ namespace SourceKit.Analyzers.Nullable;
 public class NullableDisableNotAllowedAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1201";
-    public const string Title = nameof(NullableDisableNotAllowedAnalyzer);
-
     public const string Format = """#nullable disable is not allowed""";
 
     public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
-        Title,
+        "Nullable suppression is not allowed",
         Format,
         "Usage",
         DiagnosticSeverity.Error,

@@ -9,13 +9,11 @@ namespace SourceKit.Analyzers.Collections;
 public class DictionaryKeyTypeMustImplementEquatableAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1500";
-    public const string Title = nameof(DictionaryKeyTypeMustImplementEquatableAnalyzer);
-
     public const string Format = """Type argument for TKey must implement IEquatable""";
 
     public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
-        Title,
+        "Dictionary key type must be equatable",
         Format,
         "Design",
         DiagnosticSeverity.Error,

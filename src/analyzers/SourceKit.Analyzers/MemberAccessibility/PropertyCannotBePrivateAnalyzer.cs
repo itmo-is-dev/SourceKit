@@ -9,13 +9,11 @@ namespace SourceKit.Analyzers.MemberAccessibility;
 public class PropertyCannotBePrivateAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1100";
-    public const string Title = nameof(PropertyCannotBePrivateAnalyzer);
-
     public const string Format = """Property '{0} {1}' cannot be private""";
 
     public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
-        Title,
+        "Properties cannot be private",
         Format,
         "Design",
         DiagnosticSeverity.Error,

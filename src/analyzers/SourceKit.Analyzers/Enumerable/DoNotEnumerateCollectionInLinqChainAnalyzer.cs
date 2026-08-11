@@ -10,8 +10,6 @@ namespace SourceKit.Analyzers.Enumerable;
 public class DoNotEnumerateCollectionInLinqChainAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1301";
-    public const string Title = nameof(DoNotEnumerateCollectionInLinqChainAnalyzer);
-
     public const string Format = """Cannot chain LINQ methods after terminal operation {0}""";
 
     private static readonly HashSet<string> TerminationMethods = new()
@@ -32,7 +30,7 @@ public class DoNotEnumerateCollectionInLinqChainAnalyzer : IIncrementalGenerator
 
     public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
-        Title,
+        "Do not materialize the collection in between LINQ chain",
         Format,
         "Performance",
         DiagnosticSeverity.Error,

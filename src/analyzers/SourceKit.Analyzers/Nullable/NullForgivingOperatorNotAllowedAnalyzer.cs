@@ -14,7 +14,7 @@ public class NullForgivingOperatorNotAllowedAnalyzer : IIncrementalGenerator
 
     public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
-        Title,
+        "Null forgiving operator is not allowed",
         Format,
         "Usage",
         DiagnosticSeverity.Error,

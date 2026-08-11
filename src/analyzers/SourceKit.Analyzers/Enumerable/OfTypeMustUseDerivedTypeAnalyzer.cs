@@ -9,13 +9,11 @@ namespace SourceKit.Analyzers.Enumerable;
 public class OfTypeMustUseDerivedTypeAnalyzer : IIncrementalGenerator
 {
     public const string DiagnosticId = "SK1300";
-    public const string Title = nameof(OfTypeMustUseDerivedTypeAnalyzer);
-
     public const string Format = """Type {0} is not derived from type {1}""";
 
     public static readonly DiagnosticDescriptor Descriptor = new(
         DiagnosticId,
-        Title,
+        "OfType must be called only for subtypes",
         Format,
         "Usage",
         DiagnosticSeverity.Error,

@@ -16,10 +16,4 @@
         </PackageReleaseNotes>
     </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference
-                Include="..\..\analyzers\SourceKit.Analyzers\SourceKit.Analyzers.csproj"
-                PrivateAssets="contentfiles;build"/>
-    </ItemGroup>
-
 </Project>
