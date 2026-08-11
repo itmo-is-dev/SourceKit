@@ -1,19 +1,14 @@
 using System.Collections.Generic;
 using SourceKit.Generators.Builder.Annotations;
+using static SourceKit.Generators.Builder.Annotations.BuilderPropertyOptions;
 
 namespace SourceKit.Generators.Builder.Samples.BuilderConstructorParameter;
 
 [GenerateBuilder]
 public sealed partial record IntegerConstructorParameterQuery(
-    [BuilderProperty(BuilderPropertyOptions.ConstructorParameter)]
+    [BuilderProperty(ConstructorParameter | Exposed)]
     int? Id,
-    [BuilderProperty(BuilderPropertyOptions.ConstructorParameter)]
+    [BuilderProperty(ConstructorParameter)]
     int[] Values,
     List<int> NotParameterValues,
-    string Value)
-{
-    public partial class Builder
-    {
-        public int? Id => _id;
-    }
-}
+    string Value);

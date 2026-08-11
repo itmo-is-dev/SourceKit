@@ -16,6 +16,11 @@ public readonly record struct SourceFile(string Name, string Content, Encoding? 
         return new SourceFile(name, content) { FilePath = path };
     }
 
+    public static SourceFile FromContent(string content)
+    {
+        return new SourceFile(Name: "File.cs", Content: content, Encoding: Encoding.UTF8);
+    }
+
     public (string, SourceText) AsTestSource()
     {
         return (FilePath, SourceText.From(Content, Encoding));

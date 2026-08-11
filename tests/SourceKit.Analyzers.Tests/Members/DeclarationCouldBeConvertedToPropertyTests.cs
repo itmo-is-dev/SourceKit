@@ -1,20 +1,28 @@
-﻿using Microsoft.CodeAnalysis.Testing;
-using SourceKit.Analyzers.Members;
+﻿using SourceKit.Analyzers.Members;
 using SourceKit.Tests.Common;
 using SourceKit.Tests.Common.TestBases;
 
 namespace SourceKit.Analyzers.Tests.Members;
 
-public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
-    DeclarationCouldBeConvertedToPropertyAnalyzer>
+public class DeclarationCouldBeConvertedToPropertyTests : GeneratorTestBase<
+    FieldCouldBeConverterToPropertyAnalyzer>
 {
+    protected override GeneratorTestBuilder ConfigureTest(GeneratorTestBuilder test)
+    {
+        return test.WithDisabledDiagnostics("CS0649", "CS8618", "CS0169");
+    }
+
     [Fact]
     public async Task ShouldReportNoDiagnostic_WhenPublicPropertyDeclared()
     {
-        SourceFile sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Analyzers.Properties.Samples/DeclarationCouldBeConvertedToProperty/PublicProperty.cs");
+        var sourceFile = SourceFile.FromContent("""
+        public class PublicProperty
+        {
+            public string Field { get; set; }
+        }
+        """);
 
-        await AnalyzerTest
+        await GeneratorTest
             .WithSource(sourceFile)
             .Build()
             .RunAsync();
@@ -23,56 +31,20 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
     [Fact]
     public async Task ShouldReportNoDiagnostic_WhenPrivateFieldWithNoGetterAndSetterDeclared()
     {
-        SourceFile sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Analyzers.Properties.Samples/DeclarationCouldBeConvertedToProperty/PrivateFieldWithoutMethods.cs");
+        var sourceFile = SourceFile.FromContent("""
+        public class PrivateFieldWithoutMethods
+        {
+            private string test;
+        
+            public string GetTest()
+            {
+                return "test";
+            }
+        }
+        """);
 
-        await AnalyzerTest
+        await GeneratorTest
             .WithSource(sourceFile)
-            .Build()
-            .RunAsync();
-    }
-
-    [Fact]
-    public async Task ShouldReportDiagnostic_WhenPublicFieldDeclared()
-    {
-        SourceFile sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Analyzers.Properties.Samples/DeclarationCouldBeConvertedToProperty/OnePublicField.cs");
-
-        DiagnosticResult diagnostic = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 5, 19)
-            .WithLocation(sourceFile.FilePath, 5, 19)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
-
-        await AnalyzerTest
-            .WithSource(sourceFile)
-            .WithExpectedDiagnostic(diagnostic)
-            .Build()
-            .RunAsync();
-    }
-
-    [Fact]
-    public async Task ShouldReportDiagnotics_WhenMultiplePublicFieldDeclared()
-    {
-        SourceFile sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Analyzers.Properties.Samples/DeclarationCouldBeConvertedToProperty/ManyPublicFields.cs");
-
-        DiagnosticResult diagnostic1 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 7, 25)
-            .WithLocation(sourceFile.FilePath, 7, 25)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "first"));
-
-        DiagnosticResult diagnostic2 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 7, 32)
-            .WithLocation(sourceFile.FilePath, 7, 32)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "second"));
-
-        await AnalyzerTest
-            .WithSource(sourceFile)
-            .WithExpectedDiagnostic(diagnostic1)
-            .WithExpectedDiagnostic(diagnostic2)
             .Build()
             .RunAsync();
     }
@@ -80,35 +52,37 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
     [Fact]
     public async Task ShouldReportDiagnostic_WhenPrivateFieldWithGetterAndSetterDeclared()
     {
-        SourceFile sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Analyzers.Properties.Samples/DeclarationCouldBeConvertedToProperty/OneField.cs");
+        var sourceFile = SourceFile.FromContent("""
+        public class OneField
+        {
+            private string _field = "10";
+        
+            public string GetField()
+            {
+                return _field;
+            }
+        
+            public void SetField(string value)
+            {
+                _field = value;
+            }
+        }
+        """);
 
-        DiagnosticResult diagnostic1 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 5, 20)
-            .WithLocation(sourceFile.FilePath, 5, 20)
-            .WithLocation(sourceFile.FilePath, 3, 1)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
-
-        DiagnosticResult diagnostic2 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 7, 19)
-            .WithLocation(sourceFile.FilePath, 5, 20)
-            .WithLocation(sourceFile.FilePath, 3, 1)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
-
-        DiagnosticResult diagnostic3 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 12, 17)
-            .WithLocation(sourceFile.FilePath, 5, 20)
-            .WithLocation(sourceFile.FilePath, 3, 1)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
-
-        await AnalyzerTest
+        await GeneratorTest
             .WithSource(sourceFile)
-            .WithExpectedDiagnostic(diagnostic1)
-            .WithExpectedDiagnostic(diagnostic2)
-            .WithExpectedDiagnostic(diagnostic3)
+            .WithExpectedDiagnostic(
+                Diagnostic(FieldCouldBeConverterToPropertyAnalyzer.Descriptor)
+                    .WithLocation(sourceFile.FilePath, line: 5, column: 5)
+                    .WithLocation(sourceFile.FilePath, line: 3, column: 20)
+                    .WithArguments("_field")
+            )
+            .WithExpectedDiagnostic(
+                Diagnostic(FieldCouldBeConverterToPropertyAnalyzer.Descriptor)
+                    .WithLocation(sourceFile.FilePath, line: 10, column: 5)
+                    .WithLocation(sourceFile.FilePath, line: 3, column: 20)
+                    .WithArguments("_field")
+            )
             .Build()
             .RunAsync();
     }
@@ -116,27 +90,26 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
     [Fact]
     public async Task ShouldReportDiagnostic_WhenFieldHasUnderscorePrefix()
     {
-        SourceFile sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Analyzers.Properties.Samples/DeclarationCouldBeConvertedToProperty/UnderscoreNameField.cs");
+        var sourceFile = SourceFile.FromContent("""
+        public class UnderscoreNameField
+        {
+            private readonly string _field;
+        
+            public string GetField()
+            {
+                return _field;
+            }
+        }
+        """);
 
-        DiagnosticResult diagnostic1 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 5, 29)
-            .WithLocation(sourceFile.FilePath, 5, 29)
-            .WithLocation(sourceFile.FilePath, 3, 1)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "_field"));
-
-        DiagnosticResult diagnostic2 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 7, 19)
-            .WithLocation(sourceFile.FilePath, 5, 29)
-            .WithLocation(sourceFile.FilePath, 3, 1)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "_field"));
-
-        await AnalyzerTest
+        await GeneratorTest
             .WithSource(sourceFile)
-            .WithExpectedDiagnostic(diagnostic1)
-            .WithExpectedDiagnostic(diagnostic2)
+            .WithExpectedDiagnostic(
+                Diagnostic(FieldCouldBeConverterToPropertyAnalyzer.Descriptor)
+                    .WithLocation(sourceFile.FilePath, 5, 5)
+                    .WithLocation(sourceFile.FilePath, 3, 29)
+                    .WithArguments("_field")
+            )
             .Build()
             .RunAsync();
     }
@@ -144,54 +117,31 @@ public class DeclarationCouldBeConvertedToPropertyTests : AnalyzerTestBase<
     [Fact]
     public async Task ShouldReportDiagnostic_WhenGetterAndSetterMethodsHasExpressionBody()
     {
-        SourceFile sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Analyzers.Properties.Samples/DeclarationCouldBeConvertedToProperty/ExpressionBodyMethodsField.cs");
+        var sourceFile = SourceFile.FromContent("""
+        public class ExpressionBodyMethodsField
+        {
+            private string field;
+        
+            public string GetField() => field;
+        
+            protected internal void SetField(string value) => field = value;
+        }
+        """);
 
-        DiagnosticResult diagnostic1 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 5, 20)
-            .WithLocation(sourceFile.FilePath, 5, 20)
-            .WithLocation(sourceFile.FilePath, 3, 1)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
-
-        DiagnosticResult diagnostic2 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 7, 19)
-            .WithLocation(sourceFile.FilePath, 5, 20)
-            .WithLocation(sourceFile.FilePath, 3, 1)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
-
-        DiagnosticResult diagnostic3 = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 9, 29)
-            .WithLocation(sourceFile.FilePath, 5, 20)
-            .WithLocation(sourceFile.FilePath, 3, 1)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
-
-        await AnalyzerTest
+        await GeneratorTest
             .WithSource(sourceFile)
-            .WithExpectedDiagnostic(diagnostic1)
-            .WithExpectedDiagnostic(diagnostic2)
-            .WithExpectedDiagnostic(diagnostic3)
-            .Build()
-            .RunAsync();
-    }
-
-    [Fact]
-    public async Task ShouldReportDiagnostic_WhenPublicReadonlyFieldDeclared()
-    {
-        SourceFile sourceFile = await SourceFile.LoadAsync(
-            "SourceKit.Analyzers.Properties.Samples/DeclarationCouldBeConvertedToProperty/ReadonlyPublicField.cs");
-
-        DiagnosticResult diagnostic = AnalyzerVerifier
-            .Diagnostic(DeclarationCouldBeConvertedToPropertyAnalyzer.Descriptor)
-            .WithLocation(sourceFile.FilePath, 5, 28)
-            .WithLocation(sourceFile.FilePath, 5, 28)
-            .WithMessage(string.Format(DeclarationCouldBeConvertedToPropertyAnalyzer.Format, "field"));
-
-        await AnalyzerTest
-            .WithSource(sourceFile)
-            .WithExpectedDiagnostic(diagnostic)
+            .WithExpectedDiagnostic(
+                Diagnostic(FieldCouldBeConverterToPropertyAnalyzer.Descriptor)
+                    .WithLocation(sourceFile.FilePath, 5, 5)
+                    .WithLocation(sourceFile.FilePath, 3, 20)
+                    .WithArguments("field")
+            )
+            .WithExpectedDiagnostic(
+                Diagnostic(FieldCouldBeConverterToPropertyAnalyzer.Descriptor)
+                    .WithLocation(sourceFile.FilePath, 7, 5)
+                    .WithLocation(sourceFile.FilePath, 3, 20)
+                    .WithArguments("field")
+            )
             .Build()
             .RunAsync();
     }

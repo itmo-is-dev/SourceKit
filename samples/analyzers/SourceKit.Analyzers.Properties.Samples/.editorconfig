@@ -7,3 +7,4 @@ dotnet_diagnostic.SK1102.severity = suggestion
 dotnet_diagnostic.CS8618.severity = none
 dotnet_diagnostic.CS0649.severity = none
 dotnet_diagnostic.CS0169.severity = none
+resharper_inconsistent_naming_highlighting = none

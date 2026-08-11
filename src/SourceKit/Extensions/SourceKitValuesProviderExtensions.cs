@@ -57,4 +57,22 @@ public static class SourceKitValuesProviderExtensions
             .Where(static result => result.Kind is IncrementalResultKind.Success)
             .Select(static (result, _) => result.Value!);
     }
+
+    public static void Unwrap(
+        this IncrementalValuesProvider<IncrementalResult> provider,
+        IncrementalGeneratorInitializationContext context)
+    {
+        context.RegisterSourceOutput(
+            provider,
+            static (context, result) =>
+            {
+                if (result.Diagnostics is null)
+                    return;
+
+                foreach (Diagnostic diagnostic in result.Diagnostics)
+                {
+                    context.ReportDiagnostic(diagnostic);
+                }
+            });
+    }
 }

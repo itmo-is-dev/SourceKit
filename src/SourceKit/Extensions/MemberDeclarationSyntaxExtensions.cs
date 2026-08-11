@@ -16,4 +16,15 @@ public static class MemberDeclarationSyntaxExtensions
 
         return true;
     }
+
+    public static bool HasAnyModifier(this MemberDeclarationSyntax syntax, params ReadOnlySpan<SyntaxKind> modifiers)
+    {
+        foreach (SyntaxKind expectedModifier in modifiers)
+        {
+            if (syntax.Modifiers.Any(modifier => modifier.IsKind(expectedModifier)))
+                return true;
+        }
+
+        return false;
+    }
 }

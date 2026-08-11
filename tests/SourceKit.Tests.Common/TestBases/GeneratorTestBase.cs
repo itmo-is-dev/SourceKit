@@ -4,14 +4,15 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Text;
 
 namespace SourceKit.Tests.Common.TestBases;
 
 public abstract class GeneratorTestBase<TGenerator>
     where TGenerator : IIncrementalGenerator, new()
 {
-    protected GeneratorTestBuilder GeneratorTest => new();
+    protected GeneratorTestBuilder GeneratorTest => ConfigureTest(new GeneratorTestBuilder());
+
+    protected virtual GeneratorTestBuilder ConfigureTest(GeneratorTestBuilder test) => test;
 
     protected DiagnosticResult Diagnostic(DiagnosticDescriptor descriptor) => new(descriptor);
 

@@ -48,11 +48,6 @@
                  Exclude="..\..\samples\analyzers\SourceKit.Analyzers.Nullable.Samples\obj\**"
                  LinkBase="SourceKit.Analyzers.Nullable.Samples\"
                  CopyToOutputDirectory="PreserveNewest"/>
-
-        <Content Include="..\..\samples\analyzers\SourceKit.Analyzers.Properties.Samples\**\*.cs"
-                 Exclude="..\..\samples\analyzers\SourceKit.Analyzers.Properties.Samples\obj\**"
-                 LinkBase="SourceKit.Analyzers.Properties.Samples\"
-                 CopyToOutputDirectory="PreserveNewest"/>
     </ItemGroup>
 
 </Project>
