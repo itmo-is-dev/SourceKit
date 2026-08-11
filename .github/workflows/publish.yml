@@ -7,6 +7,7 @@ on:
       - 'src/**'
       - '.github/workflows/publish.yml'
       - '*.props'
+      - '*.targets'
       - '*.slnx'
       - 'scripts/**'
 

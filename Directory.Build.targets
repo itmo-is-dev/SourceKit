@@ -1,7 +1,6 @@
 <Project>
 
     <PropertyGroup Condition="'$(IsSourceKitPackage)' == 'true' or '$(IsSourceKitCorePackage)' == 'true'">
-        <DevelopmentDependency>true</DevelopmentDependency>
         <SourceKitPackageOutputPath>$(SolutionDir)bin\packages</SourceKitPackageOutputPath>
 
         <PackageId>$(AssemblyName)</PackageId>
